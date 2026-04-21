@@ -6,9 +6,7 @@ export default function Home() {
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-5xl px-6 py-12">
-      <h1 className="text-3xl font-semibold text-zinc-900 dark:text-zinc-100">
-        Page Routes
-      </h1>
+      <h1 className="text-3xl font-semibold text-zinc-900 dark:text-zinc-100">Page Routes</h1>
       <p className="mt-2 text-zinc-600 dark:text-zinc-400">
         Each item has a separate TypeScript page route.
       </p>

@@ -23,7 +23,6 @@ const navigationSections: NavigationSection[] = [
   {
     title: "Content",
     items: [
-      { label: "Journey Orchestration", href: "/journey-orchestration" },
       { label: "Wellth Plans", href: "/wellth-plans" },
       { label: "Work on Me Exercises", href: "/work-on-me-exercises" },
     ],
@@ -31,14 +30,9 @@ const navigationSections: NavigationSection[] = [
   {
     title: "Exercises",
     items: [
-      {
-        label: "Mindful Exercise Management",
-        href: "/mindful-exercise-management",
-      },
-      {
-        label: "Calm & Stillness Management",
-        href: "/calm-stillness-management",
-      },
+      { label: "Mindful Exercise Management", href: "/mindful-exercise-management" },
+      { label: "Calm & Stillness Management", href: "/calm-stillness-management" },
+      { label: "Journal Management", href: "/journal-management" },
     ],
   },
   {
@@ -47,10 +41,6 @@ const navigationSections: NavigationSection[] = [
       { label: "Sage AI Settings", href: "/sage-ai-settings" },
       { label: "Notifications", href: "/notifications" },
     ],
-  },
-  {
-    title: "Access",
-    items: [{ label: "Journal Management", href: "/journal-management" }],
   },
   {
     title: "System",

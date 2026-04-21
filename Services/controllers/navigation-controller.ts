@@ -1,7 +1,4 @@
-import {
-  getNavigationItems,
-  getNavigationSections,
-} from "@/Services/services/navigation-service";
+import { getNavigationItems, getNavigationSections } from "@/Services/services/navigation-service";
 
 export function getNavigationPayload() {
   return {

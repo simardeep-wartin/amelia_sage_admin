@@ -1,4 +1,4 @@
-import type { AuthResponse, LoginRequest, SignupRequest } from "@/Services/models/auth-model";
+import type { AuthResponse, SignInRequest, SignupRequest } from "@/Services/models/auth-model";
 
 type ApiError = {
   message?: string;
@@ -21,7 +21,7 @@ async function parseError(response: Response): Promise<string> {
   }
 }
 
-export async function loginApi(payload: LoginRequest): Promise<AuthResponse> {
+export async function loginApi(payload: SignInRequest): Promise<AuthResponse> {
   const response = await fetch(`${getApiBaseUrl()}/users/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
