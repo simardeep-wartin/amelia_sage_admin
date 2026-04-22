@@ -1,6 +1,6 @@
 "use client";
 
-import { Bars3Icon, BellIcon, MagnifyingGlassIcon, SparklesIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon, BellIcon, MagnifyingGlassIcon, UserIcon } from "@heroicons/react/24/outline";
 
 interface NavbarProps {
   title: string;
@@ -32,10 +32,10 @@ export default function Navbar({ title }: NavbarProps) {
           <BellIcon className="h-5 w-5" />
         </button>
         <button
-          className="rounded-full bg-gradient-to-b from-sage to-[#9caf88] p-2 text-white"
+          className="rounded-full bg-gradient-to-b from-sage to-[#9caf88] text-white w-8 h-8 text-center flex justify-center items-center"
           aria-label="Sage actions"
         >
-          <SparklesIcon className="h-4 w-4" />
+          <UserIcon className="h-4 w-4" />
         </button>
       </div>
     </header>
