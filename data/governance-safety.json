@@ -1,0 +1,78 @@
+{
+  "metrics": [
+    {
+      "title": "Active Safety Flag",
+      "value": "15",
+      "subtitle": "This month",
+      "iconType": "flag"
+    },
+    {
+      "title": "Resolved Cases",
+      "value": "234",
+      "subtitle": "This month",
+      "iconType": "check"
+    },
+    {
+      "title": "Privacy Compliance",
+      "value": "100%",
+      "subtitle": "Compliant",
+      "iconType": "shield"
+    }
+  ],
+  "overwhelmDetection": {
+    "description": "AI-powered detection of users showing signs of overwhelm based on aggregated, anonymized behavioral patterns.",
+    "riskLevels": [
+      { "id": "high", "label": "High Risk Level", "count": 3, "dotColor": "#fb2c36" },
+      { "id": "moderate", "label": "Moderate Risk Level", "count": 10, "dotColor": "#d6b26a" },
+      { "id": "low", "label": "Low Risk Level", "count": 53, "dotColor": "#4bb05d" }
+    ]
+  },
+  "moderationQueue": [
+    { "id": "1", "title": "User Journal Entry", "time": "2 hours ago", "status": "Pending Review" },
+    { "id": "2", "title": "Exercise Content", "time": "5 hours ago", "status": "Flagged" },
+    { "id": "3", "title": "User Feedback", "time": "1 day ago", "status": "Under Review" }
+  ],
+  "dataGovernance": {
+    "dataAnonymization": {
+      "title": "Data Anonymization",
+      "items": [
+        "Emotional data aggregation",
+        "PII encryption",
+        "Auto data purging (90 days)"
+      ]
+    },
+    "complianceChecks": {
+      "title": "Compliance Checks",
+      "items": [
+        "GDPR Compliance",
+        "HIPAA Standards",
+        "SOC 2 Certification"
+      ]
+    }
+  },
+  "ethicalAI": {
+    "description": "Ensuring Sage AI provides supportive, non-diagnostic, and ethically responsible guidance.",
+    "panels": [
+      {
+        "id": "guardrails",
+        "title": "Active Guardrails",
+        "iconType": "shield",
+        "items": [
+          "No medical/diagnostic language",
+          "Crisis intervention routing",
+          "Professional referral suggestions"
+        ]
+      },
+      {
+        "id": "monitoring",
+        "title": "Response Monitoring",
+        "iconType": "eye",
+        "items": [
+          "24/7 automated monitoring",
+          "Human review queue",
+          "Bias detection algorithms"
+        ]
+      }
+    ]
+  }
+}
