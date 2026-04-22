@@ -19,6 +19,40 @@ interface FeatureBarChartProps {
   data: FeaturePoint[];
 }
 
+// Recharts v3 doesn't hoist <defs> children into the SVG, so gradients defined
+// inside the chart are never found. Instead, each bar renders its own <defs>
+// block with a unique gradient ID scoped to that bar's x position.
+function GradientBar(props: {
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
+  index?: number;
+}) {
+  const { x = 0, y = 0, width = 0, height = 0, index = 0 } = props;
+  if (height <= 0) return null;
+  const id = `bg-${index}`;
+  return (
+    <g>
+      <defs>
+        <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#8BAA87" />
+          <stop offset="100%" stopColor="#D6B26A" />
+        </linearGradient>
+      </defs>
+      <rect
+        x={x}
+        y={y}
+        width={width}
+        height={height}
+        fill={`url(#${id})`}
+        rx={2}
+        ry={2}
+      />
+    </g>
+  );
+}
+
 export default function FeatureBarChart({ data }: FeatureBarChartProps) {
   return (
     <div className="h-[300px] w-full">
@@ -28,13 +62,6 @@ export default function FeatureBarChart({ data }: FeatureBarChartProps) {
           margin={{ top: 8, right: 8, left: 8, bottom: 8 }}
           barCategoryGap="50%"
         >
-          <defs>
-            <linearGradient id="featureBarGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#8BAA87" />
-              <stop offset="100%" stopColor="#D6B26A" />
-            </linearGradient>
-          </defs>
-
           <CartesianGrid
             strokeDasharray="4 4"
             stroke="#E5E7EB"
@@ -68,13 +95,15 @@ export default function FeatureBarChart({ data }: FeatureBarChartProps) {
               fontSize: "13px",
             }}
             labelStyle={{ color: "#2B2B2B", fontWeight: 500 }}
-            formatter={(value: number) => [value.toLocaleString(), "Sessions"]}
+            formatter={(value) => [
+              typeof value === "number" ? value.toLocaleString() : value,
+              "Sessions",
+            ]}
           />
 
           <Bar
             dataKey="sessions"
-            fill="url(#featureBarGrad)"
-            radius={[2, 2, 0, 0]}
+            shape={<GradientBar />}
             maxBarSize={90}
           />
         </BarChart>
