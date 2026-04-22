@@ -21,6 +21,51 @@ import GenderInsightsCard from "@/components/demographics/GenderInsightsCard";
 const demographicsData = appData.demographicsPage;
 const demographicsTabsData = appData.demographics;
 
+/* ================= TYPES ================= */
+
+type StatItem = {
+  title: string;
+  value: string | number;
+  subtitle?: string;
+};
+
+type GroupedBar = {
+  title: string;
+  subtitle?: string;
+  categories: string[];
+  series: any[];
+  maxY?: number;
+  note?: string;
+};
+
+type ProgressData = {
+  title: string;
+  subtitle?: string;
+  items: any[];
+};
+
+type DonutData = {
+  title: string;
+  subtitle?: string;
+  items: any[];
+  lastUpdated?: string;
+};
+
+type InsightsData = {
+  title: string;
+  groups: any[];
+};
+
+type ActiveTabData = {
+  stats?: StatItem[];
+  groupedBar: GroupedBar;
+  progress?: ProgressData;
+  conversion?: ProgressData;
+  donut?: DonutData;
+  insights?: InsightsData;
+};
+
+/* ================= CONFIG ================= */
 
 const ICON_MAP = {
   flag: "/auth/multipleUser.svg",
@@ -29,12 +74,14 @@ const ICON_MAP = {
 };
 
 type IconKey = keyof typeof ICON_MAP;
+
 type DemographicTab =
   | "Overview"
   | "Gender Identity"
   | "Cultural Identity"
   | "Ethnicity"
   | "Wellness Needs";
+
 const DEMOGRAPHIC_TABS: readonly DemographicTab[] = [
   "Overview",
   "Gender Identity",
@@ -154,7 +201,7 @@ export default function DemographicsPage() {
           <>
             {activeData.stats?.length ? (
               <div className="grid grid-cols-1 gap-3 m:grid-cols-2 l:grid-cols-6">
-                {activeData.stats.map((item) => (
+                {activeData.stats.map((item: StatItem) => (
                   <div key={item.title} className="rounded-[4px] bg-[#F9FAFB] p-2 text-center">
                     <p className="font-sans text-[11px] text-[#6B6B6B]">{item.title}</p>
                     <p className="font-sans text-[16px] font-semibold text-[#8B7EC8]">{item.value}</p>
@@ -186,7 +233,7 @@ export default function DemographicsPage() {
           <>
             {activeData.stats?.length ? (
               <div className="grid grid-cols-1 gap-3 l:grid-cols-2">
-                {activeData.stats.map((item) => (
+                {activeData.stats.map((item: StatItem) => (
                   <div key={item.title} className="rounded-[4px] bg-[#F9FAFB] p-4 text-center">
                     <p className="font-sans text-[16px] text-[#6B6B6B]">{item.title}</p>
                     <p className="font-sans text-[44px] font-bold leading-[1] text-[#5A3FE0]">{item.value}</p>
