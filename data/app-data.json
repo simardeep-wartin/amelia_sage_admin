@@ -1,0 +1,101 @@
+{
+  "dashboard": {
+    "activeUsers": {
+      "title": "Active Users",
+      "value": "12,847",
+      "subtitle": "Active users this week",
+      "trend": "+8.3% from last week"
+    },
+    "activeUsersChart": [
+      { "label": "Mon", "value": 9800 },
+      { "label": "Tue", "value": 10350 },
+      { "label": "Wed", "value": 11200 },
+      { "label": "Thu", "value": 10920 },
+      { "label": "Fri", "value": 11860 },
+      { "label": "Sat", "value": 12250 },
+      { "label": "Sun", "value": 12847 }
+    ],
+    "progressItems": [
+      { "label": "Spiritual Growth & Faith", "value": 78, "color": "bg-[#9caf88]" },
+      { "label": "Whole Self Revival", "value": 65, "color": "bg-[#8b7ec8]" },
+      { "label": "Relationship Healing", "value": 52, "color": "bg-[#d4a574]" },
+      { "label": "Career & Leadership", "value": 71, "color": "bg-[#f59e0b]" }
+    ],
+    "quickActions": [
+      { "label": "Create New Wellth Plan", "icon": "plus", "variant": "custom", "href": "/wellth-plans" },
+      { "label": "Add Mindful Exercise", "icon": "sparkles", "variant": "custom", "href": "/mindful-exercise-management" },
+      { "label": "Add Calm & Stillness Exercise", "icon": "microphone", "variant": "custom", "href": "/calm-stillness-management" },
+      { "label": "Go to Work on Me", "icon": "arrowPath", "variant": "custom", "href": "/work-on-me-exercises" }
+    ],
+    "alerts": [
+      { "id": 1, "type": "warning", "message": "15 users flagged for overwhelm detection", "action": "Review" },
+      { "id": 2, "type": "info", "message": "3 exercises pending content review", "action": "Review" },
+      { "id": 3, "type": "error", "message": "2 audio files missing for Pilates", "action": "Review" }
+    ],
+    "coreVsFree": {
+      "core": "4,231",
+      "free": "8,616",
+      "conversionRate": "12.4%"
+    },
+    "sageAi": {
+      "totalInteractions": "123k",
+      "voiceInteractions": "8,234",
+      "chatSessions": "15,222",
+      "satisfaction": "4.7/5"
+    },
+    "sageAiImage": "/auth/sageAi.png",
+    "calmStillness": [
+      { "label": "Breathwork", "value": "6,543 sessions" },
+      { "label": "Guided Meditation", "value": "7,891 sessions" },
+      { "label": "Guided Imagery", "value": "3,456 sessions" }
+    ],
+    "calmStillnessImage": "/auth/calm.png",
+    "calmStillnessSummary": "42 Tutorials",
+    "mindfulExercises": [
+      { "label": "Yoga", "value": "8,234 sessions" },
+      { "label": "Soft Fitness", "value": "5,621 sessions" },
+      { "label": "Pilates", "value": "4,892 sessions" }
+    ],
+    "mindfulExercisesImage": "/auth/mindful.png",
+    "mindfulSummary": "81 Exercises",
+    "journalInsights": {
+      "journalsCreated": "34,567",
+      "insightsGenerated": "4,567",
+      "mostActiveTopic": "Gratitude"
+    }
+  },
+  "userInsights": {
+    "metrics": [
+      { "title": "Total Users", "value": "24,567", "trend": "+12% this month", "iconType": "users" },
+      { "title": "Goal Completion", "value": "65.7%", "trend": "+8% this week", "iconType": "target" }
+    ],
+    "featureUsage": [
+      { "feature": "Wellth Plans", "sessions": 4000 },
+      { "feature": "Work on Me Exercise", "sessions": 6000 },
+      { "feature": "Calm & Stillness Exercise", "sessions": 8200 },
+      { "feature": "Mindful Exercise", "sessions": 7500 }
+    ],
+    "demographics": {
+      "ageGroups": [
+        { "label": "18-24 year", "percentage": "38%" },
+        { "label": "25-34 year", "percentage": "29%" },
+        { "label": "45-54 year", "percentage": "22%" },
+        { "label": "55-64 year", "percentage": "22%" },
+        { "label": "65+ year", "percentage": "22%" }
+      ]
+    }
+  },
+  "governanceSafety": {
+    "metrics": [
+      { "title": "Active Safety Flag", "value": "15", "subtitle": "This month", "iconType": "flag" },
+      { "title": "Resolved Cases", "value": "234", "subtitle": "This month", "iconType": "check" }
+    ],
+    "overwhelmDetection": {
+      "description": "AI-powered detection of users showing signs of overwhelm based on aggregated, anonymized behavioral patterns.",
+      "riskLevels": [
+        { "id": "high", "label": "High Risk Level", "count": 3, "dotColor": "#fb2c36" },
+        { "id": "moderate", "label": "Moderate Risk Level", "count": 10, "dotColor": "#d6b26a" }
+      ]
+    }
+  }
+}

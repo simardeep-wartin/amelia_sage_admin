@@ -15,7 +15,9 @@ import Button from "@/components/common/Button";
 import Card from "@/components/common/Card";
 import Chart from "@/components/dashboard/Chart";
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import dashboardData from "@/data/dashboard-dummy.json";
+import appData from "@/data/app-data.json";
+
+const dashboardData = appData.dashboard;
 
 const ICONS = {
   plus: <PlusIcon className="h-4 w-4" />,

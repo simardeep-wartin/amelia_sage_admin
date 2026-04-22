@@ -4,7 +4,9 @@ import { CheckCircleIcon, FunnelIcon, UsersIcon } from "@heroicons/react/24/outl
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import Card from "@/components/common/Card";
 import FeatureBarChart from "@/components/insights/FeatureBarChart";
-import insightsData from "@/data/user-insights.json";
+import appData from "@/data/app-data.json";
+
+const insightsData = appData.userInsights;
 
 const ICON_MAP = {
   users: UsersIcon,

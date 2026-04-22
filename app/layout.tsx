@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Geist_Mono, Cormorant_Garamond } from "next/font/google";
-import Sidebar from "@/components/sidebar";
+import Sidebar from "@/components/layout/Sidebar";
 import "./globals.css";
 
 const inter = Inter({

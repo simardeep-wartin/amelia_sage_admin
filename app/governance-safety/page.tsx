@@ -3,7 +3,9 @@
 import { ArrowUpRightIcon, CheckCircleIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import Card from "@/components/common/Card";
-import data from "@/data/governance-safety.json";
+import appData from "@/data/app-data.json";
+
+const data = appData.governanceSafety;
 
 const ICON_MAP = {
   flag: ExclamationTriangleIcon,
