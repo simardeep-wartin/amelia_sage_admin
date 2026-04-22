@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import {
   BarChart,
   Bar,
@@ -20,53 +19,9 @@ interface FeatureBarChartProps {
   data: FeaturePoint[];
 }
 
-const GRADIENT_ID = "feature-bar-grad";
-
-// Recharts v3 ignores <defs> children — inject the gradient into the SVG
-// imperatively so fill="url(#...)" resolves correctly.
-function injectSvgGradient(container: HTMLDivElement) {
-  const svg = container.querySelector("svg");
-  if (!svg) return;
-
-  let defs = svg.querySelector("defs");
-  if (!defs) {
-    defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
-    svg.prepend(defs);
-  }
-
-  if (defs.querySelector(`#${GRADIENT_ID}`)) return;
-
-  const ns = "http://www.w3.org/2000/svg";
-  const grad = document.createElementNS(ns, "linearGradient");
-  grad.setAttribute("id", GRADIENT_ID);
-  grad.setAttribute("x1", "0");
-  grad.setAttribute("y1", "0");
-  grad.setAttribute("x2", "0");
-  grad.setAttribute("y2", "1");
-
-  const stop1 = document.createElementNS(ns, "stop");
-  stop1.setAttribute("offset", "0%");
-  stop1.setAttribute("stop-color", "#8BAA87");
-
-  const stop2 = document.createElementNS(ns, "stop");
-  stop2.setAttribute("offset", "100%");
-  stop2.setAttribute("stop-color", "#D6B26A");
-
-  grad.appendChild(stop1);
-  grad.appendChild(stop2);
-  defs.appendChild(grad);
-}
-
 export default function FeatureBarChart({ data }: FeatureBarChartProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // Run after every render so the gradient survives Recharts SVG recreations.
-  useEffect(() => {
-    if (containerRef.current) injectSvgGradient(containerRef.current);
-  });
-
   return (
-    <div ref={containerRef} className="h-[300px] w-full">
+    <div className="h-[300px] w-full">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           data={data}
@@ -114,8 +69,8 @@ export default function FeatureBarChart({ data }: FeatureBarChartProps) {
 
           <Bar
             dataKey="sessions"
-            fill={`url(#${GRADIENT_ID})`}
-            radius={[2, 2, 0, 0]}
+            fill="#8BAA87"
+            radius={[4, 4, 0, 0]}
             maxBarSize={90}
           />
         </BarChart>
