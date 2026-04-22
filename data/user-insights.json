@@ -1,131 +1,31 @@
 {
-  "stats": [
+  "metrics": [
     {
       "title": "Total Users",
-      "value": "24,831",
-      "subtitle": "All registered users",
-      "trend": "+12.4% this month"
+      "value": "24,567",
+      "trend": "+12% this month",
+      "iconType": "users"
     },
     {
-      "title": "New This Month",
-      "value": "3,247",
-      "subtitle": "New registrations",
-      "trend": "+6.2% vs last month"
-    },
-    {
-      "title": "Retention Rate",
-      "value": "68.4%",
-      "subtitle": "30-day retention",
-      "trend": "+2.1% this month"
-    },
-    {
-      "title": "Avg Session",
-      "value": "14m 32s",
-      "subtitle": "Per user per day",
-      "trend": "+1m 8s this week"
+      "title": "Goal Completion",
+      "value": "65.7%",
+      "trend": "+8% this week",
+      "iconType": "target"
     }
   ],
-  "userGrowth": [
-    { "label": "Jan", "value": 18200 },
-    { "label": "Feb", "value": 19100 },
-    { "label": "Mar", "value": 20450 },
-    { "label": "Apr", "value": 21200 },
-    { "label": "May", "value": 22100 },
-    { "label": "Jun", "value": 23400 },
-    { "label": "Jul", "value": 24831 }
+  "featureUsage": [
+    { "feature": "Wellth Plans", "sessions": 3500 },
+    { "feature": "Work on Me Exercise", "sessions": 5200 },
+    { "feature": "Calm & Stillness Exercise", "sessions": 8000 },
+    { "feature": "Mindful Exercise", "sessions": 7200 }
   ],
-  "userTypeBreakdown": [
-    { "name": "Core", "value": 8234, "color": "#8BAA87" },
-    { "name": "Free", "value": 13820, "color": "#D6B26A" },
-    { "name": "Trial", "value": 2777, "color": "#8B7EC8" }
-  ],
-  "engagementByDay": [
-    { "day": "Mon", "sessions": 3240 },
-    { "day": "Tue", "sessions": 3890 },
-    { "day": "Wed", "sessions": 4120 },
-    { "day": "Thu", "sessions": 3780 },
-    { "day": "Fri", "sessions": 3450 },
-    { "day": "Sat", "sessions": 2890 },
-    { "day": "Sun", "sessions": 2650 }
-  ],
-  "wellthPlanCategories": [
-    { "label": "Spiritual Growth & Faith", "value": 78, "color": "#8BAA87" },
-    { "label": "Whole Self Revival", "value": 65, "color": "#8B7EC8" },
-    { "label": "Relationship Healing", "value": 52, "color": "#D6B26A" },
-    { "label": "Career & Leadership", "value": 71, "color": "#F59E0B" }
-  ],
-  "recentUsers": [
-    {
-      "id": "U-1024",
-      "name": "Sarah Mitchell",
-      "email": "sarah.m@example.com",
-      "plan": "Core",
-      "joined": "Mar 14, 2026",
-      "lastActive": "Apr 20, 2026",
-      "status": "Active"
-    },
-    {
-      "id": "U-1023",
-      "name": "James Okafor",
-      "email": "james.ok@example.com",
-      "plan": "Free",
-      "joined": "Mar 18, 2026",
-      "lastActive": "Apr 18, 2026",
-      "status": "Active"
-    },
-    {
-      "id": "U-1022",
-      "name": "Priya Sharma",
-      "email": "priya.s@example.com",
-      "plan": "Core",
-      "joined": "Mar 20, 2026",
-      "lastActive": "Apr 10, 2026",
-      "status": "At Risk"
-    },
-    {
-      "id": "U-1021",
-      "name": "Marcus Lee",
-      "email": "marcus.l@example.com",
-      "plan": "Free",
-      "joined": "Mar 22, 2026",
-      "lastActive": "Mar 30, 2026",
-      "status": "Inactive"
-    },
-    {
-      "id": "U-1020",
-      "name": "Elena Kovacs",
-      "email": "elena.k@example.com",
-      "plan": "Core",
-      "joined": "Mar 25, 2026",
-      "lastActive": "Apr 21, 2026",
-      "status": "Active"
-    },
-    {
-      "id": "U-1019",
-      "name": "Tobias Grant",
-      "email": "tobias.g@example.com",
-      "plan": "Trial",
-      "joined": "Mar 28, 2026",
-      "lastActive": "Apr 19, 2026",
-      "status": "Active"
-    },
-    {
-      "id": "U-1018",
-      "name": "Amara Wilson",
-      "email": "amara.w@example.com",
-      "plan": "Free",
-      "joined": "Apr 1, 2026",
-      "lastActive": "Apr 15, 2026",
-      "status": "At Risk"
-    },
-    {
-      "id": "U-1017",
-      "name": "David Chen",
-      "email": "david.c@example.com",
-      "plan": "Core",
-      "joined": "Apr 3, 2026",
-      "lastActive": "Apr 22, 2026",
-      "status": "Active"
-    }
-  ]
+  "demographics": {
+    "ageGroups": [
+      { "label": "18-24 year", "percentage": "38%" },
+      { "label": "25-34 year", "percentage": "29%" },
+      { "label": "45-54 year", "percentage": "22%" },
+      { "label": "55-64 year", "percentage": "22%" },
+      { "label": "65+ year", "percentage": "22%" }
+    ]
+  }
 }
