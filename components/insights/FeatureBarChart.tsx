@@ -20,18 +20,29 @@ interface FeatureBarChartProps {
 }
 
 export default function FeatureBarChart({ data }: FeatureBarChartProps) {
+  const normalizedData = data.map((point) => ({
+    ...point,
+    sessions: Number(point.sessions) || 0,
+  }));
+
   return (
     <div className="h-[300px] w-full">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
-          data={data}
+          data={normalizedData}
           margin={{ top: 8, right: 8, left: 8, bottom: 8 }}
-          barCategoryGap="50%"
+          barCategoryGap={32}
         >
+          <defs>
+            <linearGradient id="featureUsageBarGradient" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="#8BAA87" />
+              <stop offset="100%" stopColor="#D6B26A" />
+            </linearGradient>
+          </defs>
           <CartesianGrid
             strokeDasharray="4 4"
             stroke="#E5E7EB"
-            vertical={false}
+            vertical={true}
             horizontal={true}
           />
 
@@ -69,9 +80,11 @@ export default function FeatureBarChart({ data }: FeatureBarChartProps) {
 
           <Bar
             dataKey="sessions"
-            fill="#8BAA87"
-            radius={[4, 4, 0, 0]}
-            maxBarSize={90}
+            fill="url(#featureUsageBarGradient)"
+            radius={[8, 8, 0, 0]}
+            minPointSize={4}
+            barSize={58}
+            isAnimationActive={false}
           />
         </BarChart>
       </ResponsiveContainer>

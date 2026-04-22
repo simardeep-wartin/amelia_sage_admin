@@ -2,7 +2,6 @@
 
 import {
   ArrowPathIcon,
-  ChevronDownIcon,
   ExclamationCircleIcon,
   ExclamationTriangleIcon,
   InformationCircleIcon,
@@ -13,6 +12,7 @@ import {
 import { useState } from "react";
 import Button from "@/components/common/Button";
 import Card from "@/components/common/Card";
+import FilterDropdown from "@/components/common/FilterDropdown";
 import Chart from "@/components/dashboard/Chart";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import appData from "@/data/app-data.json";
@@ -30,7 +30,6 @@ type ActionIconKey = keyof typeof ICONS;
 
 export default function DashboardPage() {
   const [activeUsersFilter, setActiveUsersFilter] = useState("This Week");
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const filterOptions = ["This Week", "Last Week", "This Month"];
 
@@ -60,42 +59,11 @@ export default function DashboardPage() {
             <Card
               title={dashboardData.activeUsers.title}
               actions={
-                <div className="relative">
-                  <button
-                    type="button"
-                    onClick={() => setIsFilterOpen((prev) => !prev)}
-                    className="inline-flex w-[148px] items-center justify-center gap-[10px] rounded-[9px] border-[0.6px] border-slate p-[10px] text-s text-charcoal cursor-pointer"
-                  >
-                    {activeUsersFilter}
-                    <ChevronDownIcon
-                      className={`h-4 w-4 shrink-0 text-slate transition-transform duration-200 ${
-                        isFilterOpen ? "rotate-180" : ""
-                      }`}
-                    />
-                  </button>
-
-                  {isFilterOpen && (
-                    <div className="absolute top-full right-0 z-20 mt-1.5 min-w-[148px] overflow-hidden rounded-[9px] border border-border bg-paper shadow-lg">
-                      {filterOptions.map((option) => (
-                        <button
-                          key={option}
-                          type="button"
-                          onClick={() => {
-                            setActiveUsersFilter(option);
-                            setIsFilterOpen(false);
-                          }}
-                          className={`w-full px-[10px] py-2.5 text-left text-s transition-colors cursor-pointer ${
-                            activeUsersFilter === option
-                              ? "bg-primary/10 font-medium text-primary"
-                              : "text-charcoal hover:bg-primary/10"
-                          }`}
-                        >
-                          {option}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                <FilterDropdown
+                  options={filterOptions}
+                  value={activeUsersFilter}
+                  onChange={setActiveUsersFilter}
+                />
               }
             >
               <div className="mb-4">
@@ -103,7 +71,7 @@ export default function DashboardPage() {
                   <p className="font-cormorant text-xxl font-bold text-charcoal">
                     {dashboardData.activeUsers.value}
                   </p>
-                  <p className="text-s text-slate">{dashboardData.activeUsers.subtitle}</p>
+                  <p className="text-s text-grey">{dashboardData.activeUsers.subtitle}</p>
                 </div>
                 <div className="mt-3 flex justify-start sm:mt-2 sm:justify-end">
                   <span className="inline-flex rounded-full bg-trendBg px-3 py-1 text-s text-trendGreen">
@@ -118,7 +86,7 @@ export default function DashboardPage() {
                 {dashboardData.progressItems.map((item) => (
                   <div key={item.label}>
                     <div className="mb-1 flex items-center justify-between text-sm">
-                      <span className="font-cormorant text-[#2d2d2d]">{item.label}</span>
+                      <span className="font-cormorant text-customBlack">{item.label}</span>
                       <span className="text-[#6b6b6b]">{item.value}%</span>
                     </div>
                     <div className="h-2 rounded-full bg-[linear-gradient(178deg,rgba(168,181,160,0.2)_0%,rgba(213,202,227,0.2)_50%,rgba(232,196,184,0.2)_100%)]">
@@ -138,24 +106,24 @@ export default function DashboardPage() {
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="flex h-[76px] items-center justify-center rounded-2xl bg-[linear-gradient(165deg,rgba(168,181,160,0.2)_0%,rgba(213,202,227,0.2)_50%,rgba(232,196,184,0.2)_100%)]">
                   <div className="text-center">
-                    <p className="font-cormorant text-xl font-bold text-[#2d2d2d]">
+                    <p className="font-cormorant text-xl font-bold text-customBlack">
                       {dashboardData.journalInsights.journalsCreated}
                     </p>
-                    <p className="text-xs font-medium text-[#6b6b6b]">Total journals created</p>
+                    <p className="text-xs font-medium text-customBlack">Total journals created</p>
                   </div>
                 </div>
                 <div className="flex h-[76px] items-center justify-center rounded-2xl bg-[linear-gradient(165deg,rgba(168,181,160,0.2)_0%,rgba(213,202,227,0.2)_50%,rgba(232,196,184,0.2)_100%)]">
                   <div className="text-center">
-                    <p className="font-cormorant text-xl font-bold text-[#2d2d2d]">
+                    <p className="font-cormorant text-xl font-bold text-customBlack">
                       {dashboardData.journalInsights.insightsGenerated}
                     </p>
-                    <p className="text-xs font-medium text-[#6b6b6b]">Insights generated</p>
+                    <p className="text-xs font-medium text-customBlack">Insights generated</p>
                   </div>
                 </div>
               </div>
               <div className="border-t border-cardBorder pt-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-[#6b6b6b]">Most active topic:</span>
+                  <span className="text-sm text-customBlack">Most active topic:</span>
                   <div className="inline-flex items-center gap-2">
                     <span className="h-[11px] w-[11px] rounded-full bg-[#d4a574]" />
                     <span className="text-sm text-charcoal">
@@ -171,13 +139,13 @@ export default function DashboardPage() {
             <div className="overflow-hidden rounded-2xl">
               <div className="grid grid-cols-[1fr_1.5fr]">
                 <div className="flex h-24 flex-col items-center justify-center bg-gradient-to-r from-primary to-gold">
-                  <p className="font-cormorant text-3xl font-bold text-[#2d2d2d]">
+                  <p className="font-cormorant text-3xl font-bold text-customBlack">
                     {dashboardData.coreVsFree.core}
                   </p>
                   <p className="text-xs font-medium text-charcoal">Core</p>
                 </div>
                 <div className="flex h-24 flex-col items-center justify-center bg-[linear-gradient(166deg,rgba(168,181,160,0.2)_0%,rgba(213,202,227,0.2)_50%,rgba(232,196,184,0.2)_100%)]">
-                  <p className="font-cormorant text-3xl font-bold text-[#2d2d2d]">
+                  <p className="font-cormorant text-3xl font-bold text-customBlack">
                     {dashboardData.coreVsFree.free}
                   </p>
                   <p className="text-xs font-medium text-slate">Free</p>
@@ -187,7 +155,7 @@ export default function DashboardPage() {
             <div className="mt-4 border-t border-cardBorder pt-3">
               <div className="flex items-center justify-between">
                 <p className="text-sm text-[#6b6b6b]">Conversion rate:</p>
-                <p className="font-cormorant text-2xl font-semibold text-[#2d2d2d]">
+                <p className="font-cormorant text-2xl font-semibold text-customBlack">
                   {dashboardData.coreVsFree.conversionRate}
                 </p>
               </div>
@@ -250,7 +218,7 @@ export default function DashboardPage() {
                 </div>
               </div>
               <div className="text-center">
-                <p className="font-cormorant text-5xl font-bold text-[#2d2d2d]">
+                <p className="font-cormorant text-5xl font-bold text-customBlack">
                   {dashboardData.sageAi.totalInteractions}
                 </p>
                 <p className="text-xs font-medium text-slate">Total Interactions</p>
@@ -272,7 +240,7 @@ export default function DashboardPage() {
               <div className="border-t border-cardBorder pt-3">
                 <div className="flex items-center justify-between">
                   <span className="text-[#6b6b6b]">Satisfaction:</span>
-                  <span className="font-medium text-[#2d2d2d]">
+                  <span className="font-medium text-customBlack">
                     {dashboardData.sageAi.satisfaction}
                   </span>
                 </div>
@@ -331,7 +299,7 @@ export default function DashboardPage() {
               {dashboardData.mindfulExercises.map((item) => (
                 <div key={item.label} className="flex justify-between">
                   <span className="text-[#6b6b6b]">{item.label}:</span>
-                  <span className="font-medium text-[#2d2d2d]">{item.value}</span>
+                  <span className="font-medium text-customBlack">{item.value}</span>
                 </div>
               ))}
               <div className="border-t border-cardBorder pt-3">

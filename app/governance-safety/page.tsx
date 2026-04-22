@@ -8,9 +8,10 @@ import appData from "@/data/app-data.json";
 const data = appData.governanceSafety;
 
 const ICON_MAP = {
-  flag: ExclamationTriangleIcon,
-  check: CheckCircleIcon,
+  flag: "/auth/multipleUser.svg",
+  check: "/auth/goal.svg",
 };
+
 type IconKey = keyof typeof ICON_MAP;
 
 // ─── Metric card ──────────────────────────────────────────────────────────────
@@ -25,13 +26,17 @@ function MetricCard({
   subtitle: string;
   iconType: string;
 }) {
-  const Icon = ICON_MAP[iconType as IconKey] ?? CheckCircleIcon;
+  const iconSrc = ICON_MAP[iconType as IconKey];
   return (
     <div className="flex flex-1 flex-col gap-4 rounded-[14px] border border-cardBorder bg-paper px-5 py-5 shadow-sm">
       <p className="text-m font-medium text-charcoal">{title}</p>
       <div className="flex items-center gap-4">
         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(135deg,rgba(168,181,160,0.2)_0%,rgba(213,202,227,0.2)_50%,rgba(232,196,184,0.2)_100%)]">
-          <Icon className="h-6 w-6 text-charcoal/60" />
+          <img
+            src={iconSrc}
+            alt="icon"
+            className="h-6 w-6"
+          />
         </div>
         <div>
           <p className="text-2xl font-bold leading-tight text-charcoal">{value}</p>
@@ -73,7 +78,11 @@ function RiskRow({
       >
         Review Cases
         <span className="flex h-6 w-6 items-center justify-center rounded-full bg-paper shadow-sm">
-          <ArrowUpRightIcon className="h-3.5 w-3.5 text-charcoal/70" />
+          <img
+            src="/auth/goal.svg"
+            alt="goal icon"
+            className="h-3.5 w-3.5"
+          />
         </span>
       </button>
     </div>
@@ -88,7 +97,7 @@ export default function GovernanceSafetyPage() {
         {/* Breadcrumb */}
         <div className="flex flex-col gap-1">
           <h1 className="text-l font-medium text-charcoal">Governance &amp; Safety</h1>
-          <p className="text-s text-slate">Dashboard / Overview / Governance &amp; Safety</p>
+          <p className="text-s text-grey">Dashboard / Overview / Governance &amp; Safety</p>
         </div>
 
         {/* ── 2 Metric Cards ──────────────────────────────────────────────── */}
@@ -117,7 +126,7 @@ export default function GovernanceSafetyPage() {
             </button>
           }
         >
-          <p className="mb-4 text-s text-slate">
+          <p className="mb-4 text-s text-grey">
             {data.overwhelmDetection.description}
           </p>
           <div className="space-y-3">

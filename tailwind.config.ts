@@ -12,6 +12,8 @@ const config: Config = {
       },
       colors: {
         primary: "#8BAA87",
+        customBlack:"#2D2D2D",
+        grey:"#6B6B6B",
         primaryHover: "#7F9F7B",
         gold: "#D6B26A",
         softstone: "#F7F5F2",
@@ -33,6 +35,7 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-inter)", "Arial", "sans-serif"],
         cormorant: ["var(--font-cormorant)", "serif"],
+        arial: ["Arial", "sans-serif"],
       },
       fontSize: {
         xs: ["12px", { lineHeight: "1.3" }],

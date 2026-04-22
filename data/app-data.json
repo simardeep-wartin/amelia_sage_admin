@@ -85,6 +85,300 @@
       ]
     }
   },
+  "demographics": {
+    "gender_identity": {
+      "conversion": {
+        "title": "Core Conversion by Gender",
+        "subtitle": "Gender-specific conversion rates to core membership",
+        "color": "#9B7A42",
+        "items": [
+          { "label": "Women", "value": 30.4, "detail": "22.6K users • 6.9K core members" },
+          { "label": "Men", "value": 32.8, "detail": "18.4K users • 6.0K core members" },
+          { "label": "Non-binary", "value": 32.8, "detail": "8.4K users • 2.8K core members" },
+          { "label": "Prefer not to say", "value": 33.9, "detail": "4.2K users • 1.4K core members" },
+          { "label": "Other", "value": 34.7, "detail": "2.9K users • 1.0K core members" }
+        ]
+      },
+      "insights": {
+        "title": "Gender & Age Group Insights",
+        "groups": [
+          {
+            "title": "Women",
+            "rows": [
+              { "label": "18-24", "value": "14.2K (63%)", "progress": 63 },
+              { "label": "25-34", "value": "12.8K (57%)", "progress": 57 },
+              { "label": "35-44", "value": "9.6K (43%)", "progress": 43 },
+              { "label": "45+", "value": "8.9K (39%)", "progress": 39 }
+            ]
+          },
+          {
+            "title": "Men",
+            "rows": [
+              { "label": "18-24", "value": "7.8K (42%)", "progress": 42 },
+              { "label": "25-34", "value": "8.6K (47%)", "progress": 47 },
+              { "label": "35-44", "value": "9.1K (49%)", "progress": 49 },
+              { "label": "45+", "value": "8.5K (46%)", "progress": 46 }
+            ]
+          },
+          {
+            "title": "Non-binary",
+            "rows": [
+              { "label": "18-24", "value": "1.2K (28%)", "progress": 28 },
+              { "label": "25-34", "value": "1.7K (40%)", "progress": 40 },
+              { "label": "35-44", "value": "1.9K (45%)", "progress": 45 },
+              { "label": "45+", "value": "1.6K (38%)", "progress": 38 }
+            ]
+          }
+        ]
+      },
+      "groupedBar": {
+        "title": "Age Distribution by Gender Identity",
+        "subtitle": "Diverse representation across ethnicities with focus on key age groups",
+        "maxY": 4000,
+        "series": [
+          { "key": "female", "label": "Female", "color": "#8B7EC8" },
+          { "key": "male", "label": "Male", "color": "#9CAF88" },
+          { "key": "nonBinary", "label": "Non-binary", "color": "#D4A574" },
+          { "key": "preferNot", "label": "Prefer not to say", "color": "#F59E0B" }
+        ],
+        "categories": [
+          { "label": "18-24", "female": 1200, "male": 210, "nonBinary": 90, "preferNot": 60 },
+          { "label": "25-34", "female": 3900, "male": 520, "nonBinary": 240, "preferNot": 170 },
+          { "label": "35-44", "female": 2850, "male": 420, "nonBinary": 280, "preferNot": 150 },
+          { "label": "45-54", "female": 1550, "male": 230, "nonBinary": 120, "preferNot": 80 },
+          { "label": "55-64", "female": 340, "male": 60, "nonBinary": 36, "preferNot": 20 },
+          { "label": "65+", "female": 90, "male": 20, "nonBinary": 10, "preferNot": 8 }
+        ]
+      }
+    },
+    "cultural_identity": {
+      "stats": [
+        { "title": "Black or African American", "value": "+26.9%" },
+        { "title": "White", "value": "+27.0%" },
+        { "title": "Asian", "value": "+27.2%" },
+        { "title": "Native American or Alaska Native", "value": "+29.8%" },
+        { "title": "Native Hawaiian or Pacific Islanders", "value": "+30.6%" },
+        { "title": "All Others", "value": "+42.1%" }
+      ],
+      "progress": {
+        "title": "Core Conversion by Cultural Identity",
+        "subtitle": "Conversion rates across cultural groups",
+        "color": "#A6A46A",
+        "items": [
+          { "label": "Black or African American", "value": 35.2, "detail": "997 Core of 2,834 total" },
+          { "label": "White", "value": 33.8, "detail": "830 Core of 2,456 total" },
+          { "label": "Asian", "value": 36.4, "detail": "777 Core of 2,134 total" },
+          { "label": "Native American or Alaska Native", "value": 31.2, "detail": "590 Core of 1,890 total" },
+          { "label": "Native Hawaiian or Pacific Islander", "value": 34.6, "detail": "427 Core of 1,234 total" },
+          { "label": "Others", "value": 37.1, "detail": "366 Core of 987 total" }
+        ]
+      },
+      "groupedBar": {
+        "title": "Age Distribution Across Cultural Identities",
+        "subtitle": "Age ranges for top cultural groups",
+        "note": "Key Insight: The 25-34 age range dominates across all cultural identities, representing 39-41% of each group. This suggests consistent appeal across diverse cultural backgrounds.",
+        "maxY": 4200,
+        "series": [
+          { "key": "blackAfricanAmerican", "label": "Black or African American", "color": "#8B7EC8" },
+          { "key": "white", "label": "White", "color": "#9CAF88" },
+          { "key": "asian", "label": "Asian", "color": "#D4A574" },
+          { "key": "nativeAmericanAlaska", "label": "Native American or Alaska Native", "color": "#F59E0B" },
+          { "key": "nativeHawaiianPacific", "label": "Native Hawaiian or Pacific Islander", "color": "#C8B28A" },
+          { "key": "others", "label": "Others", "color": "#6B6B6B" }
+        ],
+        "categories": [
+          { "label": "18-24", "blackAfricanAmerican": 1200, "white": 210, "asian": 70, "nativeAmericanAlaska": 60, "nativeHawaiianPacific": 40, "others": 20 },
+          { "label": "25-34", "blackAfricanAmerican": 3950, "white": 520, "asian": 250, "nativeAmericanAlaska": 180, "nativeHawaiianPacific": 120, "others": 90 },
+          { "label": "35-44", "blackAfricanAmerican": 2850, "white": 420, "asian": 290, "nativeAmericanAlaska": 150, "nativeHawaiianPacific": 110, "others": 80 },
+          { "label": "45-54", "blackAfricanAmerican": 1550, "white": 230, "asian": 130, "nativeAmericanAlaska": 90, "nativeHawaiianPacific": 70, "others": 50 },
+          { "label": "55-64", "blackAfricanAmerican": 320, "white": 90, "asian": 55, "nativeAmericanAlaska": 42, "nativeHawaiianPacific": 29, "others": 19 },
+          { "label": "65+", "blackAfricanAmerican": 80, "white": 36, "asian": 22, "nativeAmericanAlaska": 16, "nativeHawaiianPacific": 12, "others": 10 }
+        ]
+      }
+    },
+    "ethnicity": {
+      "stats": [
+        { "title": "Majority Group", "value": "Hispanic/ Latina", "subtitle": "78% of total users" },
+        { "title": "Undisclosed Users", "value": "18%", "subtitle": "Combination of \"Self-describe\" and \"Not to say\"" }
+      ],
+      "donut": {
+        "title": "Ethnicity Distribution",
+        "lastUpdated": "Real-time",
+        "items": [
+          { "label": "Yes (Hispanic/ Latina)", "value": 10020, "percentage": "78%", "color": "#8B7EC8", "chartValue": 78 },
+          { "label": "No", "value": 1542, "percentage": "12%", "color": "#9CAF88", "chartValue": 12 },
+          { "label": "Prefer to self describe", "value": 771, "percentage": "6%", "color": "#D4A574", "chartValue": 6 },
+          { "label": "Prefer not to say", "value": 514, "percentage": "4%", "color": "#F59E0B", "chartValue": 4 }
+        ]
+      },
+      "progress": {
+        "title": "Response Breakdown",
+        "color": "#7B5A98",
+        "items": [
+          { "label": "Hispanic/ Latina (Yes)", "value": 78 },
+          { "label": "No", "value": 4 },
+          { "label": "Prefer to self describe", "value": 6 },
+          { "label": "Prefer not to say", "value": 6 }
+        ]
+      }
+    },
+    "wellness_needs": {
+      "donut": {
+        "title": "Wellness Support Needs Distribution",
+        "subtitle": "Primary wellness areas users seek support with • 10,180 users tracked",
+        "lastUpdated": "Real-time",
+        "items": [
+          { "label": "Spiritual Growth and Faith", "value": 10020, "percentage": "78%", "color": "#8B7EC8", "chartValue": 78 },
+          { "label": "Whole Self Revival", "value": 1542, "percentage": "12%", "color": "#9CAF88", "chartValue": 12 },
+          { "label": "Relationship Healing", "value": 771, "percentage": "6%", "color": "#D4A574", "chartValue": 6 },
+          { "label": "Career and Leadership", "value": 514, "percentage": "4%", "color": "#F59E0B", "chartValue": 4 }
+        ]
+      },
+      "progress": {
+        "title": "Wellness Journey Progress",
+        "subtitle": "How users progress through their wellness goals",
+        "color": "#8BAA87",
+        "items": [
+          { "label": "Active Progress", "value": 67.3, "detail": "Users making weekly progress on their wellness goals", "color": "#8BAA87" },
+          { "label": "Goal Achievement", "value": 42.8, "detail": "Users who completed at least one wellness goal", "color": "#4B5CC4" },
+          { "label": "Avg Goals Completed", "value": 3.7, "detail": "Per active user over the selected period", "color": "#2B2B2B" }
+        ]
+      }
+    }
+  },
+  "demographicsPage": {
+    "header": {
+      "title": "User Demographics",
+      "breadcrumb": "Dashboard / User Data / Demographics",
+      "exportButtonLabel": "Export Report"
+    },
+    "metrics": [
+      {
+        "title": "Total Users",
+        "value": "12,847",
+        "subtitle": "+234 this month",
+        "iconType": "users"
+      },
+      {
+        "title": "New This Month",
+        "value": "234",
+        "subtitle": "9.6% growth",
+        "iconType": "check"
+      },
+      {
+        "title": "Average Age",
+        "value": "34 - 35",
+        "subtitle": "years old",
+        "iconType": "trend"
+      }
+    ],
+    "tabs": [
+      "Overview",
+      "Gender Identity",
+      "Cultural Identity",
+      "Ethnicity",
+      "Wellness Needs"
+    ],
+    "genderDistribution": {
+      "title": "Gender Identity Distribution",
+      "lastUpdated": "Real-time",
+      "items": [
+        { "label": "Woman", "value": 10020, "percentage": "78%", "color": "#8B7EC8", "chartValue": 78 },
+        { "label": "Man", "value": 10020, "percentage": "78%", "color": "#6C6C6C", "chartValue": 0 },
+        { "label": "Non-binary", "value": 1542, "percentage": "12%", "color": "#9CAF88", "chartValue": 12 },
+        { "label": "Prefer not to say", "value": 771, "percentage": "6%", "color": "#D4A574", "chartValue": 6 },
+        { "label": "Other", "value": 514, "percentage": "4%", "color": "#F59E0B", "chartValue": 4 }
+      ]
+    },
+    "culturalDistribution": {
+      "title": "Cultural Identity Distribution",
+      "subtitle": "12 distinct cultural identities represented • 12,847 total users",
+      "lastUpdated": "Real-time",
+      "items": [
+        { "group": "Black or African American", "users": 2400 },
+        { "group": "Native Hawaiian or Pacific Islander", "users": 2000 },
+        { "group": "Native American or Alaska Native", "users": 1200 },
+        { "group": "Asian", "users": 950 },
+        { "group": "White", "users": 820 },
+        { "group": "Others", "users": 420 }
+      ],
+      "highlights": [
+        {
+          "title": "Largest Group",
+          "label": "African American",
+          "detail": "2,834 users (22.1%)",
+          "bgColor": "#FAF5FF",
+          "textColor": "#8B7EC8"
+        },
+        {
+          "title": "Least Group",
+          "label": "Asian",
+          "detail": "2,834 users (22.1%)",
+          "bgColor": "#F0FDF4",
+          "textColor": "#9CAF88"
+        }
+      ]
+    },
+    "growthTrend": {
+      "title": "Demographics Growth Trend",
+      "subtitle": "User growth by top wellness needs over time",
+      "filters": [
+        { "label": "This Month", "options": ["This Month", "Last Month", "This Year"] },
+        { "label": "Gender", "options": ["Gender", "Women", "Men", "Non-binary"] }
+      ],
+      "series": [
+        {
+          "month": "Jul",
+          "spiritualGrowthFaith": 420,
+          "wholeSelfRevival": 280,
+          "relationshipHealing": 320,
+          "careerLeadership": 620
+        },
+        {
+          "month": "Aug",
+          "spiritualGrowthFaith": 500,
+          "wholeSelfRevival": 320,
+          "relationshipHealing": 360,
+          "careerLeadership": 700
+        },
+        {
+          "month": "Sep",
+          "spiritualGrowthFaith": 640,
+          "wholeSelfRevival": 400,
+          "relationshipHealing": 480,
+          "careerLeadership": 850
+        },
+        {
+          "month": "Oct",
+          "spiritualGrowthFaith": 820,
+          "wholeSelfRevival": 520,
+          "relationshipHealing": 650,
+          "careerLeadership": 1050
+        },
+        {
+          "month": "Nov",
+          "spiritualGrowthFaith": 1200,
+          "wholeSelfRevival": 700,
+          "relationshipHealing": 860,
+          "careerLeadership": 1420
+        },
+        {
+          "month": "Dec",
+          "spiritualGrowthFaith": 1680,
+          "wholeSelfRevival": 900,
+          "relationshipHealing": 1200,
+          "careerLeadership": 1820
+        },
+        {
+          "month": "Jan",
+          "spiritualGrowthFaith": 2850,
+          "wholeSelfRevival": 1800,
+          "relationshipHealing": 2350,
+          "careerLeadership": 3000
+        }
+      ]
+    }
+  },
   "governanceSafety": {
     "metrics": [
       { "title": "Active Safety Flag", "value": "15", "subtitle": "This month", "iconType": "flag" },

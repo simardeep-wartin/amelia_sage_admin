@@ -35,7 +35,11 @@ export default function Navbar({ title }: NavbarProps) {
           className="rounded-full bg-gradient-to-b from-sage to-[#9caf88] text-white w-8 h-8 text-center flex justify-center items-center"
           aria-label="Sage actions"
         >
-          <UserIcon className="h-4 w-4" />
+          <img
+          src="/auth/user.svg"
+          alt="icon"
+          className="h-4 w-4"
+        />
         </button>
       </div>
     </header>

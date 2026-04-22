@@ -22,7 +22,7 @@ export default function UserInsightsPage() {
         {/* Page title + breadcrumb — matches Figma heading section */}
         <div className="flex flex-col gap-1">
           <h1 className="text-l font-medium text-charcoal">User Insights</h1>
-          <p className="text-s text-slate">Dashboard / Overview / User Insights</p>
+          <p className="text-s text-grey">Dashboard / Overview / User Insights</p>
         </div>
 
         {/* Metric Cards — 2-col on sm+, stacked on mobile */}
@@ -54,15 +54,6 @@ export default function UserInsightsPage() {
         {/* Feature Usage Breakdown — full-width bar chart with filter icon */}
         <Card
           title="Feature Usage Breakdown"
-          actions={
-            <button
-              type="button"
-              className="text-slate transition-colors hover:text-charcoal"
-              aria-label="Filter"
-            >
-              <FunnelIcon className="h-5 w-5" />
-            </button>
-          }
         >
           <FeatureBarChart data={insightsData.featureUsage} />
         </Card>
@@ -74,7 +65,7 @@ export default function UserInsightsPage() {
             <div className="space-y-2">
               {insightsData.demographics.ageGroups.map((group) => (
                 <div key={group.label} className="flex items-center justify-between">
-                  <span className="text-s text-slate">{group.label}</span>
+                  <span className="text-s text-grey">{group.label}</span>
                   <span className="font-cormorant text-m font-semibold text-charcoal">
                     {group.percentage}
                   </span>
