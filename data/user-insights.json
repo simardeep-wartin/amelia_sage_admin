@@ -14,10 +14,10 @@
     }
   ],
   "featureUsage": [
-    { "feature": "Wellth Plans", "sessions": 3500 },
-    { "feature": "Work on Me Exercise", "sessions": 5200 },
-    { "feature": "Calm & Stillness Exercise", "sessions": 8000 },
-    { "feature": "Mindful Exercise", "sessions": 7200 }
+    { "feature": "Wellth Plans", "sessions": 4000 },
+    { "feature": "Work on Me Exercise", "sessions": 6000 },
+    { "feature": "Calm & Stillness Exercise", "sessions": 8200 },
+    { "feature": "Mindful Exercise", "sessions": 7500 }
   ],
   "demographics": {
     "ageGroups": [
