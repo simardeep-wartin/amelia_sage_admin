@@ -1,7 +1,6 @@
 "use client";
 
 import Card from "@/components/common/Card";
-import { FunnelIcon } from "@heroicons/react/24/outline";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 
 interface DistributionItem {
@@ -33,7 +32,7 @@ export default function DonutDistributionCard({
       className="h-full"
       actions={
         <button type="button" className="text-slate transition-colors hover:text-charcoal" aria-label="Filter">
-          <FunnelIcon className="h-5 w-5" />
+          <img src="/auth/filter.svg" alt="icon" className="h-6 w-6" />
         </button>
       }
     >

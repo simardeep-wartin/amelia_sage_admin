@@ -10,8 +10,8 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const VARIANT_STYLES: Record<ButtonVariant, string> = {
-  solid: "border border-primary bg-primary text-white shadow-sm hover:bg-primaryHover hover:shadow-md",
-  outline: "border border-primary bg-paper text-primary hover:bg-gold/10 hover:shadow-sm",
+  solid: "border border-sageGreen bg-sageGreen text-white shadow-sm hover:bg-primaryHover hover:shadow-md",
+  outline: "border border-sageGreen bg-paper text-sageGreen hover:bg-gold/10 hover:shadow-sm",
   ghost: "border border-transparent bg-transparent text-charcoal",
   custom: "",
 };
@@ -24,7 +24,7 @@ export default function Button({
   children,
   ...props
 }: ButtonProps) {
-  const classes = `inline-flex h-11 items-center justify-center gap-2 rounded-lg px-4 text-s font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50 ${VARIANT_STYLES[variant]} ${className}`;
+  const classes = `inline-flex h-11 items-center justify-center gap-2 rounded-lg px-4 text-s font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sageGreen disabled:cursor-not-allowed disabled:opacity-50 ${VARIANT_STYLES[variant]} ${className}`;
 
   if (href) {
     return (

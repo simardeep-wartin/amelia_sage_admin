@@ -43,7 +43,7 @@ export default function SignInForm({ onSuccessRedirectTo = "/dashboard" }: SignI
   return (
     <div className="w-full flex flex-col gap-10">
       <div>
-        <h1 className="inline-block bg-gradient-to-r from-primary to-gold bg-clip-text font-cormorant text-xxxl font-semibold tracking-normal text-transparent">
+        <h1 className="inline-block bg-gradient-to-r from-sageGreen to-gold bg-clip-text font-cormorant text-xxxl font-semibold tracking-normal text-transparent">
           Amelia Sage
         </h1>
         <p className="mt-4 text-l font-semibold text-gold">Admin Sign in</p>

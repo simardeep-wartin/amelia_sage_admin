@@ -18,7 +18,7 @@ export default function Button({
   const isDisabled = disabled || isLoading;
 
   const base =
-    "h-12 w-full rounded-[20px] bg-primary text-white text-m font-semibold transition" +
+    "h-12 w-full rounded-[20px] bg-sageGreen text-white text-m font-semibold transition" +
     " hover:bg-primaryHover active:brightness-95" +
     " focus:outline-none focus:ring-2 focus:ring-gold/30 focus:ring-offset-2" +
     " disabled:cursor-not-allowed disabled:opacity-70";

@@ -1,7 +1,6 @@
 "use client";
 
 import Card from "@/components/common/Card";
-import { FunnelIcon } from "@heroicons/react/24/outline";
 import {
   Bar,
   BarChart,
@@ -50,7 +49,7 @@ export default function CulturalDistributionCard({
           className="text-slate transition-colors hover:text-charcoal"
           aria-label="Filter cultural distribution"
         >
-          <FunnelIcon className="h-5 w-5" />
+          <img src="/auth/filter.svg" alt="icon" className="h-6 w-6" />
         </button>
       }
     >

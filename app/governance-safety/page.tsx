@@ -8,8 +8,8 @@ import appData from "@/data/app-data.json";
 const data = appData.governanceSafety;
 
 const ICON_MAP = {
-  flag: "/auth/multipleUser.svg",
-  check: "/auth/goal.svg",
+  flag: "/auth/exclamationTriangle.svg",
+  check: "/auth/circleTick.svg",
 };
 
 type IconKey = keyof typeof ICON_MAP;
@@ -28,7 +28,7 @@ function MetricCard({
 }) {
   const iconSrc = ICON_MAP[iconType as IconKey];
   return (
-    <div className="flex flex-1 flex-col gap-4 rounded-[14px] border border-cardBorder bg-paper px-5 py-5 shadow-sm">
+    <div className="flex flex-1 flex-col gap-4 rounded-[14px] border border-cardBorder bg-paper px-5 h-[125px] flex flex col justify-center shadow-sm">
       <p className="text-m font-medium text-charcoal">{title}</p>
       <div className="flex items-center gap-4">
         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(135deg,rgba(168,181,160,0.2)_0%,rgba(213,202,227,0.2)_50%,rgba(232,196,184,0.2)_100%)]">
@@ -74,7 +74,7 @@ function RiskRow({
       {/* Right: Review Cases button */}
       <button
         type="button"
-        className="flex items-center gap-2.5 text-s font-medium text-primary transition-opacity hover:opacity-70"
+        className="flex items-center gap-2.5 text-s font-medium text-sageGreen transition-opacity hover:opacity-70"
       >
         Review Cases
         <span className="flex h-6 w-6 items-center justify-center rounded-full bg-paper shadow-sm">
@@ -120,7 +120,7 @@ export default function GovernanceSafetyPage() {
             <button
               type="button"
               aria-label="View all"
-              className="flex h-6 w-6 items-center justify-center rounded-full border border-primary/30 bg-paper shadow-sm transition-opacity hover:opacity-70"
+              className="flex h-6 w-6 items-center justify-center rounded-full border border-sageGreen/30 bg-paper shadow-sm transition-opacity hover:opacity-70"
             >
               <ArrowUpRightIcon className="h-3.5 w-3.5 text-charcoal/70" />
             </button>

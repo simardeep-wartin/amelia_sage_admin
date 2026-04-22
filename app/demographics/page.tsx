@@ -2,9 +2,6 @@
 
 import {
   ArrowDownTrayIcon,
-  CheckCircleIcon,
-  ArrowTrendingUpIcon,
-  UsersIcon,
 } from "@heroicons/react/24/outline";
 import { useMemo, useState } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
@@ -24,10 +21,11 @@ import GenderInsightsCard from "@/components/demographics/GenderInsightsCard";
 const demographicsData = appData.demographicsPage;
 const demographicsTabsData = appData.demographics;
 
+
 const ICON_MAP = {
-  users: UsersIcon,
-  check: CheckCircleIcon,
-  trend: ArrowTrendingUpIcon,
+  flag: "/auth/multipleUser.svg",
+  check: "/auth/circleTick.svg",
+  trend: "/auth/growth.svg",
 };
 
 type IconKey = keyof typeof ICON_MAP;
@@ -44,6 +42,7 @@ const DEMOGRAPHIC_TABS: readonly DemographicTab[] = [
   "Ethnicity",
   "Wellness Needs",
 ];
+
 
 export default function DemographicsPage() {
   const [activeTab, setActiveTab] = useState<DemographicTab>("Overview");
@@ -70,7 +69,7 @@ export default function DemographicsPage() {
           </div>
 
           <Button
-            className="h-12 w-full rounded-[8px] bg-[#8BAA87] px-6 font-sans text-[16px] font-semibold leading-[1.5] text-white hover:bg-[#7F9F7B] s:w-auto s:min-w-[184px]"
+            className="h-12 w-full rounded-[8px] bg-sageGreen px-6 font-sans text-[16px] font-semibold leading-[1.5] text-white hover:bg-[#7F9F7B] s:w-auto s:min-w-[184px]"
             leftIcon={<ArrowDownTrayIcon className="h-4 w-4" />}
           >
             {demographicsData.header.exportButtonLabel}
@@ -79,14 +78,15 @@ export default function DemographicsPage() {
 
         <div className="grid grid-cols-1 gap-4 l:grid-cols-3">
           {demographicsData.metrics.map((metric) => {
-            const Icon = ICON_MAP[metric.iconType as IconKey] ?? UsersIcon;
+            const iconSrc =
+              ICON_MAP[metric.iconType as IconKey] ?? "/auth/multipleUser.svg";
             return (
               <DemographicsMetricCard
                 key={metric.title}
                 title={metric.title}
                 value={metric.value}
                 subtitle={metric.subtitle}
-                icon={Icon}
+                icon={iconSrc}
               />
             );
           })}
@@ -142,7 +142,6 @@ export default function DemographicsPage() {
                 title={activeData.conversion.title}
                 subtitle={activeData.conversion.subtitle}
                 items={activeData.conversion.items}
-                color={activeData.conversion.color}
               />
             </div>
             <div className="min-w-0">
@@ -154,7 +153,7 @@ export default function DemographicsPage() {
         {activeTab === "Cultural Identity" ? (
           <>
             {activeData.stats?.length ? (
-              <div className="grid grid-cols-1 gap-3 m:grid-cols-2 l:grid-cols-3">
+              <div className="grid grid-cols-1 gap-3 m:grid-cols-2 l:grid-cols-6">
                 {activeData.stats.map((item) => (
                   <div key={item.title} className="rounded-[4px] bg-[#F9FAFB] p-2 text-center">
                     <p className="font-sans text-[11px] text-[#6B6B6B]">{item.title}</p>
@@ -168,7 +167,6 @@ export default function DemographicsPage() {
                 title={activeData.progress.title}
                 subtitle={activeData.progress.subtitle}
                 items={activeData.progress.items}
-                color={activeData.progress.color}
               />
             </div>
             <div className="min-w-0">
@@ -211,7 +209,6 @@ export default function DemographicsPage() {
                   title={activeData.progress.title}
                   subtitle={activeData.progress.subtitle}
                   items={activeData.progress.items}
-                  color={activeData.progress.color}
                 />
               </div>
             </div>

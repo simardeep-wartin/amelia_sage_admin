@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import Card from "@/components/common/Card";
-import { FunnelIcon } from "@heroicons/react/24/outline";
+import FilterDropdown from "@/components/common/FilterDropdown";
 
 interface ProgressItem {
   label: string;
@@ -13,41 +14,91 @@ interface ProgressBreakdownCardProps {
   title: string;
   subtitle?: string;
   items: ProgressItem[];
-  color?: string;
 }
 
 export default function ProgressBreakdownCard({
   title,
   subtitle,
   items,
-  color = "#7B5A98",
 }: ProgressBreakdownCardProps) {
+
+  // ─── Filter State ─────────────────────────────
+  const [filter, setFilter] = useState("All");
+
+  const FILTER_OPTIONS = ["All", "Top 3", "Bottom 3"];
+
+  // ─── Filter Logic ────────────────────────────
+  const filteredItems = (() => {
+    if (filter === "Top 3") {
+      return [...items].sort((a, b) => b.value - a.value).slice(0, 3);
+    }
+    if (filter === "Bottom 3") {
+      return [...items].sort((a, b) => a.value - b.value).slice(0, 3);
+    }
+    return items;
+  })();
+
   return (
     <Card
       title={title}
       className="h-full"
       actions={
-        <button type="button" className="text-slate transition-colors hover:text-charcoal" aria-label="Filter">
-          <FunnelIcon className="h-5 w-5" />
-        </button>
+        <FilterDropdown
+          options={FILTER_OPTIONS}
+          value={filter}
+          onChange={setFilter}
+        />
       }
     >
-      {subtitle ? <p className="font-sans text-[14px] font-normal leading-[1.3] text-[#6B6B6B]">{subtitle}</p> : null}
+      {/* ─── Subtitle ───────────────────────── */}
+      {subtitle && (
+        <p className="mt-1 text-s text-slate">
+          {subtitle}
+        </p>
+      )}
+
+      {/* ─── Items ─────────────────────────── */}
       <div className="mt-4 space-y-4">
-        {items.map((item) => (
+        {filteredItems.map((item) => (
           <div key={item.label}>
-            <div className="mb-1 flex items-center justify-between gap-3">
-              <p className="font-sans text-[16px] font-medium text-[#2B2B2B]">{item.label}</p>
-              <p className="font-sans text-[14px] font-semibold text-[#6B6B6B]">{item.value.toFixed(1)}%</p>
+            
+            {/* Label + Value */}
+            <div className="mb-1 flex items-center justify-between">
+              <p className="text-m font-medium text-charcoal">
+                {item.label}
+              </p>
+
+              <p className="text-m font-semibold text-sageGreen">
+                {item.value.toFixed(1)}%
+              </p>
             </div>
-            {item.detail ? <p className="mb-1 font-sans text-[11px] text-[#6B6B6B]">{item.detail}</p> : null}
-            <div className="h-2 w-full rounded-full bg-[#E5E7EB]">
-              <div className="h-2 rounded-full" style={{ width: `${item.value}%`, backgroundColor: color }} />
-            </div>
+
+            {/* Detail */}
+            {item.detail && (
+              <p className="mb-1 text-xs text-slate">
+                {item.detail}
+              </p>
+            )}
+
+            {/* Progress Bar */}
+           <div className="h-[10px] w-full rounded-full bg-[#E6E8EC] overflow-hidden">
+  <div
+    className="h-full rounded-full"
+    style={{
+      width: `${item.value}%`,
+      background:
+        "linear-gradient(90deg, #8BAA87 0%, #D6B26A 100%)",
+    }}
+  />
+</div>
           </div>
         ))}
       </div>
-      <p className="mt-3 font-arial text-[12px] leading-[16px] text-[#6B6B6B]">Last updated: Real-time</p>
+
+      {/* ─── Footer ───────────────────────── */}
+      <p className="mt-4 text-xs text-slate">
+        Last updated: Real-time
+      </p>
     </Card>
   );
 }

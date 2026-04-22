@@ -38,8 +38,8 @@ export default function FilterDropdown({ options, value, onChange, className }: 
               }}
               className={`w-full px-[10px] py-2.5 text-left text-s transition-colors cursor-pointer ${
                 value === option
-                  ? "bg-primary/10 font-medium text-primary"
-                  : "text-charcoal hover:bg-primary/10"
+                  ? "bg-sageGreen/10 font-medium text-sageGreen"
+                  : "text-charcoal hover:bg-sageGreen/10"
               }`}
             >
               {option}

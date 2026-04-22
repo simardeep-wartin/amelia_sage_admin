@@ -17,10 +17,10 @@ export default function Tabs<T extends string>({ items, activeTab, onTabChange }
               key={tab}
               type="button"
               onClick={() => onTabChange(tab)}
-              className={`border-b-2 pb-[14px] pt-[12px] font-sans text-[14px] leading-[1.3] transition-colors ${
+              className={`border-b-2 p-3 font-sans text-[14px] leading-[1.3] transition-colors cursor-pointer ${
                 isActive
-                  ? "border-[#8BAA87] font-semibold text-[#8BAA87]"
-                  : "border-transparent font-medium text-[#6B6B6B] hover:text-[#2B2B2B]"
+                  ? " font-semibold text-sageGreen bg-[#FFFFFF] rounded-t-[16px]"
+                  : "border-transparent font-medium text-[#6B6B6B] hover:text-sageGreen hover:bg-[#F9FAFB] rounded-t-[16px] hover:border-sageGreen"
               }`}
             >
               {tab}

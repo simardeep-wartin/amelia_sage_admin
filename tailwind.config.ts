@@ -11,7 +11,7 @@ const config: Config = {
         xl: "1280px",
       },
       colors: {
-        primary: "#8BAA87",
+        sageGreen: "#8BAA87",
         customBlack:"#2D2D2D",
         grey:"#6B6B6B",
         primaryHover: "#7F9F7B",

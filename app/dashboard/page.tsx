@@ -138,7 +138,7 @@ export default function DashboardPage() {
           <Card title="Core vs Free Distribution">
             <div className="overflow-hidden rounded-2xl">
               <div className="grid grid-cols-[1fr_1.5fr]">
-                <div className="flex h-24 flex-col items-center justify-center bg-gradient-to-r from-primary to-gold">
+                <div className="flex h-24 flex-col items-center justify-center bg-gradient-to-r from-sageGreen to-gold">
                   <p className="font-cormorant text-3xl font-bold text-customBlack">
                     {dashboardData.coreVsFree.core}
                   </p>
@@ -196,7 +196,7 @@ export default function DashboardPage() {
                   variant={action.variant as "solid" | "outline" | "ghost" | "custom"}
                   leftIcon={ICONS[action.icon as ActionIconKey]}
                   href={action.href}
-                  className="w-full border border-primary bg-paper text-primary hover:bg-primary hover:text-white focus-visible:ring-0"
+                  className="w-full border border-sageGreen bg-paper text-sageGreen hover:bg-sageGreen hover:text-white focus-visible:ring-0"
                 >
                   {action.label}
                 </Button>

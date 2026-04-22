@@ -8,7 +8,6 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
-import { FunnelIcon } from "@heroicons/react/24/outline";
 
 interface GenderDistributionItem {
   label: string;
@@ -41,10 +40,9 @@ export default function GenderDistributionCard({
           className="text-slate transition-colors hover:text-charcoal"
           aria-label="Filter gender distribution"
         >
-          <FunnelIcon className="h-5 w-5" />
+          <img src="/auth/filter.svg" alt="icon" className="h-6 w-6" />
         </button>
       }
-      className="h-full"
     >
       <div className="mx-auto h-[300px] w-full max-w-[300px]">
         <ResponsiveContainer width="100%" height="100%">
