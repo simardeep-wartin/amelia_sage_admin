@@ -66,7 +66,12 @@ export default function GenderDistributionCard({
               ))}
             </Pie>
             <Tooltip
-              formatter={(value: number) => [value.toLocaleString(), "Users"]}
+              formatter={(value) => {
+                if (typeof value === "number") {
+                  return [value.toLocaleString(), "Users"];
+                }
+                return [String(value ?? ""), "Users"];
+              }}
               contentStyle={{
                 border: "1px solid #F3F4F6",
                 borderRadius: "10px",
