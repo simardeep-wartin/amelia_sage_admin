@@ -173,7 +173,7 @@ export default function DemographicsPage() {
           </>
         ) : null}
 
-        {activeTab === "Gender Identity" ? (
+        {/* {activeTab === "Gender Identity" ? (
           <>
             <div className="min-w-0">
               <GroupedBarDistributionCard
@@ -280,7 +280,7 @@ export default function DemographicsPage() {
               />
             </div>
           </div>
-        ) : null}
+        ) : null} */}
       </div>
     </DashboardLayout>
   );
