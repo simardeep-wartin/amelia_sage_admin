@@ -1,35 +1,62 @@
-"use client";
+﻿"use client";
 
-import { ButtonHTMLAttributes } from "react";
+import * as React from "react";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+export type ButtonVariant = "solid" | "outline" | "ghost";
+export type ButtonSize = "sm" | "md" | "lg" | "full";
+
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
   isLoading?: boolean;
   loadingText?: string;
+  leftIcon?: React.ReactNode;
+  href?: string;
+}
+
+const variantStyles: Record<ButtonVariant, string> = {
+  solid:   "bg-sageGreen text-white shadow-sm hover:bg-primaryHover hover:shadow-md",
+  outline: "border border-sageGreen bg-paper text-sageGreen hover:bg-gold/10 hover:shadow-sm",
+  ghost:   "bg-transparent text-charcoal hover:bg-softstone",
 };
 
-export default function Button({
-  isLoading,
-  loadingText = "Loading...",
-  disabled,
-  className,
-  children,
-  ...props
-}: ButtonProps) {
-  const isDisabled = disabled || isLoading;
+const sizeStyles: Record<ButtonSize, string> = {
+  sm:   "h-8 px-3 text-xs rounded-lg",
+  md:   "h-11 px-4 text-sm rounded-lg",
+  lg:   "h-12 px-6 text-base rounded-lg",
+  full: "h-12 w-full text-base rounded-[20px]",
+};
 
-  const base =
-    "h-12 w-full rounded-[20px] bg-sageGreen text-white text-m font-semibold transition" +
-    " hover:bg-primaryHover active:brightness-95" +
-    " focus:outline-none focus:ring-2 focus:ring-gold/30 focus:ring-offset-2" +
-    " disabled:cursor-not-allowed disabled:opacity-70";
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  (
+    { variant = "solid", size = "md", isLoading, loadingText = "Loading...",
+      leftIcon, href, className, disabled, children, ...props },
+    ref,
+  ) => {
+    const isDisabled = disabled || isLoading;
+    const classes = cn(
+      "inline-flex items-center justify-center gap-2 font-semibold transition",
+      "focus:outline-none focus:ring-2 focus:ring-sageGreen/30 focus:ring-offset-2",
+      "disabled:cursor-not-allowed disabled:opacity-60",
+      variantStyles[variant],
+      sizeStyles[size],
+      className,
+    );
 
-  return (
-    <button
-      {...props}
-      disabled={isDisabled}
-      className={className ? `${base} ${className}` : base}
-    >
-      {isLoading ? loadingText : children}
-    </button>
-  );
-}
+    if (href && !isDisabled) {
+      return <Link href={href} className={classes}>{leftIcon}{children}</Link>;
+    }
+
+    return (
+      <button ref={ref} disabled={isDisabled} className={classes} type={props.type ?? "button"} {...props}>
+        {leftIcon}
+        {isLoading ? loadingText : children}
+      </button>
+    );
+  },
+);
+
+Button.displayName = "Button";
+export default Button;

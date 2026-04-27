@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import {
@@ -11,7 +11,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import FilterDropdown from "@/components/common/FilterDropdown";
+import FilterDropdown from "@/components/ui/FilterDropdown";
 
 interface GrowthTrendPoint {
   month: string;

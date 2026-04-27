@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Card from "@/components/common/Card";
 import {
@@ -12,7 +12,7 @@ import {
   YAxis,
 } from "recharts";
 import { useState } from "react";
-import FilterDropdown from "@/components/common/FilterDropdown";
+import FilterDropdown from "@/components/ui/FilterDropdown";
 
 interface SeriesConfig {
   key: string;
@@ -22,10 +22,10 @@ interface SeriesConfig {
 
 interface GroupedBarDistributionCardProps {
   title: string;
-  subtitle: string;
+  subtitle?: string;
   categories: Array<Record<string, string | number>>;
   series: SeriesConfig[];
-  maxY: number;
+  maxY?: number;
   note?: string;
 }
 
@@ -78,7 +78,7 @@ export default function GroupedBarDistributionCard({
           <BarChart data={categories} barGap={4}>
             <CartesianGrid strokeDasharray="4 4" stroke="#E5E7EB" />
             <XAxis dataKey="label" tick={{ fontSize: 11, fill: "#6C6C6C" }} />
-            <YAxis domain={[0, maxY]} tick={{ fontSize: 11, fill: "#6C6C6C" }} />
+            <YAxis domain={maxY !== undefined ? [0, maxY] : undefined} tick={{ fontSize: 11, fill: "#6C6C6C" }} />
 
             <Tooltip />
 

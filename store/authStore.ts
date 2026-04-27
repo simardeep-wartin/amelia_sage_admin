@@ -1,6 +1,6 @@
-import { create } from "zustand";
+﻿import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { AuthUser } from "@/models/authModel";
+import type { AuthUser } from "@/types/auth";
 
 type AuthState = {
   token: string | null;

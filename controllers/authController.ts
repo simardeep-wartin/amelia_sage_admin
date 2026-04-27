@@ -1,5 +1,6 @@
-import type { SignInRequest, SignInResponse } from "@/models/authModel";
-import type { AuthService } from "@/Services/authService";
+﻿import type { SignInRequest, SignInResponse } from "@/types/auth";
+import type { authService } from "@/Services/authService";
+type AuthService = typeof authService;
 
 export type AuthController = {
   login(input: SignInRequest): Promise<SignInResponse>;

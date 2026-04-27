@@ -1,8 +1,8 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import Card from "@/components/common/Card";
-import FilterDropdown from "@/components/common/FilterDropdown";
+import FilterDropdown from "@/components/ui/FilterDropdown";
 
 interface InsightRow {
   label: string;

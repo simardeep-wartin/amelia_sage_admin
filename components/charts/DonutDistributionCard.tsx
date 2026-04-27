@@ -1,15 +1,9 @@
-"use client";
+﻿"use client";
 
 import Card from "@/components/common/Card";
-import {
-  Cell,
-  Pie,
-  PieChart,
-  ResponsiveContainer,
-  Tooltip,
-} from "recharts";
+import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 
-interface GenderDistributionItem {
+interface DistributionItem {
   label: string;
   value: number;
   percentage: string;
@@ -17,34 +11,33 @@ interface GenderDistributionItem {
   chartValue?: number;
 }
 
-interface GenderDistributionCardProps {
+interface DonutDistributionCardProps {
   title: string;
-  data: GenderDistributionItem[];
+  subtitle?: string;
+  items: DistributionItem[];
   lastUpdated: string;
 }
 
-export default function GenderDistributionCard({
+export default function DonutDistributionCard({
   title,
-  data,
+  subtitle,
+  items,
   lastUpdated,
-}: GenderDistributionCardProps) {
-  const chartData = data.map((item) => ({ ...item, chartValue: item.chartValue ?? item.value }));
+}: DonutDistributionCardProps) {
+  const chartData = items.map((item) => ({ ...item, chartValue: item.chartValue ?? item.value }));
 
   return (
     <Card
       title={title}
       className="h-full"
       actions={
-        <button
-          type="button"
-          className="text-slate transition-colors hover:text-charcoal"
-          aria-label="Filter gender distribution"
-        >
+        <button type="button" className="text-slate transition-colors hover:text-charcoal" aria-label="Filter">
           <img src="/auth/filter.svg" alt="icon" className="h-6 w-6" />
         </button>
       }
     >
-      <div className="mx-auto h-[300px] w-full max-w-[300px]">
+      {subtitle ? <p className="font-sans text-[14px] font-normal leading-[1.3] text-[#6B6B6B]">{subtitle}</p> : null}
+      <div className="mx-auto mt-2 h-[300px] w-full max-w-[300px]">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
@@ -57,7 +50,6 @@ export default function GenderDistributionCard({
               outerRadius={100}
               startAngle={92}
               endAngle={-268}
-              paddingAngle={0}
               stroke="none"
               isAnimationActive={false}
             >
@@ -66,31 +58,20 @@ export default function GenderDistributionCard({
               ))}
             </Pie>
             <Tooltip
-              formatter={(value) => {
-                if (typeof value === "number") {
-                  return [value.toLocaleString(), "Users"];
-                }
-                return [String(value ?? ""), "Users"];
-              }}
-              contentStyle={{
-                border: "1px solid #F3F4F6",
-                borderRadius: "10px",
-                boxShadow: "0 4px 10px rgba(0,0,0,0.08)",
-                fontSize: "13px",
-              }}
+              formatter={(value) => [
+                typeof value === "number" ? value.toLocaleString() : String(value ?? ""),
+                "Users",
+              ]}
             />
           </PieChart>
         </ResponsiveContainer>
       </div>
-
-      <div className="mt-2 space-y-2">
-        {data.map((item) => (
+      <div className="space-y-2">
+        {items.map((item) => (
           <div key={item.label} className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <span className="h-3 w-3 rounded-full" style={{ backgroundColor: item.color }} />
-              <span className="font-arial text-[14px] font-normal leading-[20px] text-[#6B6B6B]">
-                {item.label}
-              </span>
+              <span className="font-arial text-[14px] font-normal leading-[20px] text-[#6B6B6B]">{item.label}</span>
             </div>
             <p className="font-arial text-[14px] leading-[20px] text-customBlack">
               <span className="font-medium">{item.value.toLocaleString()}</span>{" "}
@@ -99,10 +80,7 @@ export default function GenderDistributionCard({
           </div>
         ))}
       </div>
-
-      <p className="mt-3 font-arial text-[12px] leading-[16px] text-[#6B6B6B]">
-        Last updated: {lastUpdated}
-      </p>
+      <p className="mt-3 font-arial text-[12px] leading-[16px] text-[#6B6B6B]">Last updated: {lastUpdated}</p>
     </Card>
   );
 }

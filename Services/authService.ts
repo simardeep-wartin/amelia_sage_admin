@@ -1,11 +1,7 @@
-import type { SignInRequest, SignInResponse } from "@/models/authModel";
+import type { SignInRequest, SignInResponse } from "@/types/auth";
 
-export type AuthService = {
-  login(payload: SignInRequest): Promise<SignInResponse>;
-};
-
-export const authService: AuthService = {
-  async login(payload) {
+export const authService = {
+  async login(payload: SignInRequest): Promise<SignInResponse> {
     const response = await fetch("/api/auth/signin", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -13,9 +9,7 @@ export const authService: AuthService = {
     });
 
     if (!response.ok) {
-      const data = (await response.json().catch(() => null)) as {
-        message?: string;
-      } | null;
+      const data = (await response.json().catch(() => null)) as { message?: string } | null;
       throw new Error(data?.message ?? "Unable to sign in right now.");
     }
 

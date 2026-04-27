@@ -1,8 +1,8 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
-import type { SignInRequest } from "@/models/authModel";
+import type { SignInRequest } from "@/types/auth";
 import { authService } from "@/Services/authService";
 import { useAuthStore } from "@/store/authStore";
 

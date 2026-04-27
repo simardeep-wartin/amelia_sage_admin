@@ -1,20 +1,20 @@
-"use client";
+﻿"use client";
 
 import {
   ArrowDownTrayIcon,
 } from "@heroicons/react/24/outline";
 import { useMemo, useState } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import Button from "@/components/common/Button";
+import Button from "@/components/ui/Button";
 import appData from "@/data/app-data.json";
 import DemographicsMetricCard from "@/components/demographics/DemographicsMetricCard";
 import Tabs from "@/components/common/Tabs";
-import GenderDistributionCard from "@/components/demographics/GenderDistributionCard";
-import CulturalDistributionCard from "@/components/demographics/CulturalDistributionCard";
-import DemographicsGrowthTrendCard from "@/components/demographics/DemographicsGrowthTrendCard";
-import DonutDistributionCard from "@/components/demographics/DonutDistributionCard";
+import GenderDistributionCard from "@/components/charts/GenderDistributionCard";
+import CulturalDistributionCard from "@/components/charts/CulturalDistributionCard";
+import DemographicsGrowthTrendCard from "@/components/charts/DemographicsGrowthTrendCard";
+import DonutDistributionCard from "@/components/charts/DonutDistributionCard";
 import ProgressBreakdownCard from "@/components/demographics/ProgressBreakdownCard";
-import GroupedBarDistributionCard from "@/components/demographics/GroupedBarDistributionCard";
+import GroupedBarDistributionCard from "@/components/charts/GroupedBarDistributionCard";
 import WellnessJourneyCard from "@/components/demographics/WellnessJourneyCard";
 import GenderInsightsCard from "@/components/demographics/GenderInsightsCard";
 
@@ -32,7 +32,7 @@ type StatItem = {
 type GroupedBar = {
   title: string;
   subtitle?: string;
-  categories: string[];
+  categories: Array<Record<string, string | number>>;
   series: any[];
   maxY?: number;
   note?: string;
@@ -58,7 +58,7 @@ type InsightsData = {
 
 type ActiveTabData = {
   stats?: StatItem[];
-  groupedBar: GroupedBar;
+  groupedBar?: GroupedBar;
   progress?: ProgressData;
   conversion?: ProgressData;
   donut?: DonutData;
@@ -94,7 +94,7 @@ const DEMOGRAPHIC_TABS: readonly DemographicTab[] = [
 export default function DemographicsPage() {
   const [activeTab, setActiveTab] = useState<DemographicTab>("Overview");
 
-  const activeData: any = useMemo(() => {
+  const activeData: ActiveTabData | null = useMemo(() => {
     if (activeTab === "Overview") return null;
     if (activeTab === "Gender Identity") return demographicsTabsData.gender_identity;
     if (activeTab === "Cultural Identity") return demographicsTabsData.cultural_identity;
@@ -107,7 +107,8 @@ export default function DemographicsPage() {
       <div className="space-y-6">
         <div className="flex flex-col gap-4 s:flex-row s:items-center s:justify-between">
           <div className="flex flex-col gap-1">
-            <h1 className="font-arial text-[24px] font-medium leading-[32px] text-customBlack">
+            <h1 className="font-arial text-[24px] 
+            font-medium leading-[32px] text-customBlack">
               {demographicsData.header.title}
             </h1>
             <p className="font-arial text-[14px] leading-[20px] text-[#6B6B6B]">
@@ -173,31 +174,31 @@ export default function DemographicsPage() {
           </>
         ) : null}
 
-        {/* {activeTab === "Gender Identity" ? (
+        {activeTab === "Gender Identity" && activeData ? (
           <>
             <div className="min-w-0">
               <GroupedBarDistributionCard
-                title={activeData.groupedBar.title}
-                subtitle={activeData.groupedBar.subtitle}
-                categories={activeData.groupedBar.categories}
-                series={activeData.groupedBar.series}
-                maxY={activeData.groupedBar.maxY}
+                title={activeData.groupedBar!.title}
+                subtitle={activeData.groupedBar!.subtitle}
+                categories={activeData.groupedBar!.categories}
+                series={activeData.groupedBar!.series}
+                maxY={activeData.groupedBar!.maxY}
               />
             </div>
             <div className="min-w-0">
               <ProgressBreakdownCard
-                title={activeData.conversion.title}
-                subtitle={activeData.conversion.subtitle}
-                items={activeData.conversion.items}
+                title={activeData.conversion!.title}
+                subtitle={activeData.conversion!.subtitle}
+                items={activeData.conversion!.items}
               />
             </div>
             <div className="min-w-0">
-              <GenderInsightsCard title={activeData.insights.title} groups={activeData.insights.groups} />
+              <GenderInsightsCard title={activeData.insights!.title} groups={activeData.insights!.groups} />
             </div>
           </>
         ) : null}
 
-        {activeTab === "Cultural Identity" ? (
+        {activeTab === "Cultural Identity" && activeData ? (
           <>
             {activeData.stats?.length ? (
               <div className="grid grid-cols-1 gap-3 m:grid-cols-2 l:grid-cols-6">
@@ -211,25 +212,25 @@ export default function DemographicsPage() {
             ) : null}
             <div className="min-w-0">
               <ProgressBreakdownCard
-                title={activeData.progress.title}
-                subtitle={activeData.progress.subtitle}
-                items={activeData.progress.items}
+                title={activeData.progress!.title}
+                subtitle={activeData.progress!.subtitle}
+                items={activeData.progress!.items}
               />
             </div>
             <div className="min-w-0">
               <GroupedBarDistributionCard
-                title={activeData.groupedBar.title}
-                subtitle={activeData.groupedBar.subtitle}
-                categories={activeData.groupedBar.categories}
-                series={activeData.groupedBar.series}
-                maxY={activeData.groupedBar.maxY}
-                note={activeData.groupedBar.note}
+                title={activeData.groupedBar!.title}
+                subtitle={activeData.groupedBar!.subtitle}
+                categories={activeData.groupedBar!.categories}
+                series={activeData.groupedBar!.series}
+                maxY={activeData.groupedBar!.maxY}
+                note={activeData.groupedBar!.note}
               />
             </div>
           </>
         ) : null}
 
-        {activeTab === "Ethnicity" ? (
+        {activeTab === "Ethnicity" && activeData ? (
           <>
             {activeData.stats?.length ? (
               <div className="grid grid-cols-1 gap-3 l:grid-cols-2">
@@ -245,42 +246,42 @@ export default function DemographicsPage() {
             <div className="grid grid-cols-1 gap-4 l:grid-cols-2">
               <div className="min-w-0">
                 <DonutDistributionCard
-                  title={activeData.donut.title}
-                  subtitle={activeData.donut.subtitle}
-                  items={activeData.donut.items}
-                  lastUpdated={activeData.donut.lastUpdated}
+                  title={activeData.donut!.title}
+                  subtitle={activeData.donut!.subtitle}
+                  items={activeData.donut!.items}
+                  lastUpdated={activeData.donut!.lastUpdated ?? ""}
                 />
               </div>
               <div className="min-w-0">
                 <ProgressBreakdownCard
-                  title={activeData.progress.title}
-                  subtitle={activeData.progress.subtitle}
-                  items={activeData.progress.items}
+                  title={activeData.progress!.title}
+                  subtitle={activeData.progress!.subtitle}
+                  items={activeData.progress!.items}
                 />
               </div>
             </div>
           </>
         ) : null}
 
-        {activeTab === "Wellness Needs" ? (
+        {activeTab === "Wellness Needs" && activeData ? (
           <div className="grid grid-cols-1 gap-4 l:grid-cols-2">
             <div className="min-w-0">
               <DonutDistributionCard
-                title={activeData.donut.title}
-                subtitle={activeData.donut.subtitle}
-                items={activeData.donut.items}
-                lastUpdated={activeData.donut.lastUpdated}
+                title={activeData.donut!.title}
+                subtitle={activeData.donut!.subtitle}
+                items={activeData.donut!.items}
+                lastUpdated={activeData.donut!.lastUpdated ?? ""}
               />
             </div>
             <div className="min-w-0">
               <WellnessJourneyCard
-                title={activeData.progress.title}
-                subtitle={activeData.progress.subtitle}
-                items={activeData.progress.items}
+                title={activeData.progress!.title}
+                subtitle={activeData.progress!.subtitle ?? ""}
+                items={activeData.progress!.items}
               />
             </div>
           </div>
-        ) : null} */}
+        ) : null}
       </div>
     </DashboardLayout>
   );

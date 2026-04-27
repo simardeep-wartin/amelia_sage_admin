@@ -1,51 +1,18 @@
 "use client";
 
-import { ArrowUpRightIcon, CheckCircleIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
+import { ArrowUpRightIcon } from "@heroicons/react/24/outline";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import Card from "@/components/common/Card";
+import MetricCard from "@/components/common/MetricCard";
 import appData from "@/data/app-data.json";
 
 const data = appData.governanceSafety;
 
-const ICON_MAP = {
+const ICON_MAP: Record<string, string> = {
   flag: "/auth/exclamationTriangle.svg",
   check: "/auth/circleTick.svg",
 };
-
-type IconKey = keyof typeof ICON_MAP;
-
-// ─── Metric card ──────────────────────────────────────────────────────────────
-function MetricCard({
-  title,
-  value,
-  subtitle,
-  iconType,
-}: {
-  title: string;
-  value: string;
-  subtitle: string;
-  iconType: string;
-}) {
-  const iconSrc = ICON_MAP[iconType as IconKey];
-  return (
-    <div className="flex flex-1 flex-col gap-4 rounded-[14px] border border-cardBorder bg-paper px-5 h-[125px] flex flex col justify-center shadow-sm">
-      <p className="text-m font-medium text-charcoal">{title}</p>
-      <div className="flex items-center gap-4">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(135deg,rgba(168,181,160,0.2)_0%,rgba(213,202,227,0.2)_50%,rgba(232,196,184,0.2)_100%)]">
-          <img
-            src={iconSrc}
-            alt="icon"
-            className="h-6 w-6"
-          />
-        </div>
-        <div>
-          <p className="text-2xl font-bold leading-tight text-charcoal">{value}</p>
-          <p className="mt-1 text-xs text-slate">{subtitle}</p>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 // ─── Risk row ─────────────────────────────────────────────────────────────────
 function RiskRow({
@@ -59,7 +26,6 @@ function RiskRow({
 }) {
   return (
     <div className="flex min-h-[68px] items-center justify-between rounded-[10px] bg-softstone px-4">
-      {/* Left: dot + label + divider + badge */}
       <div className="flex items-center gap-3">
         <span
           className="h-3 w-3 shrink-0 rounded-full"
@@ -71,20 +37,15 @@ function RiskRow({
           <span className="text-xs text-charcoal">{count} users flagged</span>
         </span>
       </div>
-      {/* Right: Review Cases button */}
-      <button
-        type="button"
+      <Link
+        href="/governance-safety/review/pending"
         className="flex items-center gap-2.5 text-s font-medium text-sageGreen transition-opacity hover:opacity-70"
       >
         Review Cases
         <span className="flex h-6 w-6 items-center justify-center rounded-full bg-paper shadow-sm">
-          <img
-            src="/auth/goal.svg"
-            alt="goal icon"
-            className="h-3.5 w-3.5"
-          />
+          <ArrowUpRightIcon className="h-3.5 w-3.5 text-charcoal/70" />
         </span>
-      </button>
+      </Link>
     </div>
   );
 }
@@ -94,13 +55,11 @@ export default function GovernanceSafetyPage() {
   return (
     <DashboardLayout title="Governance & Safety">
       <div className="space-y-4">
-        {/* Breadcrumb */}
         <div className="flex flex-col gap-1">
           <h1 className="text-l font-medium text-charcoal">Governance &amp; Safety</h1>
           <p className="text-s text-grey">Dashboard / Overview / Governance &amp; Safety</p>
         </div>
 
-        {/* ── 2 Metric Cards ──────────────────────────────────────────────── */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {data.metrics.map((m) => (
             <MetricCard
@@ -108,12 +67,11 @@ export default function GovernanceSafetyPage() {
               title={m.title}
               value={m.value}
               subtitle={m.subtitle}
-              iconType={m.iconType}
+              iconSrc={ICON_MAP[m.iconType] ?? "/auth/circleTick.svg"}
             />
           ))}
         </div>
 
-        {/* ── Overwhelm Detection & User Wellbeing ────────────────────────── */}
         <Card
           title="Overwhelm Detection & User Wellbeing"
           actions={

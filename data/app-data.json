@@ -62,25 +62,25 @@
       {
         "label": "Create New Wellth Plan",
         "icon": "plus",
-        "variant": "custom",
+        "variant": "outline",
         "href": "/wellth-plans"
       },
       {
         "label": "Add Mindful Exercise",
         "icon": "sparkles",
-        "variant": "custom",
+        "variant": "outline",
         "href": "/mindful-exercise-management"
       },
       {
         "label": "Add Calm & Stillness Exercise",
         "icon": "microphone",
-        "variant": "custom",
+        "variant": "outline",
         "href": "/calm-stillness-management"
       },
       {
         "label": "Go to Work on Me",
         "icon": "arrowPath",
-        "variant": "custom",
+        "variant": "outline",
         "href": "/work-on-me-exercises"
       }
     ],
@@ -89,19 +89,22 @@
         "id": 1,
         "type": "warning",
         "message": "15 users flagged for overwhelm detection",
-        "action": "Review"
+        "action": "Review",
+        "route": "/governance-safety/review/pending"
       },
       {
         "id": 2,
         "type": "info",
         "message": "3 exercises pending content review",
-        "action": "Review"
+        "action": "Review",
+        "route": "/governance-safety/content-review"
       },
       {
         "id": 3,
         "type": "error",
         "message": "2 audio files missing for Pilates",
-        "action": "Review"
+        "action": "Review",
+        "route": "/"
       }
     ],
     "coreVsFree": {
@@ -965,6 +968,477 @@
           "label": "Moderate Risk Level",
           "count": 10,
           "dotColor": "#d6b26a"
+        }
+      ]
+    },
+    "contentReview": {
+      "filterOptions": [
+        "All",
+        "Yoga",
+        "Breathwork",
+        "Meditation"
+      ],
+      "sortOptions": [
+        "Newest First",
+        "Oldest First"
+      ],
+      "items": [
+        {
+          "id": "1",
+          "title": "Child's Pose Asana",
+          "tags": [
+            "Yoga",
+            "Mindful"
+          ],
+          "status": "PENDING",
+          "duration": "5 mins",
+          "description": "A yoga exercise that releases lower-back tension and gently calms the nervous system.",
+          "emoji": "🧘",
+          "completeness": [
+            {
+              "label": "Video File",
+              "ok": true
+            },
+            {
+              "label": "Audio File",
+              "ok": false
+            }
+          ]
+        },
+        {
+          "id": "2",
+          "title": "Mountain Pose",
+          "tags": [
+            "Yoga",
+            "Balance"
+          ],
+          "status": "PENDING",
+          "duration": "3 mins",
+          "description": "A foundational standing pose that improves posture and brings calm awareness.",
+          "emoji": "🏔️",
+          "completeness": [
+            {
+              "label": "Video File",
+              "ok": true
+            },
+            {
+              "label": "Audio File",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "id": "3",
+          "title": "Box Breathing",
+          "tags": [
+            "Breathwork",
+            "Calm"
+          ],
+          "status": "PENDING",
+          "duration": "4 mins",
+          "description": "A breathing technique used to calm the nervous system and reduce stress.",
+          "emoji": "🌬️",
+          "completeness": [
+            {
+              "label": "Video File",
+              "ok": false
+            },
+            {
+              "label": "Audio File",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "id": "4",
+          "title": "Body Scan Meditation",
+          "tags": [
+            "Meditation",
+            "Sleep"
+          ],
+          "status": "PENDING",
+          "duration": "10 mins",
+          "description": "A mindfulness meditation that moves awareness through the body to release tension.",
+          "emoji": "🧠",
+          "completeness": [
+            {
+              "label": "Video File",
+              "ok": true
+            },
+            {
+              "label": "Audio File",
+              "ok": true
+            }
+          ]
+        },
+        {
+          "id": "5",
+          "title": "Sun Salutation",
+          "tags": [
+            "Yoga",
+            "Energy"
+          ],
+          "status": "PENDING",
+          "duration": "8 mins",
+          "description": "A sequence of 12 yoga postures performed in a fluid, continuous flow.",
+          "emoji": "☀️",
+          "completeness": [
+            {
+              "label": "Video File",
+              "ok": true
+            },
+            {
+              "label": "Audio File",
+              "ok": false
+            }
+          ]
+        }
+      ]
+    },
+    "userRiskMonitoring": {
+      "metrics": [
+        {
+          "label": "Total Flagged",
+          "value": "42",
+          "iconType": "users",
+          "valueColor": "#2d2d2d"
+        },
+        {
+          "label": "High Risk",
+          "value": "12",
+          "iconType": "warning",
+          "valueColor": "#ff1212"
+        },
+        {
+          "label": "Pending Review",
+          "value": "08",
+          "iconType": "clock",
+          "valueColor": "#2d2d2d"
+        },
+        {
+          "label": "Resolved Cases",
+          "value": "22",
+          "iconType": "checkCircle",
+          "valueColor": "#4bb05d"
+        }
+      ],
+      "tabs": [
+        {
+          "value": "all",
+          "label": "All"
+        },
+        {
+          "value": "high",
+          "label": "High risk"
+        },
+        {
+          "value": "moderate",
+          "label": "Moderate risk"
+        }
+      ],
+      "queueItems": [
+        {
+          "id": "USR-8821",
+          "title": "High emotional distress detected",
+          "source": "CHAT",
+          "status": "PENDING",
+          "level": "HIGH"
+        },
+        {
+          "id": "USR-4290",
+          "title": "Repeated fatigue indicators",
+          "source": "JOURNAL",
+          "status": "PENDING",
+          "level": "MEDIUM"
+        },
+        {
+          "id": "USR-9003",
+          "title": "Sleep pattern disruption",
+          "source": "JOURNAL",
+          "status": "RESOLVED",
+          "level": "MEDIUM"
+        }
+      ],
+      "users": {
+        "USR-8821": {
+          "initial": "A",
+          "name": "Armstrong Neil",
+          "userId": "USR-8821",
+          "contact": "neilarmstrong.com | (415) 732-8901",
+          "summaryParts": [
+            {
+              "text": "Flagged due to "
+            },
+            {
+              "text": "Repeated negative sentiment",
+              "style": "bold-red"
+            },
+            {
+              "text": " within the last 48 hours. AI detected "
+            },
+            {
+              "text": "high frequency of signals",
+              "style": "bold-brown"
+            },
+            {
+              "text": " (6 in 24h) indicating significant emotional volatility."
+            }
+          ],
+          "tags": [
+            "Overwhelm",
+            "Fatigue",
+            "Burnout Risk"
+          ]
+        },
+        "USR-4290": {
+          "initial": "J",
+          "name": "Jordan Smith",
+          "userId": "USR-4290",
+          "contact": "jordan.smith@email.com | (213) 555-0192",
+          "summaryParts": [
+            {
+              "text": "Repeated fatigue indicators detected across "
+            },
+            {
+              "text": "5 journal entries",
+              "style": "bold-brown"
+            },
+            {
+              "text": " in 72 hours."
+            }
+          ],
+          "tags": [
+            "Fatigue",
+            "Sleep"
+          ]
+        },
+        "USR-9003": {
+          "initial": "M",
+          "name": "Maya Patel",
+          "userId": "USR-9003",
+          "contact": "maya.patel@email.com | (310) 444-0011",
+          "summaryParts": [
+            {
+              "text": "Sleep pattern disruption flagged. "
+            },
+            {
+              "text": "Three consecutive nights",
+              "style": "bold-brown"
+            },
+            {
+              "text": " below 5 hours."
+            }
+          ],
+          "tags": [
+            "Sleep"
+          ]
+        }
+      }
+    }
+  },
+  "revenueDashboard": {
+    "stats": {
+      "monthlyRevenue": {
+        "title": "Monthly Revenue",
+        "value": "$47,892",
+        "trend": "+12.5% vs last month"
+      },
+      "trialConversion": {
+        "title": "Trial Conversion",
+        "value": "34%",
+        "subtitle": "892 active trials"
+      }
+    },
+    "lineData": [
+      {
+        "month": "Jul",
+        "value": 28000
+      },
+      {
+        "month": "Aug",
+        "value": 33000
+      },
+      {
+        "month": "Sep",
+        "value": 36000
+      },
+      {
+        "month": "Oct",
+        "value": 40000
+      },
+      {
+        "month": "Nov",
+        "value": 43000
+      },
+      {
+        "month": "Dec",
+        "value": 45000
+      },
+      {
+        "month": "Jan",
+        "value": 47000
+      }
+    ],
+    "barData": [
+      {
+        "label": "Core Monthly",
+        "value": 9000,
+        "color": "#8B7EC8",
+        "revenue": "$24,500"
+      },
+      {
+        "label": "Core Annual",
+        "value": 7500,
+        "color": "#9CAF88",
+        "revenue": "$16,500"
+      }
+    ],
+    "healthRows": [
+      {
+        "plan": "Core Monthly",
+        "active": "2,450",
+        "revenue": "$24,500"
+      },
+      {
+        "plan": "Core Annual",
+        "active": "1,650",
+        "revenue": "$16,500"
+      }
+    ]
+  },
+  "promotions": {
+    "rows": [
+      {
+        "code": "LIFETIME50",
+        "discount": "$50",
+        "type": "Fixed",
+        "validUntil": "Dec 31, 2024",
+        "uses": "142/500",
+        "status": "Active"
+      },
+      {
+        "code": "WELCOME20",
+        "discount": "20%",
+        "type": "Percentage",
+        "validUntil": "Mar 31, 2024",
+        "uses": "89/200",
+        "status": "Active"
+      }
+    ]
+  },
+  "subscriptions": {
+    "rows": [
+      {
+        "email": "sarah.jones@email.com",
+        "plan": "Core Monthly",
+        "status": "active",
+        "started": "2024-12-15",
+        "nextBilling": "2025-02-15",
+        "amount": "$9.99"
+      },
+      {
+        "email": "maria.garcia@email.com",
+        "plan": "Core Annual",
+        "status": "active",
+        "started": "2024-06-01",
+        "nextBilling": "2025-06-01",
+        "amount": "$79.99"
+      },
+      {
+        "email": "emma.wilson@email.com",
+        "plan": "Freemium",
+        "status": "trial",
+        "started": "2025-01-20",
+        "nextBilling": "--",
+        "amount": "$0.00"
+      }
+    ]
+  },
+  "payments": {
+    "rows": [
+      {
+        "date": "2025-01-28",
+        "user": "sarah.j@email.com",
+        "type": "Subscription",
+        "amount": "$9.99",
+        "status": "completed"
+      },
+      {
+        "date": "2025-01-28",
+        "user": "emma.w@email.com",
+        "type": "Subscription",
+        "amount": "$9.99",
+        "status": "failed"
+      },
+      {
+        "date": "2025-01-27",
+        "user": "maria.g@email.com",
+        "type": "One-time",
+        "amount": "$199.99",
+        "status": "completed"
+      },
+      {
+        "date": "2025-01-25",
+        "user": "olivia.d@email.com",
+        "type": "Refund",
+        "amount": "-$9.99",
+        "status": "pending"
+      }
+    ]
+  },
+  "financial": {
+    "metrics": {
+      "revenue": [
+        {
+          "title": "Total Revenue (MTD)",
+          "value": "$47,892",
+          "subtitle": "+12% this month",
+          "subtitleColor": "#00A63E",
+          "iconSrc": "/auth/growth.svg"
+        },
+        {
+          "title": "Active Subscriptions",
+          "value": "4,231",
+          "subtitle": "Core users",
+          "subtitleColor": "#6B6B6B",
+          "iconSrc": "/auth/multipleUser.svg"
+        },
+        {
+          "title": "Trial Users",
+          "value": "892",
+          "subtitle": "Active trials",
+          "subtitleColor": "#6B6B6B",
+          "iconSrc": "/auth/circleTick.svg"
+        }
+      ],
+      "other": [
+        {
+          "title": "Total Revenue (MTD)",
+          "value": "$47,892",
+          "subtitle": "+12% this month",
+          "subtitleColor": "#00A63E",
+          "iconSrc": "/auth/growth.svg"
+        },
+        {
+          "title": "Active Subscriptions",
+          "value": "4,231",
+          "subtitle": "Core users",
+          "subtitleColor": "#6B6B6B",
+          "iconSrc": "/auth/multipleUser.svg"
+        },
+        {
+          "title": "MRR",
+          "value": "$42,350",
+          "subtitle": "$10.01/user avg",
+          "subtitleColor": "#6B6B6B",
+          "iconSrc": "/auth/growth.svg"
+        },
+        {
+          "title": "Trial Users",
+          "value": "892",
+          "subtitle": "Active trials",
+          "subtitleColor": "#6B6B6B",
+          "iconSrc": "/auth/circleTick.svg"
         }
       ]
     }

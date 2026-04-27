@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
   ArrowPathIcon,
@@ -10,12 +10,13 @@ import {
   SparklesIcon,
 } from "@heroicons/react/24/outline";
 import { useState } from "react";
-import Button from "@/components/common/Button";
+import Button from "@/components/ui/Button";
 import Card from "@/components/common/Card";
-import FilterDropdown from "@/components/common/FilterDropdown";
-import Chart from "@/components/dashboard/Chart";
+import FilterDropdown from "@/components/ui/FilterDropdown";
+import Chart from "@/components/charts/Chart";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import appData from "@/data/app-data.json";
+import Link from "next/link";
 
 const dashboardData = appData.dashboard;
 
@@ -166,6 +167,7 @@ export default function DashboardPage() {
             <div className="space-y-3">
               {dashboardData.alerts.map((alert) => {
                 const variant = alertStyles[alert.type as keyof typeof alertStyles];
+
                 return (
                   <div
                     key={alert.id}
@@ -179,12 +181,17 @@ export default function DashboardPage() {
                       </div>
                       <p className="text-s text-charcoal">{alert.message}</p>
                     </div>
-                    <button className={`text-s font-medium ${variant.text} hover:underline`}>
+
+                    <Link
+                      href={alert.route}
+                      className={`text-s font-medium ${variant.text} hover:underline`}
+                    >
                       {alert.action}
-                    </button>
+                    </Link>
                   </div>
                 );
               })}
+
             </div>
           </Card>
 
@@ -193,7 +200,6 @@ export default function DashboardPage() {
               {dashboardData.quickActions.map((action) => (
                 <Button
                   key={action.label}
-                  variant={action.variant as "solid" | "outline" | "ghost" | "custom"}
                   leftIcon={ICONS[action.icon as ActionIconKey]}
                   href={action.href}
                   className="w-full border border-sageGreen bg-paper text-sageGreen hover:bg-sageGreen hover:text-white focus-visible:ring-0"

@@ -1,4 +1,4 @@
-import { getNavigationPayload } from "@/Services/controllers/navigation-controller";
+﻿import { getNavigationPayload } from "@/Services/navigationService";
 
 export function GET() {
   return Response.json(getNavigationPayload());
