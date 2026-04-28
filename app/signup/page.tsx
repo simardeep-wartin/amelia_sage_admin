@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signupSchema, type SignupFormValues } from "@/lib/validators";
-import { signupApi } from "@/services/authApi";
+import { signupApi } from "@/Services/authApi";
 import { useAuthStore } from "@/store/authStore";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
