@@ -1,9 +1,12 @@
 "use client";
 
+import { useState, useEffect } from "react";
+
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import Card from "@/components/common/Card";
 import MetricCard from "@/components/common/MetricCard";
 import FeatureBarChart from "@/components/charts/FeatureBarChart";
+import UserInsightLoader from "@/components/loaders/user-insight-loader";
 import appData from "@/data/app-data.json";
 
 const insightsData = appData.userInsights;
@@ -14,6 +17,17 @@ const ICON_MAP: Record<string, string> = {
 };
 
 export default function UserInsightsPage() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) return <UserInsightLoader />;
+
   return (
     <DashboardLayout title="User Insights">
       <div className="space-y-4">

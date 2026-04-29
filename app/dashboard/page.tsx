@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import {
   ArrowPathIcon,
@@ -9,12 +9,13 @@ import {
   PlusIcon,
   SparklesIcon,
 } from "@heroicons/react/24/outline";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Button from "@/components/ui/Button";
 import Card from "@/components/common/Card";
 import FilterDropdown from "@/components/ui/FilterDropdown";
 import Chart from "@/components/charts/Chart";
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import DashboardLoader from "@/components/loaders/dashboard-loader";
 import appData from "@/data/app-data.json";
 import Link from "next/link";
 
@@ -30,7 +31,15 @@ const ICONS = {
 type ActionIconKey = keyof typeof ICONS;
 
 export default function DashboardPage() {
+  const [loading, setLoading] = useState(true);
   const [activeUsersFilter, setActiveUsersFilter] = useState("This Week");
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const filterOptions = ["This Week", "Last Week", "This Month"];
 
@@ -51,6 +60,8 @@ export default function DashboardPage() {
       icon: <ExclamationCircleIcon className="h-3.5 w-3.5 text-[#9f1239]" />,
     },
   } as const;
+
+  if (loading) return <DashboardLoader />;
 
   return (
     <DashboardLayout title="Dashboard Overview">

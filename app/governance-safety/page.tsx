@@ -1,10 +1,12 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowUpRightIcon } from "@heroicons/react/24/outline";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import Card from "@/components/common/Card";
 import MetricCard from "@/components/common/MetricCard";
+import GovernanceSafetyLoader from "@/components/loaders/governance-safety-loader";
 import appData from "@/data/app-data.json";
 
 const data = appData.governanceSafety;
@@ -52,6 +54,18 @@ function RiskRow({
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function GovernanceSafetyPage() {
+  const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+
+  if (loading) return <GovernanceSafetyLoader />;
+
   return (
     <DashboardLayout title="Governance & Safety">
       <div className="space-y-4">

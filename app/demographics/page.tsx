@@ -3,7 +3,8 @@
 import {
   ArrowDownTrayIcon,
 } from "@heroicons/react/24/outline";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import DemographicsLoader from "@/components/loaders/demographics-loader";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import Button from "@/components/ui/Button";
 import appData from "@/data/app-data.json";
@@ -92,7 +93,17 @@ const DEMOGRAPHIC_TABS: readonly DemographicTab[] = [
 
 
 export default function DemographicsPage() {
+  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<DemographicTab>("Overview");
+
+    useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) return <DemographicsLoader />;
 
   const activeData: ActiveTabData | null = useMemo(() => {
     if (activeTab === "Overview") return null;

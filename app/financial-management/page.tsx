@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowDownTrayIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
+import FinanceLoader from "@/components/loaders/finance-loader";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import MetricCard from "@/components/common/MetricCard";
 import Tabs from "@/components/common/Tabs";
@@ -23,7 +24,18 @@ type Metric = {
 };
 
 export default function FinancialPage() {
+  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<FinancialTab>("Revenue Dashboard");
+
+    useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+
+  if (loading) return <FinanceLoader />;
 
   const financialData = appData.financial;
 
