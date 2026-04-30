@@ -26,7 +26,7 @@ export default function MetricCard({
 }: MetricCardProps) {
   return (
     <div
-      className={`flex h-[125px] flex-col justify-center rounded-[14px] border border-cardBorder bg-paper px-5 shadow-sm ${className}`}
+      className={`flex h-[125px] flex-col justify-center rounded-[14px] border border-cardBorder bg-white px-5 shadow-sm ${className}`}
     >
       <p className="font-sans text-base font-medium text-charcoal">{title}</p>
       <div className="mt-4 flex items-center gap-4">
@@ -42,7 +42,7 @@ export default function MetricCard({
         </div>
         <div>
           <p
-            className="text-2xl font-bold leading-tight text-charcoal"
+            className="text-[32px] font-bold leading-tight text-charcoal"
             style={valueColor ? { color: valueColor } : undefined}
           >
             {value}

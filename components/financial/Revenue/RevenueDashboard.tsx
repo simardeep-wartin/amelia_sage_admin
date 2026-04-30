@@ -116,22 +116,22 @@ export default function RevenueDashboard() {
                 strokeWidth={2.5}
                 dot={{
                   r: 4,
-                  fill: "#D4A574",
-                  stroke: "#fff",
+                  fill: "#fff",
+                  stroke: "#D4A574",
                   strokeWidth: 2,
                 }}
                 activeDot={{
                   r: 6,
-                  fill: "#D4A574",
-                  stroke: "#fff",
+                  fill: "#fff",
+                  stroke: "#D4A574",
                   strokeWidth: 2,
                 }}
               />
             </LineChart>
           </ResponsiveContainer>
 
-          <div className="mt-3 flex justify-center gap-2 text-[10px] text-[#6B6B6B]">
-            <span className="inline-block h-3 w-3 rounded-full bg-[#D4A574]" />
+          <div className="mt-3 flex justify-center items-center gap-2 text-[10px] text-[#6B6B6B]">
+            <span className="inline-block h-3 w-3 rounded-full border-2 border-[#D4A574]" />
             Total Revenue
           </div>
         </div>

@@ -17,8 +17,8 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 }
 
 const variantStyles: Record<ButtonVariant, string> = {
-  solid:   "bg-sageGreen text-white shadow-sm hover:bg-primaryHover hover:shadow-md",
-  outline: "border border-sageGreen bg-paper text-sageGreen hover:bg-gold/10 hover:shadow-sm",
+  solid:   "bg-sageGreen text-white shadow-sm hover:bg-sageGreenHover hover:shadow-md",
+  outline: "border border-sageGreen bg-paper text-sageGreen hover:bg-sageGreenHover hover:text-white hover:shadow-sm",
   ghost:   "bg-transparent text-charcoal hover:bg-softstone",
 };
 

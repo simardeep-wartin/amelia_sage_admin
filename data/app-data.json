@@ -62,25 +62,21 @@
       {
         "label": "Create New Wellth Plan",
         "icon": "plus",
-        "variant": "outline",
         "href": "/wellth-plans"
       },
       {
         "label": "Add Mindful Exercise",
         "icon": "sparkles",
-        "variant": "outline",
         "href": "/mindful-exercise-management"
       },
       {
         "label": "Add Calm & Stillness Exercise",
         "icon": "microphone",
-        "variant": "outline",
         "href": "/calm-stillness-management"
       },
       {
         "label": "Go to Work on Me",
         "icon": "arrowPath",
-        "variant": "outline",
         "href": "/work-on-me-exercises"
       }
     ],
@@ -1394,7 +1390,7 @@
           "value": "$47,892",
           "subtitle": "+12% this month",
           "subtitleColor": "#00A63E",
-          "iconSrc": "/auth/growth.svg"
+          "iconSrc": "/auth/dollar.svg"
         },
         {
           "title": "Active Subscriptions",
@@ -1408,7 +1404,7 @@
           "value": "892",
           "subtitle": "Active trials",
           "subtitleColor": "#6B6B6B",
-          "iconSrc": "/auth/circleTick.svg"
+          "iconSrc": "/auth/reload.svg"
         }
       ],
       "other": [
@@ -1442,5 +1438,22 @@
         }
       ]
     }
+  },
+  "workOnMeExercises": {
+    "emotionsData": [
+      { "title": "Grateful", "usersCount": "3456 users this week", "exercisesCount": 15, "icon": "SunIcon" },
+      { "title": "Inspired", "usersCount": "2789 users this week", "exercisesCount": 15, "icon": "PlantIcon" },
+      { "title": "Anxious", "usersCount": "2234 users this week", "exercisesCount": 15, "icon": "WaveIcon" },
+      { "title": "Okay", "usersCount": "1890 users this week", "exercisesCount": 15, "icon": "EmptyCircleIcon" },
+      { "title": "Drained", "usersCount": "1234 users this week", "exercisesCount": 15, "icon": "DropIcon" },
+      { "title": "Heavy", "usersCount": "890 users this week", "exercisesCount": 15, "icon": "BrokenHeartIcon" }
+    ],
+    "focusAreasData": [
+      { "title": "Mind", "usersCount": "3456 users this week", "exercisesCount": 15, "icon": "SpiralIcon" },
+      { "title": "Heart", "usersCount": "3456 users this week", "exercisesCount": 15, "icon": "HeartIcon" },
+      { "title": "Body", "usersCount": "3456 users this week", "exercisesCount": 15, "icon": "LeafIcon" },
+      { "title": "Purpose", "usersCount": "3456 users this week", "exercisesCount": 15, "icon": "StarIcon" },
+      { "title": "Reset", "usersCount": "3456 users this week", "exercisesCount": 15, "icon": "ResetIcon" }
+    ]
   }
 }

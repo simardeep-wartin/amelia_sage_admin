@@ -12,6 +12,7 @@ const config: Config = {
       },
       colors: {
         sageGreen: "#8BAA87",
+        sageGreenHover: "#6A8A66",
         customBlack:"#2D2D2D",
         grey:"#6B6B6B",
         primaryHover: "#7F9F7B",
@@ -26,7 +27,6 @@ const config: Config = {
         trendBg: "#DCFCE7",
         trendGreen: "#008236",
         authBg: "#F7F4EE",
-        // design-system aliases used by risk/review components
         card: "#FFFFFF",
         muted: "#F7F5F2",
         surface: "#F7F5F2",

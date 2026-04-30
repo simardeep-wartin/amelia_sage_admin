@@ -9,7 +9,7 @@ import {
   XCircleIcon,
 } from "@heroicons/react/24/outline";
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import { FilterDropdown } from "@/components/ui/FilterDropdown";
+import FilterDropdown from "@/components/ui/FilterDropdown";
 import appData from "@/data/app-data.json";
 
 // ─── types ────────────────────────────────────────────────────────────────────

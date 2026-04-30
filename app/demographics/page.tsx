@@ -103,15 +103,16 @@ export default function DemographicsPage() {
     return () => clearTimeout(timer);
   }, []);
 
-  if (loading) return <DemographicsLoader />;
-
   const activeData: ActiveTabData | null = useMemo(() => {
-    if (activeTab === "Overview") return null;
-    if (activeTab === "Gender Identity") return demographicsTabsData.gender_identity;
-    if (activeTab === "Cultural Identity") return demographicsTabsData.cultural_identity;
-    if (activeTab === "Ethnicity") return demographicsTabsData.ethnicity;
-    return demographicsTabsData.wellness_needs;
-  }, [activeTab]);
+  if (activeTab === "Overview") return null;
+  if (activeTab === "Gender Identity") return demographicsTabsData.gender_identity;
+  if (activeTab === "Cultural Identity") return demographicsTabsData.cultural_identity;
+  if (activeTab === "Ethnicity") return demographicsTabsData.ethnicity;
+  return demographicsTabsData.wellness_needs;
+}, [activeTab]);
+
+
+  if (loading) return <DemographicsLoader />;
 
   return (
     <DashboardLayout title="Demographics">

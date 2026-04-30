@@ -72,7 +72,7 @@ export default function DashboardPage() {
               title={dashboardData.activeUsers.title}
               actions={
                 <FilterDropdown
-                  options={filterOptions}
+                  // options={filterOptions}
                   value={activeUsersFilter}
                   onChange={setActiveUsersFilter}
                 />
@@ -210,10 +210,11 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {dashboardData.quickActions.map((action) => (
                 <Button
+                  variant="outline"
                   key={action.label}
                   leftIcon={ICONS[action.icon as ActionIconKey]}
                   href={action.href}
-                  className="w-full border border-sageGreen bg-paper text-sageGreen hover:bg-sageGreen hover:text-white focus-visible:ring-0"
+                  className="w-full"
                 >
                   {action.label}
                 </Button>

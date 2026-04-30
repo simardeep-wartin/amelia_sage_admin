@@ -62,12 +62,8 @@ export default function FinancialPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            <button className="flex h-12 items-center gap-2.5 rounded-[9px] border border-[#6C6C6C] px-4 text-[14px] text-[#2B2B2B]">
-              This Month
-              <ChevronDownIcon className="h-4 w-4" />
-            </button>
 
-            <button className="flex h-12 items-center gap-2.5 rounded-[8px] bg-sageGreen px-6 text-[16px] font-semibold text-white hover:bg-primaryHover">
+            <button className="flex h-12 items-center gap-2.5 rounded-[8px] bg-sageGreen px-6 text-[16px] justify-center cursor-pointer lg:min-w-[269px] font-semibold text-white hover:bg-sageGreenHover">
               <ArrowDownTrayIcon className="h-4 w-4" />
               Export Report
             </button>
