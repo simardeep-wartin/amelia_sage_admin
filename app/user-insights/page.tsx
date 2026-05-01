@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 
-import DashboardLayout from "@/components/layout/DashboardLayout";
+import PageLayout from "@/components/layout/PageLayout";
 import Card from "@/components/common/Card";
 import MetricCard from "@/components/common/MetricCard";
 import FeatureBarChart from "@/components/charts/FeatureBarChart";
@@ -29,7 +29,7 @@ export default function UserInsightsPage() {
   if (loading) return <UserInsightLoader />;
 
   return (
-    <DashboardLayout title="User Insights">
+    <PageLayout title="User Insights">
       <div className="space-y-4">
         <div className="flex flex-col gap-1">
           <h1 className="text-l font-medium text-charcoal">User Insights</h1>
@@ -69,6 +69,6 @@ export default function UserInsightsPage() {
           </div>
         </Card>
       </div>
-    </DashboardLayout>
+    </PageLayout>
   );
 }

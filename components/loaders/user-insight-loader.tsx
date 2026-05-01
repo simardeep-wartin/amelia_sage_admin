@@ -1,4 +1,4 @@
-import DashboardLayout from "@/components/layout/DashboardLayout";
+import PageLayout from "@/components/layout/PageLayout";
 import { Skeleton } from "./common/skeleton";
 import { SkeletonMetricCard } from "./common/skeleton-metric-card";
 import { SkeletonChart } from "./common/skeleton-chart";
@@ -43,7 +43,7 @@ function ChartCard({ className }: { className?: string }) {
 
 export default function UserInsightLoader() {
   return (
-    <DashboardLayout title="User Insights">
+    <PageLayout title="User Insights">
       <div aria-busy="true" className="flex flex-col gap-4">
 
         {/* Page header skeleton (title + breadcrumb) */}
@@ -66,6 +66,6 @@ export default function UserInsightLoader() {
         {/* User Demographics & Behavior */}
         <ChartCard className="min-h-[360px]" />
       </div>
-    </DashboardLayout>
+    </PageLayout>
   );
 }

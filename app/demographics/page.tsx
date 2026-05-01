@@ -1,23 +1,23 @@
-﻿"use client";
+"use client";
 
 import {
   ArrowDownTrayIcon,
 } from "@heroicons/react/24/outline";
 import { useMemo, useState, useEffect } from "react";
 import DemographicsLoader from "@/components/loaders/demographics-loader";
-import DashboardLayout from "@/components/layout/DashboardLayout";
+import PageLayout from "@/components/layout/PageLayout";
 import Button from "@/components/ui/Button";
 import appData from "@/data/app-data.json";
-import DemographicsMetricCard from "@/components/demographics/DemographicsMetricCard";
+
+import MetricCard from "@/components/common/MetricCard";
 import Tabs from "@/components/common/Tabs";
-import GenderDistributionCard from "@/components/charts/GenderDistributionCard";
-import CulturalDistributionCard from "@/components/charts/CulturalDistributionCard";
-import DemographicsGrowthTrendCard from "@/components/charts/DemographicsGrowthTrendCard";
-import DonutDistributionCard from "@/components/charts/DonutDistributionCard";
-import ProgressBreakdownCard from "@/components/demographics/ProgressBreakdownCard";
-import GroupedBarDistributionCard from "@/components/charts/GroupedBarDistributionCard";
-import WellnessJourneyCard from "@/components/demographics/WellnessJourneyCard";
-import GenderInsightsCard from "@/components/demographics/GenderInsightsCard";
+import DistributionPieChart from "@/components/charts/DistributionPieChart";
+import HorizontalBarChart from "@/components/charts/HorizontalBarChart";
+import TrendLineChart from "@/components/charts/TrendLineChart";
+import DistributionBarChart from "@/components/charts/DistributionBarChart";
+import ProgressCard from "@/components/common/ProgressCard";
+import InsightGrid from "@/components/common/InsightGrid";
+import SummaryGrid from "@/components/common/SummaryGrid";
 
 const demographicsData = appData.demographicsPage;
 const demographicsTabsData = appData.demographics;
@@ -29,52 +29,6 @@ type StatItem = {
   value: string | number;
   subtitle?: string;
 };
-
-type GroupedBar = {
-  title: string;
-  subtitle?: string;
-  categories: Array<Record<string, string | number>>;
-  series: any[];
-  maxY?: number;
-  note?: string;
-};
-
-type ProgressData = {
-  title: string;
-  subtitle?: string;
-  items: any[];
-};
-
-type DonutData = {
-  title: string;
-  subtitle?: string;
-  items: any[];
-  lastUpdated?: string;
-};
-
-type InsightsData = {
-  title: string;
-  groups: any[];
-};
-
-type ActiveTabData = {
-  stats?: StatItem[];
-  groupedBar?: GroupedBar;
-  progress?: ProgressData;
-  conversion?: ProgressData;
-  donut?: DonutData;
-  insights?: InsightsData;
-};
-
-/* ================= CONFIG ================= */
-
-const ICON_MAP = {
-  flag: "/auth/multipleUser.svg",
-  check: "/auth/circleTick.svg",
-  trend: "/auth/growth.svg",
-};
-
-type IconKey = keyof typeof ICON_MAP;
 
 type DemographicTab =
   | "Overview"
@@ -91,36 +45,42 @@ const DEMOGRAPHIC_TABS: readonly DemographicTab[] = [
   "Wellness Needs",
 ];
 
+const ICON_MAP = {
+  flag: "/auth/multipleUser.svg",
+  check: "/auth/circleTick.svg",
+  trend: "/auth/growth.svg",
+};
+
+type IconKey = keyof typeof ICON_MAP;
 
 export default function DemographicsPage() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<DemographicTab>("Overview");
 
-    useEffect(() => {
+  useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
     }, 1500);
     return () => clearTimeout(timer);
   }, []);
 
-  const activeData: ActiveTabData | null = useMemo(() => {
-  if (activeTab === "Overview") return null;
-  if (activeTab === "Gender Identity") return demographicsTabsData.gender_identity;
-  if (activeTab === "Cultural Identity") return demographicsTabsData.cultural_identity;
-  if (activeTab === "Ethnicity") return demographicsTabsData.ethnicity;
-  return demographicsTabsData.wellness_needs;
-}, [activeTab]);
-
+  const activeData: any = useMemo(() => {
+    if (activeTab === "Overview") return null;
+    if (activeTab === "Gender Identity") return demographicsTabsData.gender_identity;
+    if (activeTab === "Cultural Identity") return demographicsTabsData.cultural_identity;
+    if (activeTab === "Ethnicity") return demographicsTabsData.ethnicity;
+    return demographicsTabsData.wellness_needs;
+  }, [activeTab]);
 
   if (loading) return <DemographicsLoader />;
 
   return (
-    <DashboardLayout title="Demographics">
+    <PageLayout title="Demographics">
       <div className="space-y-6">
+        {/* Header */}
         <div className="flex flex-col gap-4 s:flex-row s:items-center s:justify-between">
           <div className="flex flex-col gap-1">
-            <h1 className="font-arial text-[24px] 
-            font-medium leading-[32px] text-customBlack">
+            <h1 className="font-arial text-[24px] font-medium leading-[32px] text-customBlack">
               {demographicsData.header.title}
             </h1>
             <p className="font-arial text-[14px] leading-[20px] text-[#6B6B6B]">
@@ -136,17 +96,17 @@ export default function DemographicsPage() {
           </Button>
         </div>
 
+        {/* Metrics */}
         <div className="grid grid-cols-1 gap-4 l:grid-cols-3">
           {demographicsData.metrics.map((metric) => {
-            const iconSrc =
-              ICON_MAP[metric.iconType as IconKey] ?? "/auth/multipleUser.svg";
+            const iconSrc = ICON_MAP[metric.iconType as IconKey] ?? "/auth/multipleUser.svg";
             return (
-              <DemographicsMetricCard
+              <MetricCard
                 key={metric.title}
                 title={metric.title}
                 value={metric.value}
                 subtitle={metric.subtitle}
-                icon={iconSrc}
+                iconSrc={iconSrc}
               />
             );
           })}
@@ -154,147 +114,103 @@ export default function DemographicsPage() {
 
         <Tabs items={DEMOGRAPHIC_TABS} activeTab={activeTab} onTabChange={setActiveTab} />
 
-        {activeTab === "Overview" ? (
+        {/* Overview Tab */}
+        {activeTab === "Overview" && (
           <>
             <div className="grid grid-cols-1 gap-4 l:grid-cols-2">
-              <div className="min-w-0">
-                <GenderDistributionCard
-                  title={demographicsData.genderDistribution.title}
-                  data={demographicsData.genderDistribution.items}
-                  lastUpdated={demographicsData.genderDistribution.lastUpdated}
-                />
-              </div>
-              <div className="min-w-0">
-                <CulturalDistributionCard
-                  title={demographicsData.culturalDistribution.title}
-                  subtitle={demographicsData.culturalDistribution.subtitle}
-                  data={demographicsData.culturalDistribution.items}
-                  highlights={demographicsData.culturalDistribution.highlights}
-                  lastUpdated={demographicsData.culturalDistribution.lastUpdated}
-                />
-              </div>
-            </div>
-
-            <div className="min-w-0">
-              <DemographicsGrowthTrendCard
-                title={demographicsData.growthTrend.title}
-                subtitle={demographicsData.growthTrend.subtitle}
-                filters={demographicsData.growthTrend.filters}
-                data={demographicsData.growthTrend.series}
+              <DistributionPieChart
+                title={demographicsData.genderDistribution.title}
+                data={demographicsData.genderDistribution.items}
+                lastUpdated={demographicsData.genderDistribution.lastUpdated}
+                innerRadius={58}
+                outerRadius={100}
+                startAngle={92}
+                endAngle={-268}
+              />
+              <HorizontalBarChart
+                title={demographicsData.culturalDistribution.title}
+                subtitle={demographicsData.culturalDistribution.subtitle}
+                data={demographicsData.culturalDistribution.items}
+                dataKey="users"
+                labelKey="group"
+                highlights={demographicsData.culturalDistribution.highlights}
+                lastUpdated={demographicsData.culturalDistribution.lastUpdated}
               />
             </div>
+            <TrendLineChart
+              title={demographicsData.growthTrend.title}
+              subtitle={demographicsData.growthTrend.subtitle}
+              filters={demographicsData.growthTrend.filters}
+              data={demographicsData.growthTrend.series}
+              series={[
+                { key: "spiritualGrowthFaith", label: "Spiritual Growth and Faith", color: "#9CAF88" },
+                { key: "wholeSelfRevival", label: "Whole Self Revival", color: "#D4A574" },
+                { key: "relationshipHealing", label: "Relationship Healing", color: "#7B4CE2" },
+                { key: "careerLeadership", label: "Career and Leadership", color: "#6B6B6B" },
+              ]}
+            />
           </>
-        ) : null}
+        )}
 
-        {activeTab === "Gender Identity" && activeData ? (
+        {/* Dynamic Tabs */}
+        {activeTab === "Gender Identity" && activeData && (
           <>
-            <div className="min-w-0">
-              <GroupedBarDistributionCard
-                title={activeData.groupedBar!.title}
-                subtitle={activeData.groupedBar!.subtitle}
-                categories={activeData.groupedBar!.categories}
-                series={activeData.groupedBar!.series}
-                maxY={activeData.groupedBar!.maxY}
-              />
-            </div>
-            <div className="min-w-0">
-              <ProgressBreakdownCard
-                title={activeData.conversion!.title}
-                subtitle={activeData.conversion!.subtitle}
-                items={activeData.conversion!.items}
-              />
-            </div>
-            <div className="min-w-0">
-              <GenderInsightsCard title={activeData.insights!.title} groups={activeData.insights!.groups} />
-            </div>
+            <DistributionBarChart {...activeData.groupedBar} data={activeData.groupedBar.categories} />
+            <ProgressCard title={activeData.conversion.title} subtitle={activeData.conversion.subtitle} items={activeData.conversion.items} />
+            <InsightGrid title={activeData.insights.title} groups={activeData.insights.groups} />
           </>
-        ) : null}
+        )}
 
-        {activeTab === "Cultural Identity" && activeData ? (
+        {activeTab === "Cultural Identity" && activeData && (
           <>
-            {activeData.stats?.length ? (
-              <div className="grid grid-cols-1 gap-3 m:grid-cols-2 l:grid-cols-6">
-                {activeData.stats.map((item: StatItem) => (
-                  <div key={item.title} className="rounded-[4px] bg-[#F9FAFB] p-2 text-center">
-                    <p className="font-sans text-[11px] text-[#6B6B6B]">{item.title}</p>
-                    <p className="font-sans text-[16px] font-semibold text-[#8B7EC8]">{item.value}</p>
-                  </div>
-                ))}
-              </div>
-            ) : null}
-            <div className="min-w-0">
-              <ProgressBreakdownCard
-                title={activeData.progress!.title}
-                subtitle={activeData.progress!.subtitle}
-                items={activeData.progress!.items}
-              />
+            <div className="grid grid-cols-1 gap-3 m:grid-cols-2 l:grid-cols-6">
+              {activeData.stats.map((item: StatItem) => (
+                <div key={item.title} className="rounded-[4px] bg-[#F9FAFB] p-2 text-center">
+                  <p className="font-sans text-[11px] text-[#6B6B6B]">{item.title}</p>
+                  <p className="font-sans text-[16px] font-semibold text-[#8B7EC8]">{item.value}</p>
+                </div>
+              ))}
             </div>
-            <div className="min-w-0">
-              <GroupedBarDistributionCard
-                title={activeData.groupedBar!.title}
-                subtitle={activeData.groupedBar!.subtitle}
-                categories={activeData.groupedBar!.categories}
-                series={activeData.groupedBar!.series}
-                maxY={activeData.groupedBar!.maxY}
-                note={activeData.groupedBar!.note}
-              />
-            </div>
+            <ProgressCard title={activeData.progress.title} subtitle={activeData.progress.subtitle} items={activeData.progress.items} />
+            <DistributionBarChart {...activeData.groupedBar} data={activeData.groupedBar.categories} />
           </>
-        ) : null}
+        )}
 
-        {activeTab === "Ethnicity" && activeData ? (
+        {activeTab === "Ethnicity" && activeData && (
           <>
-            {activeData.stats?.length ? (
-              <div className="grid grid-cols-1 gap-3 l:grid-cols-2">
-                {activeData.stats.map((item: StatItem) => (
-                  <div key={item.title} className="rounded-[4px] bg-[#F9FAFB] p-4 text-center">
-                    <p className="font-sans text-[16px] text-[#6B6B6B]">{item.title}</p>
-                    <p className="font-sans text-[44px] font-bold leading-[1] text-[#5A3FE0]">{item.value}</p>
-                    {item.subtitle ? <p className="font-sans text-[18px] text-[#6B6B6B]">{item.subtitle}</p> : null}
-                  </div>
-                ))}
-              </div>
-            ) : null}
+            <div className="grid grid-cols-1 gap-3 l:grid-cols-2">
+              {activeData.stats.map((item: StatItem) => (
+                <div key={item.title} className="rounded-[4px] bg-[#F9FAFB] p-4 text-center">
+                  <p className="font-sans text-[16px] text-[#6B6B6B]">{item.title}</p>
+                  <p className="font-sans text-[44px] font-bold leading-[1] text-[#5A3FE0]">{item.value}</p>
+                  {item.subtitle && <p className="font-sans text-[18px] text-[#6B6B6B]">{item.subtitle}</p>}
+                </div>
+              ))}
+            </div>
             <div className="grid grid-cols-1 gap-4 l:grid-cols-2">
-              <div className="min-w-0">
-                <DonutDistributionCard
-                  title={activeData.donut!.title}
-                  subtitle={activeData.donut!.subtitle}
-                  items={activeData.donut!.items}
-                  lastUpdated={activeData.donut!.lastUpdated ?? ""}
-                />
-              </div>
-              <div className="min-w-0">
-                <ProgressBreakdownCard
-                  title={activeData.progress!.title}
-                  subtitle={activeData.progress!.subtitle}
-                  items={activeData.progress!.items}
-                />
-              </div>
+              <DistributionPieChart 
+                title={activeData.donut.title} 
+                data={activeData.donut.items} 
+                lastUpdated={activeData.donut.lastUpdated ?? ""} 
+                showList={false}
+              />
+              <ProgressCard title={activeData.progress.title} subtitle={activeData.progress.subtitle} items={activeData.progress.items} />
             </div>
           </>
-        ) : null}
+        )}
 
-        {activeTab === "Wellness Needs" && activeData ? (
+        {activeTab === "Wellness Needs" && activeData && (
           <div className="grid grid-cols-1 gap-4 l:grid-cols-2">
-            <div className="min-w-0">
-              <DonutDistributionCard
-                title={activeData.donut!.title}
-                subtitle={activeData.donut!.subtitle}
-                items={activeData.donut!.items}
-                lastUpdated={activeData.donut!.lastUpdated ?? ""}
-              />
-            </div>
-            <div className="min-w-0">
-              <WellnessJourneyCard
-                title={activeData.progress!.title}
-                subtitle={activeData.progress!.subtitle ?? ""}
-                items={activeData.progress!.items}
-              />
-            </div>
+            <DistributionPieChart 
+                title={activeData.donut.title} 
+                data={activeData.donut.items} 
+                lastUpdated={activeData.donut.lastUpdated ?? ""} 
+                showList={false}
+            />
+            <SummaryGrid title={activeData.progress.title} subtitle={activeData.progress.subtitle} items={activeData.progress.items} />
           </div>
-        ) : null}
+        )}
       </div>
-    </DashboardLayout>
+    </PageLayout>
   );
 }

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowUpRightIcon } from "@heroicons/react/24/outline";
-import DashboardLayout from "@/components/layout/DashboardLayout";
+import PageLayout from "@/components/layout/PageLayout";
 import Card from "@/components/common/Card";
 import MetricCard from "@/components/common/MetricCard";
 import GovernanceSafetyLoader from "@/components/loaders/governance-safety-loader";
@@ -67,7 +67,7 @@ export default function GovernanceSafetyPage() {
   if (loading) return <GovernanceSafetyLoader />;
 
   return (
-    <DashboardLayout title="Governance & Safety">
+    <PageLayout title="Governance & Safety">
       <div className="space-y-4">
         <div className="flex flex-col gap-1">
           <h1 className="text-l font-medium text-charcoal">Governance &amp; Safety</h1>
@@ -113,6 +113,6 @@ export default function GovernanceSafetyPage() {
           </div>
         </Card>
       </div>
-    </DashboardLayout>
+    </PageLayout>
   );
 }

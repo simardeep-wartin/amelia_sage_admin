@@ -1,0 +1,168 @@
+"use client";
+
+import React, { useState, useRef } from "react";
+import { CloudArrowUpIcon } from "@heroicons/react/24/outline";
+import Modal from "@/components/ui/Modal";
+import Input from "@/components/ui/Input";
+
+export type ModalType = "category" | "exercise" | "intro-screen";
+
+interface ActionModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  type: ModalType;
+  title: string;
+  categoryName?: string; // For intro-screen title
+  onSave: (data: any) => void;
+  actionText?: string;
+  nameLabel?: string; // For category
+}
+
+export default function ActionModal({
+  isOpen,
+  onClose,
+  type,
+  title,
+  categoryName,
+  onSave,
+  actionText,
+  nameLabel,
+}: ActionModalProps) {
+  // Common states
+  const [field1, setField1] = useState(""); // title / name / subtitle
+  const [field2, setField2] = useState(""); // description / sageSays
+  const [field3, setField3] = useState(""); // description (for intro-screen)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const resetForm = () => {
+    setField1("");
+    setField2("");
+    setField3("");
+    setSelectedFile(null);
+  };
+
+  const handleSave = () => {
+    if (type === "category") {
+      onSave({ name: field1, description: field2, icon: selectedFile });
+    } else if (type === "exercise") {
+      onSave({ title: field1, description: field2 });
+    } else if (type === "intro-screen") {
+      onSave({ subtitle: field1, sageSays: field2, description: field3 });
+    }
+    resetForm();
+    onClose();
+  };
+
+  const isFormValid = field1.trim() !== "" && field2.trim() !== "";
+
+  const footer = (
+    <>
+      <button
+        onClick={onClose}
+        className="flex-1 h-10 sm:h-12 rounded-[20px] border border-[#EDEDED] bg-[#F9F9F9] text-sm sm:text-base font-semibold text-charcoal transition-colors hover:bg-gray-100"
+      >
+        Cancel
+      </button>
+      {type === "exercise" || type === "intro-screen" ? (
+        <>
+          <button
+            onClick={handleSave}
+            className="w-full sm:flex-1 h-12 rounded-[20px] border border-sageGreen bg-white text-base font-semibold text-sageGreen transition-colors hover:bg-green-50"
+          >
+            Save as Draft
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={!isFormValid}
+            className="w-full sm:flex-1 h-12 rounded-[20px] bg-sageGreen text-base font-semibold text-white transition-colors hover:bg-[#7fa18c] disabled:bg-[#C1D2A4] disabled:cursor-not-allowed disabled:bg-sageGreen/10"
+          >
+            {actionText || (type === "exercise" ? "+ Publish Exercise" : "+ Add Intro Screen")}
+          </button>
+        </>
+      ) : (
+        <button
+          onClick={handleSave}
+          className="flex-1 h-10 sm:h-12 rounded-[20px] bg-[#8EB19D] text-sm sm:text-base font-semibold text-white transition-colors hover:bg-[#7fa18c]"
+        >
+          {actionText}
+        </button>
+      )}
+    </>
+  );
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={title}
+      footer={footer}
+      zIndex={type !== "category" ? "z-[60]" : "z-50"}
+    >
+      <div className="space-y-6">
+        {/* Field 1 */}
+        <Input
+          label={nameLabel || (type === "exercise" ? "Add Title" : type === "intro-screen" ? "Add Subtitle" : "Name")}
+          placeholder={type === "exercise" ? "Enter Title" : type === "intro-screen" ? "Enter Subtitle" : "Enter Name"}
+          value={field1}
+          onChange={(e) => setField1(e.target.value)}
+        />
+
+        {/* Field 2 */}
+        {type === "intro-screen" && (
+          <Input
+            label="Sage Says"
+            placeholder="Enter Sage Says"
+            value={field2}
+            onChange={(e) => setField2(e.target.value)}
+          />
+        )}
+
+        {/* Description / Field 3 */}
+        <div className="space-y-1">
+          <label className="block text-s font-normal text-charcoal">
+            Add Description
+          </label>
+          <textarea
+            className="w-full rounded-[20px] border border-[#ededed] bg-white px-5 py-4 font-medium text-m text-charcoal placeholder:text-[#e1e1e1] outline-none transition focus:border-gold/55 focus:ring-2 focus:ring-gold/20 min-h-[140px] resize-none"
+            placeholder="Add Description Here"
+            value={type === "intro-screen" ? field3 : field2}
+            onChange={(e) => type === "intro-screen" ? setField3(e.target.value) : setField2(e.target.value)}
+          />
+        </div>
+
+        {/* Icon Upload (Category Only) */}
+        {type === "category" && (
+          <div className="space-y-1">
+            <label className="block text-s font-normal text-charcoal">
+              Add Icon
+            </label>
+            <div 
+              onClick={() => fileInputRef.current?.click()}
+              className="flex flex-col items-center justify-center rounded-[20px] border-2 border-dashed border-[#E5E5E5] bg-[#FDFDFD] py-10 transition-colors hover:bg-gray-50 cursor-pointer"
+            >
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                className="hidden" 
+                accept="image/png, image/jpeg" 
+                onChange={(e) => {
+                  if (e.target.files && e.target.files[0]) {
+                    setSelectedFile(e.target.files[0]);
+                  }
+                }} 
+              />
+              <CloudArrowUpIcon className="h-8 w-8 text-[#9898A3] mb-3" strokeWidth={1} />
+              <span className="text-sm sm:text-[15px] font-medium text-[#5B4FDB] mb-1 px-4 text-center break-all sm:truncate max-w-full">
+                {selectedFile ? selectedFile.name : "Upload Icon"}
+              </span>
+              <span className="text-xs sm:text-[13px] text-[#A1A1AA] text-center px-4">
+                PNG, JPG up to 5MB (recommended: 40x40px)
+              </span>
+            </div>
+          </div>
+        )}
+      </div>
+    </Modal>
+  );
+}

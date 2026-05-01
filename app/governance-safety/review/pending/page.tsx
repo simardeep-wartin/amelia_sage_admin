@@ -8,25 +8,16 @@ import {
   CheckCircleIcon,
 } from "@heroicons/react/24/outline";
 
-import DashboardLayout from "@/components/layout/DashboardLayout";
+import PageLayout from "@/components/layout/PageLayout";
 import MetricCard from "@/components/common/MetricCard";
-import appData from "@/data/app-data.json";
+import Card from "@/components/common/Card";
 import Tabs from "@/components/common/Tabs";
+import QueueItem, { QueueItemData } from "@/components/common/QueueItem";
+import appData from "@/data/app-data.json";
 
 // ─── types ────────────────────────────────────────────────────────────────────
 
-type RiskLevel = "HIGH" | "MEDIUM";
-type ItemStatus = "PENDING" | "RESOLVED";
 type SummaryStyle = "bold-red" | "bold-brown";
-
-type QueueItem = {
-  id: string;
-  title: string;
-  source: string;
-  status: ItemStatus;
-  level: RiskLevel;
-};
-
 type SummaryPart = { text: string; style?: SummaryStyle };
 
 type User = {
@@ -38,7 +29,7 @@ type User = {
   tags: string[];
 };
 
-// ─── icon map (NOW USING IMAGE URLS) ──────────────────────────────────────────
+// ─── icon map ─────────────────────────────────────────────────────────────────
 
 const ICON_MAP: Record<string, string> = {
   users: "/auth/multipleUserGrey.svg",
@@ -52,7 +43,7 @@ const ICON_MAP: Record<string, string> = {
 const { metrics, tabs, queueItems, users } =
   appData.governanceSafety.userRiskMonitoring;
 
-const QUEUE_ITEMS = queueItems as QueueItem[];
+const QUEUE_ITEMS = queueItems as QueueItemData[];
 const USERS = users as Record<string, User>;
 
 // ─── component ────────────────────────────────────────────────────────────────
@@ -71,7 +62,7 @@ export default function UserRiskMonitoringPage() {
   const TAB_ITEMS = tabs.map((t) => t.label);
 
   return (
-    <DashboardLayout title="Governance & Safety">
+    <PageLayout title="Governance & Safety">
       <div className="flex flex-col gap-6">
         {/* Back */}
         <Link
@@ -127,73 +118,27 @@ export default function UserRiskMonitoringPage() {
         {/* Layout */}
         <div className="flex flex-col lg:flex-row gap-4 items-start">
           {/* Queue */}
-          <div className="w-full lg:w-[328px] shrink-0 rounded-[14px] border border-[#f3f4f6] bg-white px-4 sm:px-5 py-5 shadow-sm">
-            <p className="mb-4 text-base font-medium text-[#2b2b2b]">
-              Queue: Priority Items
-            </p>
-
+          <Card 
+            title="Queue: Priority Items" 
+            className="w-full lg:w-[328px] shrink-0"
+          >
             <div className="flex flex-col gap-2">
-              {filtered.map((item) => {
-                const isActive = item.id === selectedId;
-                const isHigh = item.level === "HIGH";
-
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => setSelectedId(item.id)}
-                    className="w-full rounded-[6px] border-l-4 px-4 sm:px-5 py-3 sm:py-4 text-left shadow-sm transition"
-                    style={{
-                      borderLeftColor: isHigh ? "#aa371c" : "#7a582e",
-                      backgroundColor: isActive
-                        ? "rgba(170,169,169,0.3)"
-                        : "#fff",
-                      opacity:
-                        item.status === "RESOLVED" && !isActive ? 0.7 : 1,
-                    }}
-                  >
-                    <div className="flex justify-between mb-1">
-                      <span className="text-sm font-semibold text-[#48664a]">
-                        {item.id}
-                      </span>
-
-                      <span
-                        className={`px-2 py-0.5 text-[10px] font-bold rounded-full ${
-                          isHigh
-                            ? "bg-[#fa7150] text-[#671200]"
-                            : "bg-[#f4c792] text-[#5e3f17]"
-                        }`}
-                      >
-                        {item.level}
-                      </span>
-                    </div>
-
-                    <p className="text-xs font-semibold text-[#2e3333] mb-1">
-                      {item.title}
-                    </p>
-
-                    <div className="flex justify-between text-[10px] font-bold uppercase text-[#767c7b]">
-                      <span>{item.source}</span>
-                      <span
-                        className={
-                          item.status === "PENDING"
-                            ? "text-[#7a582e]"
-                            : ""
-                        }
-                      >
-                        {item.status}
-                      </span>
-                    </div>
-                  </button>
-                );
-              })}
+              {filtered.map((item) => (
+                <QueueItem
+                  key={item.id}
+                  item={item}
+                  active={item.id === selectedId}
+                  onClick={() => setSelectedId(item.id)}
+                />
+              ))}
             </div>
-          </div>
+          </Card>
 
           {/* Details */}
           {user && (
             <div className="flex-1 flex flex-col gap-4 w-full">
               {/* User Card */}
-              <div className="rounded-[14px] border bg-white p-5 shadow-sm">
+              <Card className="p-5">
                 <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
                   <div className="h-16 w-16 sm:h-20 sm:w-20 flex items-center justify-center rounded-full bg-[#c9ecc7]">
                     <span className="text-xl sm:text-2xl font-bold text-[#48664a]">
@@ -213,14 +158,10 @@ export default function UserRiskMonitoringPage() {
                     <p className="text-sm text-[#5b605f]">{user.contact}</p>
                   </div>
                 </div>
-              </div>
+              </Card>
 
               {/* Summary */}
-              <div className="rounded-[14px] border bg-white p-5 shadow-sm">
-                <p className="mb-4 font-medium text-charcoal">
-                  AI Risk Summary
-                </p>
-
+              <Card title="AI Risk Summary" className="p-5">
                 <p className="text-sm sm:text-base leading-6 text-[#2e3333]">
                   {user.summaryParts.map((part, i) => {
                     if (part.style === "bold-red") {
@@ -251,25 +192,25 @@ export default function UserRiskMonitoringPage() {
                     </span>
                   ))}
                 </div>
-              </div>
+              </Card>
 
               {/* Actions */}
-              <div className="rounded-[14px] border bg-white p-5 shadow-sm">
+              <Card className="p-5">
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <button className="flex-1 h-11 sm:h-12 flex items-center justify-center gap-2 rounded bg-[#8baa87] text-white font-semibold">
+                  <button className="flex-1 h-11 sm:h-12 flex items-center justify-center gap-2 rounded bg-[#8baa87] text-white font-semibold transition hover:bg-[#7a9a76]">
                     <CheckCircleIcon className="h-5 w-5" />
                     Mark as Resolved
                   </button>
 
-                  <button className="flex-1 h-11 sm:h-12 flex items-center justify-center rounded bg-[#72528b] text-white font-semibold">
+                  <button className="flex-1 h-11 sm:h-12 flex items-center justify-center rounded bg-[#72528b] text-white font-semibold transition hover:bg-[#62427b]">
                     Send Support Message
                   </button>
                 </div>
-              </div>
+              </Card>
             </div>
           )}
         </div>
       </div>
-    </DashboardLayout>
+    </PageLayout>
   );
 }

@@ -1,4 +1,4 @@
-import DashboardLayout from "@/components/layout/DashboardLayout";
+import PageLayout from "@/components/layout/PageLayout";
 import { Skeleton } from "./common/skeleton";
 import { SkeletonMetricCard } from "./common/skeleton-metric-card";
 import { SkeletonChart } from "./common/skeleton-chart";
@@ -40,7 +40,7 @@ function BarChartCard({ className }: { className?: string }) {
 
 export default function DemographicsLoader() {
   return (
-    <DashboardLayout title="Demographics">
+    <PageLayout title="Demographics">
       <div aria-busy="true" className="flex flex-col gap-4">
 
         {/* Page header + action buttons */}
@@ -83,6 +83,6 @@ export default function DemographicsLoader() {
           </div>
         </CardBase>
       </div>
-    </DashboardLayout>
+    </PageLayout>
   );
 }

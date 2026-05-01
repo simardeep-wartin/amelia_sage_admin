@@ -37,7 +37,7 @@ amelia_sage_admin/
 │   ├── charts/                 # Reusable Recharts wrappers
 │   ├── common/                 # Generic containers (Card, Tabs)
 │   ├── demographics/           # Domain-specific demographics cards
-│   ├── layout/                 # Sidebar, Navbar, DashboardLayout
+│   ├── layout/                 # Sidebar, Navbar, PageLayout
 │   ├── loaders/                # Skeleton / loading states
 │   ├── review/                 # Content review components
 │   ├── risk/                   # Governance & risk components
@@ -82,7 +82,7 @@ Browser → middleware.ts
            ├── missing → redirect /signin?from=<path>
            └── present → NextResponse.next()
                           └── app/[page]/page.tsx
-                               └── components/layout/DashboardLayout
+                               └── components/layout/PageLayout
                                     └── feature components
 ```
 

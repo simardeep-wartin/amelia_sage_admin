@@ -1,4 +1,4 @@
-import DashboardLayout from "@/components/layout/DashboardLayout";
+import PageLayout from "@/components/layout/PageLayout";
 import { Skeleton } from "./common/skeleton";
 import { SkeletonChart } from "./common/skeleton-chart";
 
@@ -63,7 +63,7 @@ function CardBase({
 
 export default function DashboardLoader() {
   return (
-    <DashboardLayout title="Dashboard Overview">
+    <PageLayout title="Dashboard Overview">
       <div aria-busy="true" className="flex flex-col gap-4">
 
         {/* ── Row 1: Active Users + Wellth Plan ── */}
@@ -172,6 +172,6 @@ export default function DashboardLoader() {
           </div>
         </div>
       </div>
-    </DashboardLayout>
+    </PageLayout>
   );
 }

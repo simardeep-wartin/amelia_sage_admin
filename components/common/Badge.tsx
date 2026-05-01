@@ -1,3 +1,5 @@
+"use client";
+
 type BadgeVariant =
   | "active"
   | "completed"
@@ -6,11 +8,15 @@ type BadgeVariant =
   | "cancelled"
   | "expired"
   | "pending"
-  | "paused";
+  | "paused"
+  | "high"
+  | "medium"
+  | "low";
 
 interface BadgeProps {
   variant: BadgeVariant;
   label?: string;
+  className?: string;
 }
 
 const STYLES: Record<BadgeVariant, string> = {
@@ -22,13 +28,16 @@ const STYLES: Record<BadgeVariant, string> = {
   expired:   "bg-[#F3F4F6] text-[#6C6C6C]",
   pending:   "bg-[#FEF9C3] text-[#854D0E]",
   paused:    "bg-[#FEF9C3] text-[#854D0E]",
+  high:      "bg-risk-high-bg text-[#671200]",
+  medium:    "bg-risk-medium text-[#5e3f17]",
+  low:       "bg-risk-low text-white",
 };
 
-export default function Badge({ variant, label }: BadgeProps) {
-  const text = label ?? variant.charAt(0).toUpperCase() + variant.slice(1);
+export default function Badge({ variant, label, className = "" }: BadgeProps) {
+  const text = label ?? variant.toUpperCase();
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium capitalize ${STYLES[variant]}`}
+      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide ${STYLES[variant]} ${className}`}
     >
       {text}
     </span>

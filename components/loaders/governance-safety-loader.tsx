@@ -1,4 +1,4 @@
-import DashboardLayout from "@/components/layout/DashboardLayout";
+import PageLayout from "@/components/layout/PageLayout";
 import { Skeleton } from "./common/skeleton";
 import { SkeletonMetricCard } from "./common/skeleton-metric-card";
 
@@ -21,7 +21,7 @@ function CardBase({
 
 export default function GovernanceSafetyLoader() {
   return (
-    <DashboardLayout title="Governance & Safety">
+    <PageLayout title="Governance & Safety">
       <div aria-busy="true" className="flex flex-col gap-4">
 
         {/* Page header */}
@@ -51,6 +51,6 @@ export default function GovernanceSafetyLoader() {
           </div>
         </CardBase>
       </div>
-    </DashboardLayout>
+    </PageLayout>
   );
 }

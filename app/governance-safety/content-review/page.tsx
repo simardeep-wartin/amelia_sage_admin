@@ -8,18 +8,13 @@ import {
   CheckCircleIcon,
   XCircleIcon,
 } from "@heroicons/react/24/outline";
-import DashboardLayout from "@/components/layout/DashboardLayout";
+import PageLayout from "@/components/layout/PageLayout";
 import FilterDropdown from "@/components/ui/FilterDropdown";
+import Card from "@/components/common/Card";
+import QueueItem, { QueueItemData } from "@/components/common/QueueItem";
 import appData from "@/data/app-data.json";
 
 // ─── types ────────────────────────────────────────────────────────────────────
-
-type PendingItem = {
-  id: string;
-  title: string;
-  tags: string[];
-  status: "PENDING" | "APPROVED";
-};
 
 type DetailData = {
   title: string;
@@ -35,11 +30,12 @@ type DetailData = {
 const { filterOptions, sortOptions, items: rawItems } =
   appData.governanceSafety.contentReview;
 
-const PENDING_ITEMS: PendingItem[] = rawItems.map((i) => ({
+const PENDING_ITEMS: QueueItemData[] = rawItems.map((i) => ({
   id: i.id,
   title: i.title,
   tags: i.tags,
   status: i.status as "PENDING" | "APPROVED",
+  source: "Content Review",
 }));
 
 const DETAIL_DATA: Record<string, DetailData> = Object.fromEntries(
@@ -85,7 +81,7 @@ export default function ContentReviewPage() {
   const detail = DETAIL_DATA[selectedId];
 
   return (
-    <DashboardLayout title="Governance & Safety">
+    <PageLayout title="Governance & Safety">
       <div className="flex flex-col gap-6">
         {/* Back link */}
         <div className="flex items-center gap-1.5">
@@ -125,7 +121,7 @@ export default function ContentReviewPage() {
 
         {/* Metrics */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="flex h-[125px] flex-col justify-center rounded-[14px] border border-[#f3f4f6] bg-white px-5 shadow-sm">
+          <Card className="flex h-[125px] flex-col justify-center px-5 shadow-sm">
             <p className="text-base font-medium text-[#2d2d2d]">
               Pending Items
             </p>
@@ -137,9 +133,9 @@ export default function ContentReviewPage() {
                 Requires Attention
               </span>
             </div>
-          </div>
+          </Card>
 
-          <div className="flex h-[125px] flex-col justify-center rounded-[14px] border border-[#f3f4f6] bg-white px-5 shadow-sm">
+          <Card className="flex h-[125px] flex-col justify-center px-5 shadow-sm">
             <p className="text-base font-medium text-[#2d2d2d]">
               Approved Today
             </p>
@@ -151,71 +147,34 @@ export default function ContentReviewPage() {
                 +4 from yesterday
               </span>
             </div>
-          </div>
+          </Card>
         </div>
 
         {/* Main layout */}
         <div className="flex flex-col lg:flex-row gap-4 items-start">
           {/* Sidebar */}
-          <div className="w-full lg:w-[328px] shrink-0 rounded-[14px] border border-[#f3f4f6] bg-white px-5 pb-5 pt-5 shadow-sm">
-            <p className="mb-4 text-xl font-medium text-[#2b2b2b]">
-              Pending for approval
-            </p>
-
+          <Card 
+            title="Pending for approval" 
+            className="w-full lg:w-[328px] shrink-0"
+          >
             <div className="flex flex-col gap-2 py-2">
-              {items.map((item) => {
-                const isActive = item.id === selectedId;
-
-                return (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => setSelectedId(item.id)}
-                    className="w-full rounded-[6px] border-l-4 border-[#8baa87] px-5 py-4 text-left shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] transition"
-                    style={{
-                      backgroundColor: isActive
-                        ? "rgba(170,169,169,0.3)"
-                        : "#ffffff",
-                    }}
-                  >
-                    <div className="mb-1.5 flex items-start justify-between">
-                      <span className="text-xs font-semibold leading-4 text-[#2e3333]">
-                        {item.title}
-                      </span>
-                      <span
-                        className="rounded-full px-2 py-0.5 text-[10px] font-bold uppercase text-[#2b2b2b]"
-                        style={{
-                          backgroundColor: "rgba(170,169,169,0.3)",
-                        }}
-                      >
-                        {item.status}
-                      </span>
-                    </div>
-
-                    <div className="flex flex-wrap gap-2">
-                      {item.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="rounded-full px-2 py-0.5 text-[10px] uppercase text-[#2b2b2b]"
-                          style={{
-                            backgroundColor: "rgba(139,170,135,0.32)",
-                          }}
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </button>
-                );
-              })}
+              {items.map((item) => (
+                <QueueItem
+                  key={item.id}
+                  item={item}
+                  active={item.id === selectedId}
+                  onClick={() => setSelectedId(item.id)}
+                  indicatorColor="#8baa87"
+                />
+              ))}
             </div>
-          </div>
+          </Card>
 
           {/* Detail */}
           {detail && (
-            <div className="flex flex-1 flex-col gap-4 w-full">
-              {/* Title */}
-              <div className="rounded-[14px] border border-[#f3f4f6] bg-white px-5 py-5 shadow-sm">
+            <div className="flex-1 flex flex-col gap-4 w-full">
+              {/* Title Section */}
+              <Card className="p-5">
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                   <h2 className="text-[24px] sm:text-[32px] font-semibold leading-tight sm:leading-10 tracking-[-0.9px] text-[#2e3333]">
                     {detail.title}
@@ -233,35 +192,28 @@ export default function ContentReviewPage() {
                   {detail.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="rounded-full px-2 py-0.5 text-[10px] uppercase text-[#2b2b2b]"
-                      style={{
-                        backgroundColor: "rgba(139,170,135,0.32)",
-                      }}
+                      className="rounded-full px-2 py-0.5 text-[10px] uppercase text-[#2b2b2b] bg-[#8BAA87]/30"
                     >
                       {tag}
                     </span>
                   ))}
                 </div>
-              </div>
+              </Card>
 
-              {/* rest unchanged */}
-              <div className="rounded-[14px] border border-[#f3f4f6] bg-white px-5 py-5 shadow-sm">
+              {/* Visual Card */}
+              <Card className="p-5">
                 {detail.visual}
-              </div>
+              </Card>
 
-              <div className="rounded-[14px] border border-[#f3f4f6] bg-white px-5 py-5 shadow-sm">
-                <p className="mb-4 text-xl font-medium text-[#2b2b2b]">
-                  Description
-                </p>
+              {/* Description Card */}
+              <Card title="Description" className="p-5">
                 <p className="text-base font-medium leading-[26px] text-[#2e3333]">
                   {detail.description}
                 </p>
-              </div>
+              </Card>
 
-              <div className="rounded-[14px] border border-[#f3f4f6] bg-white px-5 py-5 shadow-sm">
-                <p className="mb-4 text-xl font-medium text-[#2b2b2b]">
-                  Completeness Check
-                </p>
+              {/* Completeness Card */}
+              <Card title="Completeness Check" className="p-5">
                 <div className="flex flex-col gap-2">
                   {detail.completeness.map(({ label, ok }) => (
                     <div
@@ -279,13 +231,14 @@ export default function ContentReviewPage() {
                     </div>
                   ))}
                 </div>
-              </div>
+              </Card>
 
-              <div className="rounded-[14px] border border-[#f3f4f6] bg-white px-5 py-5 shadow-sm">
+              {/* Actions Card */}
+              <Card className="p-5">
                 <div className="flex flex-col sm:flex-row gap-3">
                   <button
                     onClick={handleApprove}
-                    className="flex h-12 w-full items-center justify-center gap-2.5 rounded-[8px] bg-[#8baa87] text-base font-semibold text-white transition hover:opacity-90"
+                    className="flex h-12 w-full items-center justify-center gap-2.5 rounded-[8px] bg-[#8baa87] text-base font-semibold text-white transition hover:bg-[#7a9a76]"
                   >
                     <CheckCircleIcon className="h-5 w-5" />
                     Approve
@@ -295,11 +248,11 @@ export default function ContentReviewPage() {
                     Edit
                   </button>
                 </div>
-              </div>
+              </Card>
             </div>
           )}
         </div>
       </div>
-    </DashboardLayout>
+    </PageLayout>
   );
 }

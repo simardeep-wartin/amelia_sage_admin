@@ -14,7 +14,7 @@ import Button from "@/components/ui/Button";
 import Card from "@/components/common/Card";
 import FilterDropdown from "@/components/ui/FilterDropdown";
 import Chart from "@/components/charts/Chart";
-import DashboardLayout from "@/components/layout/DashboardLayout";
+import PageLayout from "@/components/layout/PageLayout";
 import DashboardLoader from "@/components/loaders/dashboard-loader";
 import appData from "@/data/app-data.json";
 import Link from "next/link";
@@ -64,7 +64,7 @@ export default function DashboardPage() {
   if (loading) return <DashboardLoader />;
 
   return (
-    <DashboardLayout title="Dashboard Overview">
+    <PageLayout title="Dashboard Overview">
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-[2fr_1fr]">
         <div className="space-y-4">
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-[2fr_1fr]">
@@ -333,6 +333,6 @@ export default function DashboardPage() {
           </Card>
         </div>
       </div>
-    </DashboardLayout>
+    </PageLayout>
   );
 }
