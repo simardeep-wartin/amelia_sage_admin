@@ -12,10 +12,10 @@ interface ActionModalProps {
   onClose: () => void;
   type: ModalType;
   title: string;
-  categoryName?: string; // For intro-screen title
+  categoryName?: string;
   onSave: (data: any) => void;
   actionText?: string;
-  nameLabel?: string; // For category
+  nameLabel?: string;
 }
 
 export default function ActionModal({
@@ -28,10 +28,9 @@ export default function ActionModal({
   actionText,
   nameLabel,
 }: ActionModalProps) {
-  // Common states
-  const [field1, setField1] = useState(""); // title / name / subtitle
-  const [field2, setField2] = useState(""); // description / sageSays
-  const [field3, setField3] = useState(""); // description (for intro-screen)
+  const [field1, setField1] = useState("");
+  const [field2, setField2] = useState("");
+  const [field3, setField3] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -60,7 +59,7 @@ export default function ActionModal({
     <>
       <button
         onClick={onClose}
-        className="flex-1 h-10 sm:h-12 rounded-[20px] border border-[#EDEDED] bg-[#F9F9F9] text-sm sm:text-base font-semibold text-charcoal transition-colors hover:bg-gray-100"
+        className="flex-1 h-10 sm:h-12 rounded-lg border border-[#EDEDED] bg-[#F9F9F9] text-sm sm:text-base font-semibold text-charcoal transition-colors hover:bg-gray-100"
       >
         Cancel
       </button>
@@ -68,14 +67,14 @@ export default function ActionModal({
         <>
           <button
             onClick={handleSave}
-            className="w-full sm:flex-1 h-12 rounded-[20px] border border-sageGreen bg-white text-base font-semibold text-sageGreen transition-colors hover:bg-green-50"
+            className="w-full sm:flex-1 h-12 rounded-lg border border-sageGreen bg-white text-base font-semibold text-sageGreen transition-colors hover:bg-green-50"
           >
             Save as Draft
           </button>
           <button
             onClick={handleSave}
             disabled={!isFormValid}
-            className="w-full sm:flex-1 h-12 rounded-[20px] bg-sageGreen text-base font-semibold text-white transition-colors hover:bg-[#7fa18c] disabled:bg-[#C1D2A4] disabled:cursor-not-allowed disabled:bg-sageGreen/10"
+            className="w-full sm:flex-1 h-12 rounded-lg bg-sageGreen text-base font-semibold text-white transition-colors hover:bg-[#7fa18c] disabled:bg-[#C1D2A4] disabled:cursor-not-allowed disabled:bg-sageGreen/10"
           >
             {actionText || (type === "exercise" ? "+ Publish Exercise" : "+ Add Intro Screen")}
           </button>
@@ -83,7 +82,7 @@ export default function ActionModal({
       ) : (
         <button
           onClick={handleSave}
-          className="flex-1 h-10 sm:h-12 rounded-[20px] bg-[#8EB19D] text-sm sm:text-base font-semibold text-white transition-colors hover:bg-[#7fa18c]"
+          className="flex-1 h-10 sm:h-12 rounded-lg bg-[#8EB19D] text-sm sm:text-base font-semibold text-white transition-colors hover:bg-[#7fa18c]"
         >
           {actionText}
         </button>
@@ -124,7 +123,7 @@ export default function ActionModal({
             Add Description
           </label>
           <textarea
-            className="w-full rounded-[20px] border border-[#ededed] bg-white px-5 py-4 font-medium text-m text-charcoal placeholder:text-[#e1e1e1] outline-none transition focus:border-gold/55 focus:ring-2 focus:ring-gold/20 min-h-[140px] resize-none"
+            className="w-full rounded-lg border border-[#ededed] bg-white px-5 py-4 font-medium text-m text-charcoal placeholder:text-[#e1e1e1] outline-none transition focus:border-gold/55 focus:ring-2 focus:ring-gold/20 min-h-[140px] resize-none"
             placeholder="Add Description Here"
             value={type === "intro-screen" ? field3 : field2}
             onChange={(e) => type === "intro-screen" ? setField3(e.target.value) : setField2(e.target.value)}
@@ -139,7 +138,7 @@ export default function ActionModal({
             </label>
             <div 
               onClick={() => fileInputRef.current?.click()}
-              className="flex flex-col items-center justify-center rounded-[20px] border-2 border-dashed border-[#E5E5E5] bg-[#FDFDFD] py-10 transition-colors hover:bg-gray-50 cursor-pointer"
+              className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-[#E5E5E5] bg-[#FDFDFD] py-10 transition-colors hover:bg-gray-50 cursor-pointer"
             >
               <input 
                 type="file" 

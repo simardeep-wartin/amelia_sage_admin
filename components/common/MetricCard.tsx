@@ -28,7 +28,7 @@ export default function MetricCard({
     <div
       className={`flex h-[125px] flex-col justify-center rounded-[14px] border border-cardBorder bg-white px-5 shadow-sm ${className}`}
     >
-      <p className="font-sans text-base font-medium text-charcoal">{title}</p>
+      <p className="font-sans text-m font-bold text-charcoal">{title}</p>
       <div className="mt-4 flex items-center gap-4">
         <div
           className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full"
@@ -42,7 +42,7 @@ export default function MetricCard({
         </div>
         <div>
           <p
-            className="text-[32px] font-bold leading-tight text-charcoal"
+            className="text-[24px] font-bold leading-tight text-charcoal"
             style={valueColor ? { color: valueColor } : undefined}
           >
             {value}

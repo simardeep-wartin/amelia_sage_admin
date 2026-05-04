@@ -17,7 +17,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   const errorId = `${inputId}-error`;
 
   const inputClass = [
-    "h-12 w-full rounded-[20px]",
+    "h-12 w-full rounded-lg",
     "border border-[#ededed] bg-white",
     "px-5 py-3 font-medium text-m text-charcoal placeholder:text-[#e1e1e1]",
     "outline-none transition",

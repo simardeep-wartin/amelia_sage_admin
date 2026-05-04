@@ -91,7 +91,7 @@ export default function WorkOnMeExercisesPage() {
             value="5"
             subtitle="Active areas"
             subtitleColor="#71717A"
-            iconSrc="/auth/circleTickGreen.svg"
+            iconSrc="/auth/circleTick.svg"
           />
           <MetricCard
             title="Total Exercises"
@@ -109,17 +109,17 @@ export default function WorkOnMeExercisesPage() {
             <Button
               onClick={() => setIsEmotionModalOpen(true)}
               variant="ghost"
-              className="text-sageGreen hover:bg-transparent hover:text-sageGreen px-0 font-medium sm:px-4 shrink-0"
+              className="text-sageGreen hover:bg-transparent hover:text-sageGreen px-0 font-medium sm:px-4 shrink-0 h-[28px]"
               leftIcon={<PlusIcon className="h-5 w-5" />}
             >
               Add New Emotion
             </Button>
           }
-          className="p-6 md:p-8"
+          className="p-6 md:p-8 font-bold"
         >
-          <p className="mb-6 text-[15px] text-grey -mt-3">
+          <div className="mb-6 text-[15px] text-grey -mt-3 font-normal">
             Manage how users are guided through different emotional states with tailored exercise recommendations.
-          </p>
+          </div>
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             {emotionsData.map((emotion) => (
@@ -143,7 +143,7 @@ export default function WorkOnMeExercisesPage() {
             <Button
               onClick={() => setIsFocusModalOpen(true)}
               variant="ghost"
-              className="text-sageGreen hover:bg-transparent hover:text-sageGreen px-0 font-medium sm:px-4 shrink-0"
+              className="text-sageGreen hover:bg-transparent hover:text-sageGreen px-0 font-medium sm:px-4 shrink-0 h-[28px]"
               leftIcon={<PlusIcon className="h-5 w-5" />}
             >
               Add New Focus

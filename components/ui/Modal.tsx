@@ -31,7 +31,7 @@ export default function Modal({
         
         {/* Header */}
         <div className="flex items-center justify-between p-6 pb-2">
-          <h2 className="text-lg sm:text-xl font-bold text-charcoal">{title}</h2>
+          <h2 className="text-[24px] font-medium text-charcoal">{title}</h2>
           <button
             onClick={onClose}
             className="text-grey hover:text-charcoal transition-colors p-1 rounded-full hover:bg-black/5"

@@ -20,19 +20,17 @@ export default function ActionCard({
   mainValue,
   mainLabel,
   onAction,
-  actionIcon = <PencilSquareIcon className="h-4 w-4" />,
+  actionIcon = <PencilSquareIcon className="h-6 w-6" />,
 }: ActionCardProps) {
   return (
     <div className="flex items-center justify-between rounded-xl border border-cardBorder bg-white p-4 sm:p-5 shadow-sm transition-all hover:shadow-md">
       <div className="flex items-center gap-3 sm:gap-4">
-        {/* Icon container */}
         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-cardBorder bg-transparent">
           {icon}
         </div>
-        {/* Title and subtitle */}
         <div className="flex flex-col">
-          <span className="font-cormorant text-xl font-medium text-charcoal">{title}</span>
-          {subtitle && <span className="text-xs text-grey mt-0.5">{subtitle}</span>}
+          <span className="font-inter text-m font-semibold text-slate">{title}</span>
+          {subtitle && <span className="text-s font-normal text-[#6D7280] mt-0.5">{subtitle}</span>}
         </div>
       </div>
 
@@ -40,10 +38,10 @@ export default function ActionCard({
         {/* Main Value/Label */}
         {(mainValue !== undefined || mainLabel) && (
           <div className="flex flex-col items-center justify-center mr-2">
-            <span className="font-cormorant text-[28px] font-medium italic text-charcoal leading-none">
+            <span className="font-cormorant text-[24px] font-medium italic text-charcoal leading-none">
               {mainValue}
             </span>
-            {mainLabel && <span className="text-[11px] text-grey mt-1">{mainLabel}</span>}
+            {mainLabel && <span className="text-xs font-normal text-grey mt-1">{mainLabel}</span>}
           </div>
         )}
         
@@ -51,7 +49,7 @@ export default function ActionCard({
         {onAction && (
           <button
             onClick={onAction}
-            className="flex h-8 w-8 items-center justify-center rounded border border-border bg-white text-grey hover:bg-softstone hover:text-charcoal transition-colors"
+            className="flex px-2 py-1 items-center justify-center rounded-lg border border-border bg-white text-grey hover:bg-softstone hover:text-charcoal transition-colors cursor-pointer"
           >
             {actionIcon}
           </button>
