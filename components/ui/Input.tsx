@@ -21,7 +21,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
     "border border-[#ededed] bg-white",
     "px-5 py-3 font-medium text-m text-charcoal placeholder:text-[#e1e1e1]",
     "outline-none transition",
-    "focus:border-gold/55 focus:ring-2 focus:ring-gold/20",
+    "focus:border-sageGreen/55 focus:ring-2 focus:ring-sageGreen/20",
     error ? "border-red-400/70 focus:border-red-400 focus:ring-red-400/20" : "",
     rightSlot ? "pr-12" : "",
     className ?? "",

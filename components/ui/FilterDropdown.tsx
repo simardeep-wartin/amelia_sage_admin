@@ -13,12 +13,14 @@ type FilterDropdownProps = {
   options?: string[];
   value?: string;
   onChange?: (value: string, range?: { from: Date | null; to: Date | null }) => void;
+  variant?: "default" | "icon";
 };
 
 export default function FilterDropdown({
-  options = ["Today", "This Week", "This Month", "This Year", "Custom"],
+  options = ["Today", "This Week", "This month", "This Year", "Custom"],
   value,
   onChange,
+  variant = "default",
 }: FilterDropdownProps) {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(value || options[0]);
@@ -36,13 +38,25 @@ export default function FilterDropdown({
 
   const handleSelect = (opt: string) => {
     setSelected(opt);
-    onChange?.(opt);
+    if (opt !== "Custom") {
+      // If not custom, we might want to close and change immediately, 
+      // but the design shows a Save button even for simple selections?
+      // Actually, looking at Frame 1707480722, it's selected and Save is active.
+    }
   };
 
   const handleSave = () => {
     if (isSaveDisabled) return;
     setOpen(false);
     onChange?.(selected, { from, to });
+  };
+
+  const handleClear = () => {
+    setSelected(options[0]);
+    setFrom(null);
+    setTo(null);
+    // Not closing the dropdown on clear as per common UI patterns, 
+    // but the user can then hit Save or Cancel.
   };
 
   return (
@@ -56,104 +70,127 @@ export default function FilterDropdown({
       className="relative outline-none font-[Inter]"
     >
       {/* Trigger */}
-      <button
-        onClick={() => setOpen((p) => !p)}
-        className="flex w-[148px] items-center justify-between rounded-[8px] border border-[#E5E7EB] bg-white px-3 py-[6px] text-[12px] text-[#111827]"
-      >
-        {selected}
-        <ChevronDownIcon
-          className={cn(
-            "h-4 w-4 text-[#6B7280] transition-transform",
-            open && "rotate-180"
-          )}
-        />
-      </button>
+      {variant === "default" ? (
+        <button
+          onClick={() => setOpen((p) => !p)}
+          className="flex w-[148px] cursor-pointer items-center justify-between rounded-[8px] border border-[#E5E7EB] bg-white px-3 py-[7px] text-[12px] font-medium text-[#111827]"
+        >
+          <span className="truncate">{selected}</span>
+          <ChevronDownIcon
+            className={cn(
+              "h-4 w-4 text-[#6B7280] transition-transform ml-2",
+              open && "rotate-180"
+            )}
+          />
+        </button>
+      ) : (
+        <button
+          onClick={() => setOpen((p) => !p)}
+          className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg hover:bg-gray-50 transition-colors"
+        >
+          <img src="/auth/filter.svg" alt="Filter" className="h-5 w-5" />
+        </button>
+      )}
 
       {/* Dropdown */}
       {open && (
-        <div className="absolute right-0 top-[calc(100%+6px)] z-50 w-[240px] rounded-[10px] border border-[#E5E7EB] bg-white shadow-sm">
+        <div className="absolute right-0 top-[calc(100%+8px)] z-50 w-[249px] rounded-[10px] border border-[#E5E7EB] bg-white shadow-[0px_4px_12px_rgba(0,0,0,0.08)] overflow-hidden">
 
           {/* Options */}
-          <div className="py-1">
-            {options.map((opt) => (
-              <label
-                key={opt}
-                className="flex items-center gap-2 px-3 py-[6px] text-[12px] text-[#111827] cursor-pointer hover:bg-[#F9FAFB]"
-              >
-                <input
-                  type="radio"
-                  checked={selected === opt}
-                  onChange={() => handleSelect(opt)}
-                  className="h-3 w-3 accent-[#6FAF8F]"
-                />
-                {opt}
-              </label>
+          <div className="flex flex-col">
+            {options.map((opt, idx) => (
+              <div key={opt}>
+                <label
+                  className="flex items-center gap-2.5 px-4 py-[10px] text-[13px] text-[#111827] cursor-pointer hover:bg-[#F9FAFB] transition-colors"
+                  onClick={() => handleSelect(opt)}
+                >
+                  <div className="relative flex items-center justify-center">
+                    <input
+                      type="radio"
+                      name="filter-option"
+                      checked={selected === opt}
+                      onChange={() => handleSelect(opt)}
+                      className="peer sr-only"
+                    />
+                    <div className={cn(
+                      "h-[15px] w-[15px] rounded-full border transition-all flex items-center justify-center",
+                      selected === opt
+                        ? "border-[#94B694] bg-white"
+                        : "border-[#D1D5DB] bg-white"
+                    )}>
+                      {selected === opt && (
+                        <div className="h-[7px] w-[7px] rounded-full bg-[#94B694]" />
+                      )}
+                    </div>
+                  </div>
+                  <span className={cn(
+                    "font-medium",
+                    selected === opt ? "text-[#111827]" : "text-[#111827]"
+                  )}>
+                    {opt}
+                  </span>
+                </label>
+                {idx < options.length - 1 && (
+                  <div className="h-[1px] bg-[#F3F4F6] mx-0" />
+                )}
+              </div>
             ))}
           </div>
 
-          <div className="h-px bg-[#F3F4F6]" />
-
           {/* Custom Range */}
           {isCustom && (
-            <div className="px-3 py-2 space-y-2">
-
+            <div className="px-4 py-3 space-y-3 bg-white border-t border-[#F3F4F6]">
               {/* From */}
-              <div>
-                <p className="text-[10px] text-[#6B7280] mb-1">From:</p>
-                <div className="relative">
+              <div className="space-y-1.5">
+                <p className="text-[12px] font-bold text-[#111827]">From:</p>
+                <div className="relative group">
                   <DatePicker
                     selected={from}
                     onChange={(date: Date | null) => setFrom(date)}
                     maxDate={new Date()}
-                    placeholderText="mm / dd / yyyy"
+                    placeholderText="mm/ dd/ yyyy"
                     dateFormat="MM/dd/yyyy"
-                    popperClassName="z-50"
-                    className="w-full h-[28px] rounded-[6px] border border-[#E5E7EB] bg-white text-[12px] pl-2 pr-8 text-[#111827] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#6FAF8F] cursor-pointer"
+                    popperClassName="z-[60]"
+                    className="w-full h-[36px] rounded-[8px] border border-[#E5E7EB] bg-white text-[13px] pl-3 pr-10 text-[#111827] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#94B694] transition-colors cursor-pointer"
                   />
-                  <CalendarDaysIcon className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 text-[#9CA3AF]" />
+                  <CalendarDaysIcon className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#94B694]" />
                 </div>
               </div>
 
               {/* To */}
-              <div>
-                <p className="text-[10px] text-[#6B7280] mb-1">To:</p>
-                <div className="relative">
+              <div className="space-y-1.5">
+                <p className="text-[12px] font-bold text-[#111827]">To:</p>
+                <div className="relative group">
                   <DatePicker
                     selected={to}
                     onChange={(date: Date | null) => setTo(date)}
                     minDate={from || undefined}
                     maxDate={new Date()}
-                    placeholderText="mm / dd / yyyy"
+                    placeholderText="mm/ dd/ yyyy"
                     dateFormat="MM/dd/yyyy"
-                    popperClassName="z-50"
-                    className="w-full h-[28px] rounded-[6px] border border-[#E5E7EB] bg-white pl-2 pr-8 text-[12px] text-[#111827] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#6FAF8F] cursor-pointer"
+                    popperClassName="z-[60]"
+                    className="w-full h-[36px] rounded-[8px] border border-[#E5E7EB] bg-white text-[13px] pl-3 pr-10 text-[#111827] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#94B694] transition-colors cursor-pointer"
                   />
-                  <CalendarDaysIcon className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 text-[#9CA3AF]" />
+                  <CalendarDaysIcon className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#94B694]" />
                 </div>
               </div>
             </div>
           )}
 
-          <div className="h-px bg-[#F3F4F6]" />
+          <div className="h-[1px] bg-[#F3F4F6]" />
 
           {/* Footer */}
-          <div className="flex items-center justify-between px-3 py-2">
-
+          <div className="flex items-center justify-between bg-white px-4 py-3">
             <button
-              className="text-[11px] text-[#6B7280] hover:text-[#111827]"
-              onClick={() => {
-                setSelected(options[0]);
-                setFrom(null);
-                setTo(null);
-                onChange?.(options[0]);
-              }}
+              className="cursor-pointer text-[13px] font-medium text-[#111827] transition-opacity hover:opacity-70"
+              onClick={handleClear}
             >
               Clear All
             </button>
 
             <div className="flex gap-2">
               <button
-                className="h-[28px] rounded-[6px] border border-[#D1D5DB] px-3 text-[11px] text-[#374151] hover:bg-[#F9FAFB]"
+                className="h-[34px] cursor-pointer rounded-[8px] border border-[#D1D5DB] px-4 text-[13px] font-medium text-[#374151] transition-colors hover:bg-[#F9FAFB]"
                 onClick={() => setOpen(false)}
               >
                 Cancel
@@ -163,10 +200,10 @@ export default function FilterDropdown({
                 disabled={isSaveDisabled}
                 onClick={handleSave}
                 className={cn(
-                  "h-[28px] rounded-[6px] px-3 text-[11px]",
+                  "h-[34px] rounded-[8px] px-4 text-[13px] font-medium transition-all",
                   isSaveDisabled
-                    ? "bg-[#E5E7EB] text-[#9CA3AF] cursor-not-allowed"
-                    : "bg-[#6FAF8F] text-white hover:bg-[#5C9E7C]"
+                    ? "cursor-not-allowed bg-[#E5E7EB] text-[#9CA3AF]"
+                    : "cursor-pointer bg-[#94B694] text-white hover:bg-[#83a383]"
                 )}
               >
                 Save

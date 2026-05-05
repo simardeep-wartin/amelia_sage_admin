@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Card from "@/components/common/Card";
+import FilterDropdown from "@/components/ui/FilterDropdown";
 
 interface SummaryItem {
   label: string;
@@ -24,13 +25,13 @@ export default function SummaryGrid({
   items,
   columns = "grid-cols-1",
 }: SummaryGridProps) {
+  const [filter, setFilter] = useState("This Week");
+
   return (
     <Card 
       title={title}
       actions={
-        <button type="button" className="text-slate hover:text-charcoal" aria-label="Filter">
-          <img src="/auth/filter.svg" alt="icon" className="h-6 w-6" />
-        </button>
+        <FilterDropdown variant="icon" value={filter} onChange={setFilter} />
       }
     >
       {subtitle && <p className="mt-1 text-s text-slate">{subtitle}</p>}

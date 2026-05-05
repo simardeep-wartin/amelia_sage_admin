@@ -27,14 +27,14 @@ export default function Modal({
   return (
     <div className={`fixed inset-0 ${zIndex} flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm`}>
       {/* Modal Container */}
-      <div className={`w-full ${maxWidth} rounded-[20px] bg-[#FBFBFB] shadow-lg flex flex-col max-h-[90vh]`}>
-        
+      <div className={`w-full ${maxWidth} rounded-[20px] bg-white shadow-lg flex flex-col max-h-[90vh]`}>
+
         {/* Header */}
         <div className="flex items-center justify-between p-6 pb-2">
           <h2 className="text-[24px] font-medium text-charcoal">{title}</h2>
           <button
             onClick={onClose}
-            className="text-grey hover:text-charcoal transition-colors p-1 rounded-full hover:bg-black/5"
+            className="text-grey hover:text-charcoal transition-colors p-2 rounded-md hover:bg-black/5 cursor-pointer"
           >
             <XMarkIcon className="h-5 w-5" />
           </button>
@@ -47,7 +47,7 @@ export default function Modal({
 
         {/* Footer */}
         {footer && (
-          <div className="p-6 pt-4 flex flex-col sm:flex-row items-center gap-4 bg-[#FBFBFB] rounded-b-[20px]">
+          <div className="p-6 pt-4 flex flex-col sm:flex-row items-center gap-4 bg-white rounded-b-[20px]">
             {footer}
           </div>
         )}

@@ -19,12 +19,12 @@ export default function AccordionItem({
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div className="rounded-[20px] bg-[#FAF9F6] border border-[#F0EFEA] overflow-hidden transition-all">
+    <div className="rounded-[24px] bg-[#FAF9F6] border border-[#F0EFEA] overflow-hidden transition-all">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-between p-5 text-left transition-colors hover:bg-[#F2F1ED]"
+        className="w-full flex items-center justify-between p-5 text-left transition-colors hover:bg-[#F2F1ED] cursor-pointer"
       >
-        <span className="font-medium text-[15px] text-charcoal">{title}</span>
+        <span className="font-medium text-m text-charcoal font-inter">{title}</span>
         {isExpanded ? (
           <ChevronUpIcon className="h-5 w-5 text-charcoal" />
         ) : (
@@ -35,7 +35,7 @@ export default function AccordionItem({
       {isExpanded && (
         <div className="p-5 pt-0">
           <div className="h-[1px] w-full bg-[#E5E5E5] mb-4"></div>
-          
+
           <div className="space-y-4">
             {children}
           </div>

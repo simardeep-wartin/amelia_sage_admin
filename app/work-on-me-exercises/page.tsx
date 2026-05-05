@@ -10,7 +10,7 @@ import ActionCard from "@/components/common/ActionCard";
 import { ArrowUpRightIcon, PlusIcon } from "@heroicons/react/24/outline";
 import ActionModal from "@/components/common/ActionModal";
 
-import CategoryManagementModal from "@/components/common/CategoryManagementModal";
+import CategoryManagementPanel from "@/components/common/CategoryManagementPanel";
 
 
 // --- Icons ---
@@ -191,7 +191,7 @@ export default function WorkOnMeExercisesPage() {
         onSave={(data) => console.log("New Focus Area:", data)}
       />
 
-      <CategoryManagementModal
+      <CategoryManagementPanel
         isOpen={!!managedCategory}
         onClose={() => setManagedCategory(null)}
         categoryName={managedCategory || ""}

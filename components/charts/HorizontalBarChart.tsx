@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   Bar,
   BarChart,
@@ -11,6 +11,7 @@ import {
   YAxis,
 } from "recharts";
 import ChartCard from "@/components/common/ChartCard";
+import FilterDropdown from "@/components/ui/FilterDropdown";
 
 interface HighlightItem {
   title: string;
@@ -45,11 +46,13 @@ export default function HorizontalBarChart({
   xDomain = [0, 3000],
   barColor = "#8B7EC8",
 }: HorizontalBarChartProps) {
+  const [filter, setFilter] = useState("This Week");
+
   return (
     <ChartCard 
       title={title}
       actions={
-        <button type="button" className="text-slate hover:text-charcoal"><img src="/auth/filter.svg" alt="icon" className="h-6 w-6" /></button>
+        <FilterDropdown variant="icon" value={filter} onChange={setFilter} />
       }
       footer={
         <div className="space-y-4">

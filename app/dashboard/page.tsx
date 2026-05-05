@@ -33,6 +33,8 @@ type ActionIconKey = keyof typeof ICONS;
 export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [activeUsersFilter, setActiveUsersFilter] = useState("This Week");
+  const [progressFilter, setProgressFilter] = useState("This Week");
+  const [distributionFilter, setDistributionFilter] = useState("This Week");
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -93,7 +95,16 @@ export default function DashboardPage() {
               </div>
               <Chart data={dashboardData.activeUsersChart} />
             </Card>
-            <Card title="Wellth Plan Progress">
+            <Card
+              title="Wellth Plan Progress"
+              actions={
+                <FilterDropdown
+                  variant="icon"
+                  value={progressFilter}
+                  onChange={setProgressFilter}
+                />
+              }
+            >
               <div className="space-y-4">
                 {dashboardData.progressItems.map((item) => (
                   <div key={item.label}>
@@ -147,7 +158,16 @@ export default function DashboardPage() {
             </div>
           </Card>
 
-          <Card title="Core vs Free Distribution">
+          <Card
+            title="Core vs Free Distribution"
+            actions={
+              <FilterDropdown
+                variant="icon"
+                value={distributionFilter}
+                onChange={setDistributionFilter}
+              />
+            }
+          >
             <div className="overflow-hidden rounded-2xl">
               <div className="grid grid-cols-[1fr_1.5fr]">
                 <div className="flex h-24 flex-col items-center justify-center bg-gradient-to-r from-sageGreen to-gold">

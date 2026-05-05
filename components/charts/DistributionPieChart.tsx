@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   Cell,
   Pie,
@@ -9,6 +9,7 @@ import {
   Tooltip,
 } from "recharts";
 import ChartCard from "@/components/common/ChartCard";
+import FilterDropdown from "@/components/ui/FilterDropdown";
 
 interface PieItem {
   label: string;
@@ -41,11 +42,13 @@ export default function DistributionPieChart({
 }: DistributionPieChartProps) {
   const chartData = data.map((item) => ({ ...item, chartValue: item.chartValue ?? item.value }));
 
+  const [filter, setFilter] = useState("This Week");
+
   return (
     <ChartCard 
       title={title}
       actions={
-        <button type="button" className="text-slate hover:text-charcoal"><img src="/auth/filter.svg" alt="icon" className="h-6 w-6" /></button>
+        <FilterDropdown variant="icon" value={filter} onChange={setFilter} />
       }
       footer={
         <div className="space-y-2">
