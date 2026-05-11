@@ -19,7 +19,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   const inputClass = [
     "h-12 w-full rounded-lg",
     "border border-[#ededed] bg-white",
-    "px-5 py-3 font-medium text-m text-charcoal placeholder:text-[#e1e1e1]",
+    "px-5 py-3 font-normal text-m text-charcoal placeholder:text-[#e1e1e1]",
     "outline-none transition",
     "focus:border-sageGreen/55 focus:ring-2 focus:ring-sageGreen/20",
     error ? "border-red-400/70 focus:border-red-400 focus:ring-red-400/20" : "",

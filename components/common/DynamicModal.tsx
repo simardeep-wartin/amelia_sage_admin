@@ -88,7 +88,7 @@ export default function DynamicModal({
               {field.label}
             </label>
             <textarea
-              className="w-full rounded-lg border border-[#ededed] bg-white px-5 py-4 font-medium text-m text-charcoal placeholder:text-[#e1e1e1] outline-none transition focus:border-sageGreen/55 focus:ring-2 focus:ring-sageGreen/20 min-h-[140px] resize-none"
+              className="w-full rounded-lg border border-[#ededed] bg-white px-5 py-4 font-normal text-m text-charcoal placeholder:text-[#e1e1e1] outline-none transition focus:border-sageGreen/55 focus:ring-2 focus:ring-sageGreen/20 min-h-[140px] resize-none"
               placeholder={field.placeholder}
               value={formData[field.name] || ""}
               onChange={(e) => handleInputChange(field.name, e.target.value)}
@@ -131,6 +131,12 @@ export default function DynamicModal({
     }
   };
 
+  const isEdit = !!initialData;
+  const modalTitle = isEdit
+    ? config.title.replace("Add New", "Edit").replace("Create", "Edit")
+    : config.title;
+  const actionText = isEdit ? "Save Changes" : config.actionText;
+
   const footer = (
     <div className="flex flex-col sm:flex-row gap-3 w-full">
       <Button
@@ -140,7 +146,7 @@ export default function DynamicModal({
       >
         Cancel
       </Button>
-      
+
       {config.showDraftAction && (
         <Button
           variant="outline"
@@ -158,7 +164,7 @@ export default function DynamicModal({
         disabled={!isFormValid()}
         className="flex-1"
       >
-        {config.actionText}
+        {actionText}
       </Button>
     </div>
   );
@@ -167,7 +173,7 @@ export default function DynamicModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={config.title}
+      title={modalTitle}
       footer={footer}
       zIndex="z-[60]"
     >

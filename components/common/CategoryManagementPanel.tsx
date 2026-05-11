@@ -36,19 +36,30 @@ export default function CategoryManagementPanel({
 
   const [isIntroModalOpen, setIsIntroModalOpen] = useState(false);
   const [isAddItemModalOpen, setIsAddItemModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<any>(null);
+
 
   const handleAddItem = (data: { title: string; description: string }) => {
-    const newItem = {
-      id: Math.random().toString(36).substr(2, 9),
-      title: data.title,
-      description: data.description,
-    };
-    setItems((prev) => [...prev, newItem]);
+    if (editingItem) {
+      setItems((prev) =>
+        prev.map((item) => (item.id === editingItem.id ? { ...item, ...data } : item))
+      );
+    } else {
+      const newItem = {
+        id: Math.random().toString(36).substr(2, 9),
+        title: data.title,
+        description: data.description,
+      };
+      setItems((prev) => [...prev, newItem]);
+    }
+    setEditingItem(null);
   };
 
   const handleAddIntroScreen = (data: { subtitle: string; sageSays: string; description: string }) => {
     console.log("Intro Screen Saved:", data);
+    setEditingItem(null);
   };
+
 
   const handleDeleteItem = (id: string) => {
     setItems((prev) => prev.filter((item) => item.id !== id));
@@ -85,9 +96,13 @@ export default function CategoryManagementPanel({
                 <AccordionItem
                   key={item.id}
                   title={item.title}
-                  onEdit={() => console.log("Edit", item.id)}
+                  onEdit={() => {
+                    setEditingItem(item);
+                    setIsAddItemModalOpen(true);
+                  }}
                   onDelete={() => handleDeleteItem(item.id)}
                 >
+
                   <div className="space-y-4 pt-2">
                     <div>
                       <p className="text-s tracking-wider text-sageGreen font-medium mb-1">Title</p>
@@ -167,11 +182,16 @@ export default function CategoryManagementPanel({
 
       <ActionModal
         isOpen={isAddItemModalOpen}
-        onClose={() => setIsAddItemModalOpen(false)}
+        onClose={() => {
+          setIsAddItemModalOpen(false);
+          setEditingItem(null);
+        }}
         type={itemType === "exercise" ? "exercise" : "category"}
         title={`Add New ${itemLabel}`}
+        initialData={editingItem}
         onSave={handleAddItem}
       />
+
     </>
   );
 }

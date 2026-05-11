@@ -16,6 +16,7 @@ interface ActionModalProps {
   onSave: (data: any) => void;
   actionText?: string;
   nameLabel?: string;
+  initialData?: any;
 }
 
 export default function ActionModal({
@@ -27,12 +28,28 @@ export default function ActionModal({
   onSave,
   actionText,
   nameLabel,
+  initialData,
 }: ActionModalProps) {
   const [field1, setField1] = useState("");
   const [field2, setField2] = useState("");
   const [field3, setField3] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  React.useEffect(() => {
+    if (initialData && isOpen) {
+      if (type === "category" || type === "exercise") {
+        setField1(initialData.title || initialData.name || "");
+        setField2(initialData.description || "");
+      } else if (type === "intro-screen") {
+        setField1(initialData.subtitle || "");
+        setField2(initialData.sageSays || "");
+        setField3(initialData.description || "");
+      }
+    } else if (!isOpen) {
+      resetForm();
+    }
+  }, [initialData, isOpen, type]);
 
   const resetForm = () => {
     setField1("");
@@ -54,6 +71,8 @@ export default function ActionModal({
   };
 
   const isFormValid = field1.trim() !== "" && field2.trim() !== "";
+  const isEdit = !!initialData;
+  const modalTitle = isEdit ? title.replace("Add New", "Edit").replace("Create", "Edit") : title;
 
   const footer = (
     <>
@@ -65,19 +84,21 @@ export default function ActionModal({
       </button>
       {type === "exercise" || type === "intro-screen" ? (
         <>
+          {!isEdit && (
+            <button
+              onClick={handleSave}
+              disabled={!isFormValid}
+              className="w-full sm:flex-1 h-12 rounded-lg border border-sageGreen text-base font-semibold text-sageGreen transition-colors hover:bg-green-50 disabled:border-sageGreen/40 disabled:text-[#C1D2A4] disabled:cursor-not-allowed disabled:hover:bg-white"
+            >
+              Save as Draft
+            </button>
+          )}
           <button
             onClick={handleSave}
             disabled={!isFormValid}
-            className="w-full sm:flex-1 h-12 rounded-lg border border-sageGreen text-base font-semibold text-sageGreen transition-colors hover:bg-green-50 disabled:border-sageGreen/40 disabled:text-[#C1D2A4] disabled:cursor-not-allowed disabled:hover:bg-white"
+            className={`w-full sm:flex-1 h-12 rounded-lg bg-sageGreen text-base font-semibold text-white transition-colors hover:bg-[#7fa18c] disabled:bg-[#C1D2A4] disabled:cursor-not-allowed disabled:bg-sageGreen/40 ${isEdit ? "sm:flex-[2]" : ""}`}
           >
-            Save as Draft
-          </button>
-          <button
-            onClick={handleSave}
-            disabled={!isFormValid}
-            className="w-full sm:flex-1 h-12 rounded-lg bg-sageGreen text-base font-semibold text-white transition-colors hover:bg-[#7fa18c] disabled:bg-[#C1D2A4] disabled:cursor-not-allowed disabled:bg-sageGreen/40"
-          >
-            {actionText || (type === "exercise" ? "+ Publish Exercise" : "+ Add Intro Screen")}
+            {isEdit ? "Save Changes" : (actionText || (type === "exercise" ? "+ Publish Exercise" : "+ Add Intro Screen"))}
           </button>
         </>
       ) : (
@@ -85,7 +106,7 @@ export default function ActionModal({
           onClick={handleSave}
           className="flex-1 h-10 sm:h-12 rounded-lg bg-[#8EB19D] text-sm sm:text-base font-semibold text-white transition-colors hover:bg-[#7fa18c]"
         >
-          {actionText}
+          {isEdit ? "Save Changes" : actionText}
         </button>
       )}
     </>
@@ -95,7 +116,7 @@ export default function ActionModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={title}
+      title={modalTitle}
       footer={footer}
       zIndex={type !== "category" ? "z-[60]" : "z-50"}
     >
@@ -124,7 +145,7 @@ export default function ActionModal({
             Add Description
           </label>
           <textarea
-            className="w-full rounded-lg border border-[#ededed] bg-white px-5 py-4 font-medium text-m text-charcoal placeholder:text-[#e1e1e1] outline-none transition focus:border-sageGreen/55 focus:ring-2 focus:ring-sageGreen/20 min-h-[140px] resize-none"
+            className="w-full rounded-lg border border-[#ededed] bg-white px-5 py-4 font-normal text-m text-charcoal placeholder:text-[#e1e1e1] outline-none transition focus:border-sageGreen/55 focus:ring-2 focus:ring-sageGreen/20 min-h-[140px] resize-none"
             placeholder="Add Description Here"
             value={type === "intro-screen" ? field3 : field2}
             onChange={(e) => type === "intro-screen" ? setField3(e.target.value) : setField2(e.target.value)}

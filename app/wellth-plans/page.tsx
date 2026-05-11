@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PageLayout from "@/components/layout/PageLayout";
 import MetricCard from "@/components/common/MetricCard";
 import Card from "@/components/common/Card";
@@ -10,6 +10,7 @@ import { ArrowUpRightIcon, PlusIcon } from "@heroicons/react/24/outline";
 import DynamicModal from "@/components/common/DynamicModal";
 import DynamicSidePanel from "@/components/common/DynamicSidePanel";
 import { WELLTH_MODAL_CONFIG } from "@/lib/wellth-plans.config";
+import WellthPlanLoader from "@/components/loaders/wellth-plan-loader";
 
 // Mock data for Wellth Plans
 const INITIAL_WELLTH_PLANS = [
@@ -44,11 +45,22 @@ const INITIAL_WELLTH_PLANS = [
 ];
 
 export default function WellthPlansPage() {
+  const [loading, setLoading] = useState(true);
   const [plans, setPlans] = useState(INITIAL_WELLTH_PLANS);
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
   const [isAddPlanModalOpen, setIsAddPlanModalOpen] = useState(false);
   const [isDynamicModalOpen, setIsDynamicModalOpen] = useState(false);
   const [modalConfigKey, setModalConfigKey] = useState<string>("addExercise");
+  const [editingItem, setEditingItem] = useState<any>(null);
+
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
 
   // State for exercises within the selected plan
   const [exercises, setExercises] = useState<Record<string, any[]>>({});
@@ -78,20 +90,42 @@ export default function WellthPlansPage() {
     }));
 
     // Update plan exercise count
-    setPlans((prev) => prev.map(p =>
+    setPlans((prev) => prev.map(p => 
       p.id === selectedPlanId ? { ...p, exercisesCount: (exercises[selectedPlanId]?.length || 0) + 1 } : p
     ));
   };
 
+  const handleSaveExercise = (data: any) => {
+    if (!selectedPlanId) return;
+
+    if (editingItem) {
+      setExercises((prev) => ({
+        ...prev,
+        [selectedPlanId]: prev[selectedPlanId].map((item) =>
+          item.id === editingItem.id ? { ...item, ...data } : item
+        ),
+      }));
+    } else {
+      handleAddExercise(data);
+    }
+    setEditingItem(null);
+  };
+
+
   const openModal = (configKey: string) => {
+    setEditingItem(null);
     setModalConfigKey(configKey);
     setIsDynamicModalOpen(true);
   };
 
+
   const selectedPlan = plans.find((p) => p.id === selectedPlanId);
   const currentExercises = selectedPlanId ? exercises[selectedPlanId] || [] : [];
 
+  if (loading) return <WellthPlanLoader />;
+
   return (
+
     <PageLayout title="Wellth Plans">
       <div className="space-y-6">
         {/* Header Section */}
@@ -184,11 +218,16 @@ export default function WellthPlansPage() {
 
       <DynamicModal
         isOpen={isDynamicModalOpen}
-        onClose={() => setIsDynamicModalOpen(false)}
+        onClose={() => {
+          setIsDynamicModalOpen(false);
+          setEditingItem(null);
+        }}
         config={WELLTH_MODAL_CONFIG[modalConfigKey]}
-        onSave={modalConfigKey === "addExercise" ? handleAddExercise : (data) => console.log("Intro Saved:", data)}
+        initialData={editingItem}
+        onSave={handleSaveExercise}
         onSaveDraft={(data) => console.log("Draft Saved:", data)}
       />
+
 
       {/* Side Panel */}
       <DynamicSidePanel
@@ -197,7 +236,13 @@ export default function WellthPlansPage() {
         title={`Manage ${selectedPlan?.title} exercises`}
         items={currentExercises}
         onAction={(action) => openModal(action)}
-        onEditItem={(item) => console.log("Edit Item:", item)}
+        onEditItem={(item) => {
+          console.log("Editing Wellth Plan Item:", item);
+          setEditingItem(item);
+          setModalConfigKey(item.sageSays ? "addIntro" : "addExercise");
+          setIsDynamicModalOpen(true);
+        }}
+
         onDeleteItem={(id) => {
           setExercises(prev => ({
             ...prev,

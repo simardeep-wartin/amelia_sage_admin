@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PageLayout from "@/components/layout/PageLayout";
 import MetricCard from "@/components/common/MetricCard";
 import Card from "@/components/common/Card";
@@ -11,6 +11,7 @@ import { ArrowUpRightIcon, PlusIcon } from "@heroicons/react/24/outline";
 import ActionModal from "@/components/common/ActionModal";
 
 import CategoryManagementPanel from "@/components/common/CategoryManagementPanel";
+import WorkOnMeLoader from "@/components/loaders/work-on-me-loader";
 
 
 // --- Icons ---
@@ -58,9 +59,19 @@ const focusAreasData = typedAppData.workOnMeExercises.focusAreasData.map((item) 
 }));
 
 export default function WorkOnMeExercisesPage() {
+  const [loading, setLoading] = useState(true);
   const [isEmotionModalOpen, setIsEmotionModalOpen] = useState(false);
   const [isFocusModalOpen, setIsFocusModalOpen] = useState(false);
   const [managedCategory, setManagedCategory] = useState<string | null>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) return <WorkOnMeLoader />;
 
   return (
     <PageLayout title="Work on Me Exercises">
