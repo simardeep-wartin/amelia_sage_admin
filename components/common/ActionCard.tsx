@@ -11,6 +11,7 @@ export interface ActionCardProps {
   mainLabel?: string;
   onAction?: () => void;
   actionIcon?: React.ReactNode;
+  actionClassName?: string;
 }
 
 export default function ActionCard({
@@ -21,6 +22,7 @@ export default function ActionCard({
   mainLabel,
   onAction,
   actionIcon = <PencilSquareIcon className="h-6 w-6" />,
+  actionClassName = "border border-border bg-white text-grey hover:bg-softstone hover:text-charcoal",
 }: ActionCardProps) {
   return (
     <div className="flex items-center justify-between rounded-xl border border-cardBorder bg-white p-4 sm:p-5 shadow-sm transition-all hover:shadow-md">
@@ -29,7 +31,7 @@ export default function ActionCard({
           {icon}
         </div>
         <div className="flex flex-col">
-          <span className="font-inter text-m font-semibold text-slate">{title}</span>
+          <span className="font-cormorant text-[20px] font-bold text-charcoal">{title}</span>
           {subtitle && <span className="text-s font-normal text-[#6D7280] mt-0.5">{subtitle}</span>}
         </div>
       </div>
@@ -44,12 +46,12 @@ export default function ActionCard({
             {mainLabel && <span className="text-xs font-normal text-grey mt-1">{mainLabel}</span>}
           </div>
         )}
-        
+
         {/* Action Button */}
         {onAction && (
           <button
             onClick={onAction}
-            className="flex px-2 py-1 items-center justify-center rounded-lg border border-border bg-white text-grey hover:bg-softstone hover:text-charcoal transition-colors cursor-pointer"
+            className={`flex px-2 py-1 items-center justify-center rounded-lg transition-colors cursor-pointer ${actionClassName}`}
           >
             {actionIcon}
           </button>

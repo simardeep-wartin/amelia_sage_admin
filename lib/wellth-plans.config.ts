@@ -1,0 +1,137 @@
+export type FieldType = "text" | "textarea" | "upload" | "select";
+
+export interface FormField {
+  name: string;
+  label: string;
+  placeholder?: string;
+  type: FieldType;
+  options?: string[]; // For select
+  validation?: {
+    required?: boolean;
+    pattern?: string;
+  };
+}
+
+export interface ModalConfig {
+  title: string;
+  description?: string;
+  fields?: FormField[];
+  actionText: string;
+  showDraftAction?: boolean;
+  tabs?: {
+    label: string;
+    fields: FormField[];
+  }[];
+}
+
+export const WELLTH_MODAL_CONFIG: Record<string, ModalConfig> = {
+  addWellthPlan: {
+    title: "Add New Wellth Plan",
+    fields: [
+      {
+        name: "name",
+        label: "Add Wellth Plan Name",
+        placeholder: "Enter Name",
+        type: "text",
+        validation: { required: true },
+      },
+      {
+        name: "description",
+        label: "Add Description",
+        placeholder: "Add Description Here",
+        type: "textarea",
+        validation: { required: true },
+      },
+      {
+        name: "icon",
+        label: "Add Icon",
+        type: "upload",
+      },
+    ],
+    actionText: "+ Add New Wellth Plan",
+  },
+  addExercise: {
+    title: "Add New Exercise",
+    fields: [
+      {
+        name: "title",
+        label: "Add Title",
+        placeholder: "Enter Title",
+        type: "text",
+        validation: { required: true },
+      },
+      {
+        name: "description",
+        label: "Add Description",
+        placeholder: "Add Description Here",
+        type: "textarea",
+        validation: { required: true },
+      },
+    ],
+    actionText: "+ Publish Exercise",
+    showDraftAction: true,
+  },
+  addIntro: {
+    title: "Create Intro Screen",
+    tabs: [
+      {
+        label: "Intro Screens",
+        fields: [
+          {
+            name: "subtitle",
+            label: "Add Subtitle",
+            placeholder: "Enter Subtitle",
+            type: "text",
+            validation: { required: true },
+          },
+          {
+            name: "sageSays",
+            label: "Sage Says",
+            placeholder: "Enter Sage Says",
+            type: "text",
+            validation: { required: true },
+          },
+          {
+            name: "description",
+            label: "Add Description",
+            placeholder: "Add Description Here",
+            type: "textarea",
+            validation: { required: true },
+          },
+        ],
+      },
+      {
+        label: "Sub-intro Screen",
+        fields: [
+          {
+            name: "subtitle",
+            label: "Add Subtitle",
+            placeholder: "Enter Subtitle",
+            type: "text",
+            validation: { required: true },
+          },
+          {
+            name: "description",
+            label: "Add Description",
+            placeholder: "Add Description Here",
+            type: "textarea",
+            validation: { required: true },
+          },
+        ],
+      },
+    ],
+    actionText: "+ Add Intro Screen",
+    showDraftAction: true,
+  },
+};
+
+export const WELLTH_PANEL_CONFIG = {
+  emptyState: {
+    title: "No Exercises Yet",
+    description: "You have not added any exercises yet. Start building your routine by adding exercises tailored to your goals.",
+    actions: [
+      { label: "+ Create Intro Screen", variant: "outline" as const, action: "addIntro" },
+      { label: "+ Create New Exercise", variant: "solid" as const, action: "addExercise" },
+    ],
+  },
+};
