@@ -14,6 +14,7 @@ type FilterDropdownProps = {
   value?: string;
   onChange?: (value: string, range?: { from: Date | null; to: Date | null }) => void;
   variant?: "default" | "icon";
+  className?: string;
 };
 
 export default function FilterDropdown({
@@ -21,6 +22,7 @@ export default function FilterDropdown({
   value,
   onChange,
   variant = "default",
+  className = "",
 }: FilterDropdownProps) {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(value || options[0]);
@@ -73,7 +75,10 @@ export default function FilterDropdown({
       {variant === "default" ? (
         <button
           onClick={() => setOpen((p) => !p)}
-          className="flex w-[148px] cursor-pointer items-center justify-between rounded-[8px] border border-[#E5E7EB] bg-white px-3 py-[7px] text-[12px] font-medium text-[#111827]"
+          className={cn(
+            "flex w-[148px] cursor-pointer items-center justify-between rounded-[8px] border border-[#E5E7EB] px-3 py-[7px] text-[12px] font-medium text-[#111827]",
+            className
+          )}
         >
           <span className="truncate">{selected}</span>
           <ChevronDownIcon
