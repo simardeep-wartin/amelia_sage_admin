@@ -16,5 +16,19 @@ export const exerciseSchema = z.object({
   status: z.enum(["active", "draft", "inactive"]).default("active"),
 });
 
+export const emotionSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  subtitle: z.string().optional(),
+  status: z.enum(["active", "draft", "inactive"]).default("active"),
+});
+
+export const focusSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  subtitle: z.string().optional(),
+  status: z.enum(["active", "draft", "inactive"]).default("active"),
+});
+
 export type CategoryFormData = z.infer<typeof categorySchema>;
 export type ExerciseFormData = z.infer<typeof exerciseSchema>;
+export type EmotionFormData = z.infer<typeof emotionSchema>;
+export type FocusFormData = z.infer<typeof focusSchema>;

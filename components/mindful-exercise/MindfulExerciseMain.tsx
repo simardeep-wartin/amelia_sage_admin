@@ -5,7 +5,7 @@ import { MagnifyingGlassIcon, PlusIcon, ArrowUpRightIcon } from "@heroicons/reac
 import FilterDropdown from "@/components/ui/FilterDropdown";
 import Button from "@/components/ui/Button";
 import CategorySectionList from "./CategorySectionList";
-import MindfulExerciseActionModal from "./MindfulExerciseActionModal";
+import AddEditModal from "@/components/common/AddEditModal";
 import DeleteConfirmationModal from "@/components/common/DeleteConfirmationModal";
 import MindfulExerciseLoader from "@/components/loaders/mindful-exercise-loader";
 import { useMindfulExercise } from "@/hooks/useMindfulExercise";
@@ -60,14 +60,14 @@ export default function MindfulExerciseMain() {
   return (
     <div className="space-y-6">
       {/* Breadcrumbs & Title Area - On Cream Background */}
-      <div className="flex justify-between items-end mb-2 px-1">
+      <div className="flex justify-between items-start mb-2 px-1">
         <div>
-          <div className="flex items-center gap-1 text-[13px] text-[#A1A1A1] mb-2 font-medium">
-            <span>Dashboard</span> / <span>Exercises</span> / <span className="text-[#6B6B6B]">Mindful Exercise Management</span>
-          </div>
           <h1 className="text-[32px] font-cormorant text-[#2D2D2D] font-bold leading-tight">
             Mindful Exercise Management
           </h1>
+                    <div className="flex items-center gap-1 text-[13px] text-[#A1A1A1] mb-2 font-medium">
+            <span>Dashboard</span> / <span>Exercises</span> / <span className="text-[#6B6B6B]">Mindful Exercise Management</span>
+          </div>
         </div>
         <Button variant="ghost" className="text-sageGreen hover:bg-transparent hover:border cursor-pointer hover:text-sageGreen font-semibold px-0 sm:px-4">
           <ArrowUpRightIcon className="h-4 w-4" /> Go to Drafts
@@ -78,7 +78,7 @@ export default function MindfulExerciseMain() {
       <div>
 
         {/* Tabs Row - Background matches page cream */}
-        <div className="bg-[#F7F4EE] border-b border-[#E5E7EB] rounded-t-[24px]">
+        <div className="bg-[#F7F4EE] rounded-t-[24px]">
           <div className="flex gap-2">
             {categories.map((cat) => {
               const isActive = activeTab === cat.name;
@@ -127,8 +127,8 @@ export default function MindfulExerciseMain() {
           </div>
 
           {/* Category Header */}
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-[24px] font-cormorant text-[#2D2D2D] font-bold">
+          <div className="flex justify-between items-center">
+            <h2 className="text-[24px] font-arial text-[#2D2D2D] font-normal">
               {activeTab}
             </h2>
             <Button
@@ -151,11 +151,12 @@ export default function MindfulExerciseMain() {
         </div>
       </div>
 
-      <MindfulExerciseActionModal
+      <AddEditModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSave={handleSaveCategory}
-        mode="category"
+        layout="thumbnail"
+        title={editingCategory ? "Edit Category" : "Add New Category"}
         initialData={editingCategory}
       />
 

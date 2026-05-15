@@ -36,16 +36,16 @@ export default function CategorySectionList({
         >
           <div className="flex flex-col gap-1.5">
             <div className="flex items-center gap-3">
-              <h4 className="text-[16px] font-bold text-[#2D2D2D] group-hover:text-sageGreen transition-colors">
+              <h4 className="text-[20px] font-bold text-[#2D2D2D] group-hover:text-sageGreen transition-colors font-cormorant ">
                 {section.name}
               </h4>
-              <Badge 
-                variant="active" 
-                label="Active" 
-                className="px-2 py-0.5 h-auto text-[10px] font-bold bg-[#DCFCE7] text-[#008236] lowercase first-letter:uppercase" 
+              <Badge
+                variant="active"
+                label="Active"
+                className="px-2 py-0.5 h-auto text-[12px] font-normal bg-[#DCFCE7] text-[#008236] !normal-case"
               />
             </div>
-            <p className="text-[12px] text-[#A1A1A1] font-medium">
+            <p className="text-[12px] text-[#6B6B6B] font-normal font-inter">
               12 min • 15 Exercises
             </p>
           </div>

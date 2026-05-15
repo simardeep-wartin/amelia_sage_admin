@@ -113,7 +113,7 @@ export default function MindfulExerciseLoader({ type = "main" }: MindfulExercise
           </div>
 
           {/* Category Header Skeleton */}
-          <div className="flex justify-between items-center mb-6">
+          <div className="flex justify-between items-center">
             <Skeleton className="h-10 w-56 bg-[#E5E5E5]" />
             <Skeleton className="h-11 w-48 rounded-[10px] bg-[#E5E5E5]" />
           </div>

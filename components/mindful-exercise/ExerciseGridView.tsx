@@ -6,7 +6,7 @@ import { MagnifyingGlassIcon, PlusIcon, ChevronLeftIcon } from "@heroicons/react
 import FilterDropdown from "@/components/ui/FilterDropdown";
 import Button from "@/components/ui/Button";
 import ExerciseCard from "./ExerciseCard";
-import MindfulExerciseActionModal from "./MindfulExerciseActionModal";
+import AddEditModal from "@/components/common/AddEditModal";
 import DeleteConfirmationModal from "@/components/common/DeleteConfirmationModal";
 import EmptyState from "@/components/common/EmptyState";
 import { ExerciseSubCategory, Exercise } from "@/types/mindful-exercise";
@@ -60,11 +60,11 @@ export default function ExerciseGridView({ subCategory }: ExerciseGridViewProps)
         <div className="flex items-center gap-4">
           <button
             onClick={() => router.back()}
-            className="flex items-center justify-center h-10 w-10 bg-white border border-[#F2F2F2] rounded-full text-[#A1A1A1] hover:text-sageGreen transition-all shadow-sm"
+            className="flex items-center justify-center h-9 w-9 bg-white border border-[#F2F2F2] rounded-[12px] text-[#A1A1A1] hover:text-sageGreen transition-all shadow-sm"
           >
             <ChevronLeftIcon className="h-5 w-5 stroke-[2.5px]" />
           </button>
-          <span className="text-[14px] text-[#A1A1A1] font-medium">
+          <span className="text-[14px] text-[#A1A1A1] font-normalnfont-inter">
             Back to yoga Mindful Exercise Management
           </span>
         </div>
@@ -74,8 +74,8 @@ export default function ExerciseGridView({ subCategory }: ExerciseGridViewProps)
             <h1 className="text-[32px] font-cormorant text-[#2D2D2D] font-bold leading-tight">
               {subCategory.name} Exercise Management
             </h1>
-            <div className="flex items-center gap-1 text-[13px] text-[#A1A1A1] mt-1 font-medium">
-              <span>Dashboard</span> / <span>Exercises</span> / <span>Mindful Exercise Management</span> / <span className="text-sageGreen">Seated Yoga Asana</span>
+            <div className="flex items-center gap-1 text-[14px] text-slate mt-1 font-normal">
+              <span>Dashboard</span> / <span>Exercises</span> / <span>Mindful Exercise Management</span> / <span >Seated Yoga Asana</span>
             </div>
           </div>
           <Button 
@@ -133,11 +133,13 @@ export default function ExerciseGridView({ subCategory }: ExerciseGridViewProps)
         </div>
       )}
 
-      <MindfulExerciseActionModal
+      <AddEditModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSave={handleSaveExercise}
-        mode="exercise"
+        layout="media"
+        title={editingExercise ? "Edit Exercise" : "Add New Exercise"}
+        showDraft
         initialData={editingExercise}
       />
 

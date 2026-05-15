@@ -31,14 +31,7 @@ export default function ExerciseCard({ exercise, onEdit, onDelete }: ExerciseCar
       {/* Thumbnail */}
       <div className="relative aspect-[1.1/1] bg-[#F9F7F2] flex items-center justify-center p-8 rounded-t-[20px] overflow-hidden">
         <div className="w-full h-full flex items-center justify-center">
-          <svg width="120" height="120" viewBox="0 0 100 100" className="text-[#8BAA87]">
-             <path 
-                d="M50 20C40 20 35 30 35 40C35 50 45 60 50 80C55 60 65 50 65 40C65 30 60 20 50 20Z" 
-                fill="currentColor" 
-                opacity="0.6" 
-              />
-             <circle cx="50" cy="15" r="5" fill="currentColor" opacity="0.6" />
-          </svg>
+          <img src="/auth/asana.png" alt={exercise.title} className="w-full h-full object-contain" />
         </div>
         <div className="absolute top-4 right-4">
           <Badge 
