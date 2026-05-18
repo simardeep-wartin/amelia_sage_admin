@@ -1,6 +1,6 @@
 "use client";
 
-import React, { ReactNode } from "react";
+import React, { type ReactNode } from "react";
 
 interface ChartCardProps {
   title: string;
@@ -9,12 +9,7 @@ interface ChartCardProps {
   footer?: ReactNode;
 }
 
-export default function ChartCard({
-  title,
-  actions,
-  children,
-  footer,
-}: ChartCardProps) {
+export default function ChartCard({ title, actions, children, footer }: ChartCardProps) {
   return (
     <div className="rounded-[14px] border border-cardBorder bg-paper p-5 shadow-sm">
       <div className="mb-4 flex items-center justify-between">
@@ -22,15 +17,9 @@ export default function ChartCard({
         {actions}
       </div>
 
-      <div className="w-full">
-        {children}
-      </div>
+      <div className="w-full">{children}</div>
 
-      {footer && (
-        <div className="mt-3">
-          {footer}
-        </div>
-      )}
+      {footer && <div className="mt-3">{footer}</div>}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ArrowUpRightIcon, PlusIcon } from "@heroicons/react/24/outline";
 import Button from "@/components/ui/Button";
 import CategorySectionList from "@/components/mindful-exercise/CategorySectionList";
@@ -12,7 +12,7 @@ import CategoryTabs from "@/components/common/CategoryTabs";
 import ListFilters from "@/components/common/ListFilters";
 import { useCalmAndStillness } from "@/hooks/useCalmAndStillness";
 import { useModalState } from "@/hooks/useModalState";
-import { ExerciseSubCategory } from "@/types/mindful-exercise";
+import { type ExerciseSubCategory } from "@/types/mindful-exercise";
 
 const BREADCRUMBS = [
   { label: "Dashboard" },
@@ -25,20 +25,15 @@ const SORT_OPTIONS = ["Name (A-Z)", "Name (Z-A)", "Sort by: Name"];
 
 export default function CalmAndStillnessMain() {
   const { categories, loading } = useCalmAndStillness();
-  const [activeTab, setActiveTab] = useState("");
+  const [activeTabOverride, setActiveTab] = useState<string | null>(null);
+  const activeTab = activeTabOverride ?? categories[0]?.name ?? "";
   const [searchQuery, setSearchQuery] = useState("");
   const modal = useModalState<ExerciseSubCategory>();
-
-  useEffect(() => {
-    if (categories.length > 0 && !activeTab) {
-      setActiveTab(categories[0].name);
-    }
-  }, [categories, activeTab]);
 
   const currentCategory = categories.find((cat) => cat.name === activeTab);
   const sections = currentCategory?.subCategories ?? [];
   const filteredSections = sections.filter((s) =>
-    s.name.toLowerCase().includes(searchQuery.toLowerCase())
+    s.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const handleConfirmDelete = () => {
@@ -107,7 +102,7 @@ export default function CalmAndStillnessMain() {
         onSave={handleSave}
         layout="thumbnail"
         title={modal.editingItem ? "Edit Category" : "Add New Category"}
-        initialData={modal.editingItem}
+        initialData={modal.editingItem ? { name: modal.editingItem.name } : undefined}
       />
 
       <DeleteConfirmationModal

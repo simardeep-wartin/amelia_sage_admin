@@ -17,7 +17,8 @@ const INITIAL_WELLTH_PLANS = [
   {
     id: "1",
     title: "Manage Spiritual Growth and Faith exercises",
-    description: "Reconnect with your inner source through grounding, clarity and gentle spiritual alignment",
+    description:
+      "Reconnect with your inner source through grounding, clarity and gentle spiritual alignment",
     exercisesCount: 0,
     icon: "/auth/sunriseCircle.png",
   },
@@ -31,7 +32,8 @@ const INITIAL_WELLTH_PLANS = [
   {
     id: "3",
     title: "Relationship Healing",
-    description: "Heal relational patterns, strengthen boundaries, and nurture healthy, aligned love",
+    description:
+      "Heal relational patterns, strengthen boundaries, and nurture healthy, aligned love",
     exercisesCount: 0,
     icon: "/auth/circles.png",
   },
@@ -51,8 +53,7 @@ export default function WellthPlansPage() {
   const [isAddPlanModalOpen, setIsAddPlanModalOpen] = useState(false);
   const [isDynamicModalOpen, setIsDynamicModalOpen] = useState(false);
   const [modalConfigKey, setModalConfigKey] = useState<string>("addExercise");
-  const [editingItem, setEditingItem] = useState<any>(null);
-
+  const [editingItem, setEditingItem] = useState<Record<string, unknown> | null>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -61,11 +62,10 @@ export default function WellthPlansPage() {
     return () => clearTimeout(timer);
   }, []);
 
-
   // State for exercises within the selected plan
-  const [exercises, setExercises] = useState<Record<string, any[]>>({});
+  const [exercises, setExercises] = useState<Record<string, Record<string, unknown>[]>>({});
 
-  const handleAddPlan = (data: any) => {
+  const handleAddPlan = (data: Record<string, unknown>) => {
     const newPlan = {
       id: Math.random().toString(36).substr(2, 9),
       title: data.name,
@@ -76,7 +76,7 @@ export default function WellthPlansPage() {
     setPlans((prev) => [...prev, newPlan]);
   };
 
-  const handleAddExercise = (data: any) => {
+  const handleAddExercise = (data: Record<string, unknown>) => {
     if (!selectedPlanId) return;
     const newExercise = {
       id: Math.random().toString(36).substr(2, 9),
@@ -90,19 +90,23 @@ export default function WellthPlansPage() {
     }));
 
     // Update plan exercise count
-    setPlans((prev) => prev.map(p => 
-      p.id === selectedPlanId ? { ...p, exercisesCount: (exercises[selectedPlanId]?.length || 0) + 1 } : p
-    ));
+    setPlans((prev) =>
+      prev.map((p) =>
+        p.id === selectedPlanId
+          ? { ...p, exercisesCount: (exercises[selectedPlanId]?.length || 0) + 1 }
+          : p,
+      ),
+    );
   };
 
-  const handleSaveExercise = (data: any) => {
+  const handleSaveExercise = (data: Record<string, unknown>) => {
     if (!selectedPlanId) return;
 
     if (editingItem) {
       setExercises((prev) => ({
         ...prev,
         [selectedPlanId]: prev[selectedPlanId].map((item) =>
-          item.id === editingItem.id ? { ...item, ...data } : item
+          item.id === editingItem.id ? { ...item, ...data } : item,
         ),
       }));
     } else {
@@ -111,13 +115,11 @@ export default function WellthPlansPage() {
     setEditingItem(null);
   };
 
-
   const openModal = (configKey: string) => {
     setEditingItem(null);
     setModalConfigKey(configKey);
     setIsDynamicModalOpen(true);
   };
-
 
   const selectedPlan = plans.find((p) => p.id === selectedPlanId);
   const currentExercises = selectedPlanId ? exercises[selectedPlanId] || [] : [];
@@ -125,7 +127,6 @@ export default function WellthPlansPage() {
   if (loading) return <WellthPlanLoader />;
 
   return (
-
     <PageLayout title="Wellth Plans">
       <div className="space-y-6">
         {/* Header Section */}
@@ -135,7 +136,10 @@ export default function WellthPlansPage() {
             <p className="text-sm font-bold text-grey">Dashboard / Content / Wellth Plans</p>
           </div>
           <div className="flex items-center gap-3">
-            <Button variant="ghost" className="text-sageGreen hover:bg-transparent hover:border cursor-pointer hover:text-sageGreen font-semibold px-0 sm:px-4">
+            <Button
+              variant="ghost"
+              className="text-sageGreen hover:bg-transparent hover:border cursor-pointer hover:text-sageGreen font-semibold px-0 sm:px-4"
+            >
               <ArrowUpRightIcon className="h-4 w-4" /> Go to Drafts
             </Button>
             <Button
@@ -182,12 +186,10 @@ export default function WellthPlansPage() {
         </div>
 
         {/* Plans List */}
-        <Card
-          title="Your Wellth Plan"
-          className="p-6 md:p-8"
-        >
+        <Card title="Your Wellth Plan" className="p-6 md:p-8">
           <p className="mb-8 text-[15px] text-grey -mt-3">
-            Define and manage focus areas that help users work on specific aspects of their wellbeing.
+            Define and manage focus areas that help users work on specific aspects of their
+            wellbeing.
           </p>
 
           <div className="flex flex-col gap-4">
@@ -228,7 +230,6 @@ export default function WellthPlansPage() {
         onSaveDraft={(data) => console.log("Draft Saved:", data)}
       />
 
-
       {/* Side Panel */}
       <DynamicSidePanel
         isOpen={!!selectedPlanId}
@@ -242,11 +243,10 @@ export default function WellthPlansPage() {
           setModalConfigKey(item.sageSays ? "addIntro" : "addExercise");
           setIsDynamicModalOpen(true);
         }}
-
         onDeleteItem={(id) => {
-          setExercises(prev => ({
+          setExercises((prev) => ({
             ...prev,
-            [selectedPlanId!]: prev[selectedPlanId!].filter(i => i.id !== id)
+            [selectedPlanId!]: prev[selectedPlanId!].filter((i) => i.id !== id),
           }));
         }}
       />

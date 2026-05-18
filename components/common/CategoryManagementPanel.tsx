@@ -25,7 +25,8 @@ export default function CategoryManagementPanel({
     {
       id: "1",
       title: "Morning Gratitude Reflection",
-      description: "A 5-minute guided session to start your day with positive intentions and thankfulness.",
+      description:
+        "A 5-minute guided session to start your day with positive intentions and thankfulness.",
     },
     {
       id: "2",
@@ -36,13 +37,12 @@ export default function CategoryManagementPanel({
 
   const [isIntroModalOpen, setIsIntroModalOpen] = useState(false);
   const [isAddItemModalOpen, setIsAddItemModalOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState<any>(null);
-
+  const [editingItem, setEditingItem] = useState<Record<string, unknown> | null>(null);
 
   const handleAddItem = (data: { title: string; description: string }) => {
     if (editingItem) {
       setItems((prev) =>
-        prev.map((item) => (item.id === editingItem.id ? { ...item, ...data } : item))
+        prev.map((item) => (item.id === editingItem.id ? { ...item, ...data } : item)),
       );
     } else {
       const newItem = {
@@ -55,11 +55,14 @@ export default function CategoryManagementPanel({
     setEditingItem(null);
   };
 
-  const handleAddIntroScreen = (data: { subtitle: string; sageSays: string; description: string }) => {
+  const handleAddIntroScreen = (data: {
+    subtitle: string;
+    sageSays: string;
+    description: string;
+  }) => {
     console.log("Intro Screen Saved:", data);
     setEditingItem(null);
   };
-
 
   const handleDeleteItem = (id: string) => {
     setItems((prev) => prev.filter((item) => item.id !== id));
@@ -80,13 +83,19 @@ export default function CategoryManagementPanel({
             <div className="flex justify-end items-center text-[13px] font-semibold text-sageGreen gap-4 mb-2">
               {showIntroScreenAction && (
                 <>
-                  <button onClick={() => setIsIntroModalOpen(true)} className="hover:text-[#7fa18c] p-2 rounded-md cursor-pointer hover:border hover:border-[#7fa18c]">
+                  <button
+                    onClick={() => setIsIntroModalOpen(true)}
+                    className="hover:text-[#7fa18c] p-2 rounded-md cursor-pointer hover:border hover:border-[#7fa18c]"
+                  >
                     + Create Intro Screen
                   </button>
                   <span className="text-[#E5E5E5] font-normal">|</span>
                 </>
               )}
-              <button onClick={() => setIsAddItemModalOpen(true)} className="hover:text-[#7fa18c] p-2 rounded-md cursor-pointer hover:border hover:border-[#7fa18c]">
+              <button
+                onClick={() => setIsAddItemModalOpen(true)}
+                className="hover:text-[#7fa18c] p-2 rounded-md cursor-pointer hover:border hover:border-[#7fa18c]"
+              >
                 + Create New {itemLabel}
               </button>
             </div>
@@ -102,14 +111,15 @@ export default function CategoryManagementPanel({
                   }}
                   onDelete={() => handleDeleteItem(item.id)}
                 >
-
                   <div className="space-y-4 pt-2">
                     <div>
                       <p className="text-s tracking-wider text-sageGreen font-medium mb-1">Title</p>
                       <p className="text-s text-slate font-normal">{item.title}</p>
                     </div>
                     <div>
-                      <p className="text-s tracking-wider text-sageGreen font-medium mb-1">Description</p>
+                      <p className="text-s tracking-wider text-sageGreen font-medium mb-1">
+                        Description
+                      </p>
                       <p className="text-s text-slate font-normal">{item.description}</p>
                     </div>
                   </div>
@@ -120,16 +130,15 @@ export default function CategoryManagementPanel({
         ) : (
           /* Empty State */
           <div className="flex flex-col h-full w-full">
-
             {/* Top / Center Content */}
             <div className="flex flex-col items-center justify-start text-center flex-1 space-y-10">
-
               <div className="flex flex-col justify-start items-start gap-1">
                 <h3 className="text-2xl sm:text-[32px] font-cormorant text-charcoal font-medium">
                   No {itemLabel}s Yet
                 </h3>
                 <p className="text-[14px] text-grey text-start">
-                  You have not added any {itemType}s yet. Start building your routine by adding {itemType}s tailored to your goals.
+                  You have not added any {itemType}s yet. Start building your routine by adding{" "}
+                  {itemType}s tailored to your goals.
                 </p>
               </div>
 
@@ -140,7 +149,6 @@ export default function CategoryManagementPanel({
                 <div className="w-10 h-32 bg-[#F9F7F2] rounded-sm"></div>
                 <div className="w-10 h-20 bg-[#F2F2F2] rounded-sm"></div>
               </div>
-
             </div>
 
             {/* Bottom Actions (Pinned) */}
@@ -163,7 +171,6 @@ export default function CategoryManagementPanel({
                 + Create New {itemLabel}
               </Button>
             </div>
-
           </div>
         )}
       </SidePanel>
@@ -191,8 +198,6 @@ export default function CategoryManagementPanel({
         initialData={editingItem}
         onSave={handleAddItem}
       />
-
     </>
   );
 }
-

@@ -10,9 +10,9 @@ interface DynamicSidePanelProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-  items: any[];
+  items: Record<string, unknown>[];
   onAction: (action: string) => void;
-  onEditItem: (item: any) => void;
+  onEditItem: (item: Record<string, unknown>) => void;
   onDeleteItem: (id: string) => void;
 }
 
@@ -34,9 +34,7 @@ export default function DynamicSidePanel({
           <h3 className="text-2xl sm:text-[32px] font-cormorant text-charcoal font-medium">
             {config.emptyState.title}
           </h3>
-          <p className="text-[14px] text-grey">
-            {config.emptyState.description}
-          </p>
+          <p className="text-[14px] text-grey">{config.emptyState.description}</p>
         </div>
 
         {/* Placeholder Graphic */}
@@ -91,17 +89,23 @@ export default function DynamicSidePanel({
           >
             <div className="space-y-4 pt-2">
               <div>
-                <p className="text-s tracking-wider text-sageGreen font-medium mb-1 uppercase">Title</p>
+                <p className="text-s tracking-wider text-sageGreen font-medium mb-1 uppercase">
+                  Title
+                </p>
                 <p className="text-s text-slate font-normal">{item.title}</p>
               </div>
               {item.subtitle && (
                 <div>
-                  <p className="text-s tracking-wider text-sageGreen font-medium mb-1 uppercase">Subtitle</p>
+                  <p className="text-s tracking-wider text-sageGreen font-medium mb-1 uppercase">
+                    Subtitle
+                  </p>
                   <p className="text-s text-slate font-normal">{item.subtitle}</p>
                 </div>
               )}
               <div>
-                <p className="text-s tracking-wider text-sageGreen font-medium mb-1 uppercase">Description</p>
+                <p className="text-s tracking-wider text-sageGreen font-medium mb-1 uppercase">
+                  Description
+                </p>
                 <p className="text-s text-slate font-normal">{item.description}</p>
               </div>
             </div>
@@ -112,12 +116,7 @@ export default function DynamicSidePanel({
   );
 
   return (
-    <SidePanel
-      isOpen={isOpen}
-      onClose={onClose}
-      title={title}
-      width="max-w-2xl"
-    >
+    <SidePanel isOpen={isOpen} onClose={onClose} title={title} width="max-w-2xl">
       {items.length > 0 ? renderList() : renderEmptyState()}
     </SidePanel>
   );

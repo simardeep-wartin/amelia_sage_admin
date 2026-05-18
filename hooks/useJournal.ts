@@ -1,19 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { journalService } from "@/Services/journalService";
-import { JournalEntry } from "@/types/journal";
+import { type JournalEntry } from "@/types/journal";
 
 export function useJournal() {
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchEntries();
-  }, []);
-
-  const fetchEntries = async () => {
+  const fetchEntries = useCallback(async () => {
     setLoading(true);
     try {
       const data = await journalService.getEntries();
@@ -23,7 +19,11 @@ export function useJournal() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchEntries();
+  }, [fetchEntries]);
 
   return { entries, loading, error, refetch: fetchEntries };
 }

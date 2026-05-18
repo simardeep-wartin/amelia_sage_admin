@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, ReactNode, useId } from "react";
+import { forwardRef, type ReactNode, useId } from "react";
 
 type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> & {
   label: string;

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { ReactNode } from "react";
+import React, { type ReactNode } from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
 interface ModalProps {
@@ -25,10 +25,13 @@ export default function Modal({
   if (!isOpen) return null;
 
   return (
-    <div className={`fixed inset-0 ${zIndex} flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm`}>
+    <div
+      className={`fixed inset-0 ${zIndex} flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm`}
+    >
       {/* Modal Container */}
-      <div className={`w-full ${maxWidth} rounded-[20px] bg-white shadow-lg flex flex-col max-h-[90vh]`}>
-
+      <div
+        className={`w-full ${maxWidth} rounded-[20px] bg-white shadow-lg flex flex-col max-h-[90vh]`}
+      >
         {/* Header */}
         <div className="flex items-center justify-between p-6 pb-2">
           <h2 className="text-[24px] font-medium text-charcoal">{title}</h2>

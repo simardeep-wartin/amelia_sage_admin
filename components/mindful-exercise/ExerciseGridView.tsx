@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { MagnifyingGlassIcon, PlusIcon, ChevronLeftIcon } from "@heroicons/react/24/outline";
 import FilterDropdown from "@/components/ui/FilterDropdown";
@@ -9,14 +9,17 @@ import ExerciseCard from "./ExerciseCard";
 import AddEditModal from "@/components/common/AddEditModal";
 import DeleteConfirmationModal from "@/components/common/DeleteConfirmationModal";
 import EmptyState from "@/components/common/EmptyState";
-import { ExerciseSubCategory, Exercise } from "@/types/mindful-exercise";
+import { type ExerciseSubCategory, type Exercise } from "@/types/mindful-exercise";
 
 interface ExerciseGridViewProps {
   subCategory: ExerciseSubCategory;
   managementTitle?: string;
 }
 
-export default function ExerciseGridView({ subCategory, managementTitle = "Mindful Exercise Management" }: ExerciseGridViewProps) {
+export default function ExerciseGridView({
+  subCategory,
+  managementTitle = "Mindful Exercise Management",
+}: ExerciseGridViewProps) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -26,7 +29,7 @@ export default function ExerciseGridView({ subCategory, managementTitle = "Mindf
   const [exerciseToDelete, setExerciseToDelete] = useState<string | null>(null);
 
   const filteredExercises = subCategory.exercises.filter((e) =>
-    e.title.toLowerCase().includes(searchQuery.toLowerCase())
+    e.title.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const handleAddExercise = () => {
@@ -50,7 +53,7 @@ export default function ExerciseGridView({ subCategory, managementTitle = "Mindf
     setExerciseToDelete(null);
   };
 
-  const handleSaveExercise = (data: any) => {
+  const handleSaveExercise = (data: Record<string, unknown>) => {
     console.log("Saving exercise:", data);
   };
 
@@ -69,18 +72,19 @@ export default function ExerciseGridView({ subCategory, managementTitle = "Mindf
             Back to {managementTitle}
           </span>
         </div>
-        
+
         <div className="flex justify-between items-end">
           <div>
             <h1 className="text-[32px] font-cormorant text-[#2D2D2D] font-bold leading-tight">
               {subCategory.name} Exercise Management
             </h1>
             <div className="flex items-center gap-1 text-[14px] text-slate mt-1 font-normal">
-              <span>Dashboard</span> / <span>Exercises</span> / <span>{managementTitle}</span> / <span>{subCategory.name}</span>
+              <span>Dashboard</span> / <span>Exercises</span> / <span>{managementTitle}</span> /{" "}
+              <span>{subCategory.name}</span>
             </div>
           </div>
-          <Button 
-            onClick={handleAddExercise} 
+          <Button
+            onClick={handleAddExercise}
             className="flex items-center gap-2 bg-sageGreen hover:bg-sageGreenHover h-[44px] px-8 rounded-[10px] text-white font-semibold"
           >
             <PlusIcon className="h-5 w-5 stroke-[2.5px]" />
@@ -101,10 +105,7 @@ export default function ExerciseGridView({ subCategory, managementTitle = "Mindf
             className="w-full pl-12 pr-4 py-[11px] bg-white border border-[#E5E5E5] rounded-[10px] text-[14px] outline-none focus:border-sageGreen transition-all shadow-sm"
           />
         </div>
-        <FilterDropdown
-          options={["Active", "Draft", "All Status"]}
-          onChange={() => {}}
-        />
+        <FilterDropdown options={["Active", "Draft", "All Status"]} onChange={() => {}} />
         <FilterDropdown
           options={["Name (A-Z)", "Name (Z-A)", "Sort by: Name"]}
           onChange={() => {}}
@@ -141,7 +142,16 @@ export default function ExerciseGridView({ subCategory, managementTitle = "Mindf
         layout="media"
         title={editingExercise ? "Edit Exercise" : "Add New Exercise"}
         showDraft
-        initialData={editingExercise}
+        initialData={
+          editingExercise
+            ? {
+                title: editingExercise.title,
+                subtitle: editingExercise.subtitle,
+                duration: editingExercise.duration,
+                description: editingExercise.description,
+              }
+            : undefined
+        }
       />
 
       <DeleteConfirmationModal

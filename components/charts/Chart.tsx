@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  Area,
-  AreaChart,
-  ResponsiveContainer,
-  Tooltip,
-} from "recharts";
+import { Area, AreaChart, ResponsiveContainer, Tooltip } from "recharts";
 
 export interface ChartPoint {
   label: string;
@@ -17,7 +12,7 @@ interface ChartProps {
   color?: string;
 }
 
-export default function Chart({ data, color = "#8BAA87" }: ChartProps) {
+export default function Chart({ data }: ChartProps) {
   return (
     <div className="h-[190px] w-full cursor-pointer">
       <ResponsiveContainer width="100%" height="100%">
@@ -36,12 +31,7 @@ export default function Chart({ data, color = "#8BAA87" }: ChartProps) {
             }}
             labelStyle={{ color: "#2B2B2B", fontWeight: 500 }}
           />
-          <Area
-            type="monotone"
-            dataKey="value"
-            stroke="none"
-            fill="url(#activeUsersFill)"
-          />
+          <Area type="monotone" dataKey="value" stroke="none" fill="url(#activeUsersFill)" />
           <Area
             type="monotone"
             dataKey="value"

@@ -1,29 +1,29 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { calmAndStillnessService } from "@/Services/calmAndStillnessService";
-import { ExerciseCategory } from "@/types/mindful-exercise";
+import { type ExerciseCategory } from "@/types/mindful-exercise";
 
 export function useCalmAndStillness() {
   const [categories, setCategories] = useState<ExerciseCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     setLoading(true);
     try {
       const data = await calmAndStillnessService.getCategories();
       setCategories(data);
-    } catch (err) {
+    } catch {
       setError("Failed to fetch categories");
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
 
   const getSubCategory = async (id: string) => {
     return await calmAndStillnessService.getSubCategoryById(id);

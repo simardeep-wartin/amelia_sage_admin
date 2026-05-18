@@ -1,25 +1,19 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useParams } from "next/navigation";
 import PageLayout from "@/components/layout/PageLayout";
 import ExerciseGridView from "@/components/mindful-exercise/ExerciseGridView";
 import MindfulExerciseLoader from "@/components/loaders/mindful-exercise-loader";
 import { mindfulExerciseService } from "@/Services/mindfulExerciseService";
-import { ExerciseSubCategory } from "@/types/mindful-exercise";
+import { type ExerciseSubCategory } from "@/types/mindful-exercise";
 
 export default function CategoryExercisePage() {
   const { categoryId } = useParams();
   const [subCategory, setSubCategory] = useState<ExerciseSubCategory | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (categoryId) {
-      fetchSubCategory();
-    }
-  }, [categoryId]);
-
-  const fetchSubCategory = async () => {
+  const fetchSubCategory = useCallback(async () => {
     setLoading(true);
     try {
       const data = await mindfulExerciseService.getSubCategoryById(categoryId as string);
@@ -29,19 +23,27 @@ export default function CategoryExercisePage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [categoryId]);
 
-  if (loading) return (
-    <PageLayout title="Mindful Exercise Management">
-      <MindfulExerciseLoader type="grid" />
-    </PageLayout>
-  );
+  useEffect(() => {
+    if (categoryId) {
+      fetchSubCategory();
+    }
+  }, [categoryId, fetchSubCategory]);
 
-  if (!subCategory) return (
-    <PageLayout title="Mindful Exercise Management">
-      <div className="p-8 text-charcoal">Category not found</div>
-    </PageLayout>
-  );
+  if (loading)
+    return (
+      <PageLayout title="Mindful Exercise Management">
+        <MindfulExerciseLoader type="grid" />
+      </PageLayout>
+    );
+
+  if (!subCategory)
+    return (
+      <PageLayout title="Mindful Exercise Management">
+        <div className="p-8 text-charcoal">Category not found</div>
+      </PageLayout>
+    );
 
   return (
     <PageLayout title="Mindful Exercise Management">

@@ -11,7 +11,7 @@ import {
 import PageLayout from "@/components/layout/PageLayout";
 import FilterDropdown from "@/components/ui/FilterDropdown";
 import Card from "@/components/common/Card";
-import QueueItem, { QueueItemData } from "@/components/common/QueueItem";
+import QueueItem, { type QueueItemData } from "@/components/common/QueueItem";
 import appData from "@/data/app-data.json";
 
 // ─── types ────────────────────────────────────────────────────────────────────
@@ -27,8 +27,7 @@ type DetailData = {
 
 // ─── data ─────────────────────────────────────────────────────────────────────
 
-const { filterOptions, sortOptions, items: rawItems } =
-  appData.governanceSafety.contentReview;
+const { filterOptions, sortOptions, items: rawItems } = appData.governanceSafety.contentReview;
 
 const PENDING_ITEMS: QueueItemData[] = rawItems.map((i) => ({
   id: i.id,
@@ -57,7 +56,7 @@ const DETAIL_DATA: Record<string, DetailData> = Object.fromEntries(
       ),
       completeness: i.completeness,
     },
-  ])
+  ]),
 );
 
 // ─── component ────────────────────────────────────────────────────────────────
@@ -97,55 +96,35 @@ export default function ContentReviewPage() {
         {/* Title + filters */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-col gap-1">
-            <h1 className="text-2xl font-medium text-[#2d2d2d]">
-              Pending Content Review
-            </h1>
-            <p className="text-sm text-[#6b6b6b]">
-              Review and approve exercises before publishing
-            </p>
+            <h1 className="text-2xl font-medium text-[#2d2d2d]">Pending Content Review</h1>
+            <p className="text-sm text-[#6b6b6b]">Review and approve exercises before publishing</p>
           </div>
 
           <div className="flex gap-2 sm:flex-row sm:gap-3 md:flex-row">
-            <FilterDropdown
-              value={filter}
-              options={filterOptions}
-              onChange={setFilter}
-            />
-            <FilterDropdown
-              value={sort}
-              options={sortOptions}
-              onChange={setSort}
-            />
+            <FilterDropdown value={filter} options={filterOptions} onChange={setFilter} />
+            <FilterDropdown value={sort} options={sortOptions} onChange={setSort} />
           </div>
         </div>
 
         {/* Metrics */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Card className="flex h-[125px] flex-col justify-center px-5 shadow-sm">
-            <p className="text-base font-medium text-[#2d2d2d]">
-              Pending Items
-            </p>
+            <p className="text-base font-medium text-[#2d2d2d]">Pending Items</p>
             <div className="mt-2 flex items-end gap-2">
               <span className="text-2xl font-bold text-[#2d2d2d]">
                 {String(pendingCount).padStart(2, "0")}
               </span>
-              <span className="mb-0.5 text-sm text-[#6c6c6c]">
-                Requires Attention
-              </span>
+              <span className="mb-0.5 text-sm text-[#6c6c6c]">Requires Attention</span>
             </div>
           </Card>
 
           <Card className="flex h-[125px] flex-col justify-center px-5 shadow-sm">
-            <p className="text-base font-medium text-[#2d2d2d]">
-              Approved Today
-            </p>
+            <p className="text-base font-medium text-[#2d2d2d]">Approved Today</p>
             <div className="mt-2 flex items-end gap-2">
               <span className="text-2xl font-bold text-[#4bb05d]">
                 {String(approvedCount + 12).padStart(2, "0")}
               </span>
-              <span className="mb-0.5 text-sm text-[#6c6c6c]">
-                +4 from yesterday
-              </span>
+              <span className="mb-0.5 text-sm text-[#6c6c6c]">+4 from yesterday</span>
             </div>
           </Card>
         </div>
@@ -153,10 +132,7 @@ export default function ContentReviewPage() {
         {/* Main layout */}
         <div className="flex flex-col lg:flex-row gap-4 items-start">
           {/* Sidebar */}
-          <Card 
-            title="Pending for approval" 
-            className="w-full lg:w-[328px] shrink-0"
-          >
+          <Card title="Pending for approval" className="w-full lg:w-[328px] shrink-0">
             <div className="flex flex-col gap-2 py-2">
               {items.map((item) => (
                 <QueueItem
@@ -182,9 +158,7 @@ export default function ContentReviewPage() {
 
                   <div className="flex items-center gap-1">
                     <ClockIcon className="h-3 w-3 text-[#6c6c6c]" />
-                    <span className="text-xs text-[#6c6c6c]">
-                      {detail.duration}
-                    </span>
+                    <span className="text-xs text-[#6c6c6c]">{detail.duration}</span>
                   </div>
                 </div>
 
@@ -201,9 +175,7 @@ export default function ContentReviewPage() {
               </Card>
 
               {/* Visual Card */}
-              <Card className="p-5">
-                {detail.visual}
-              </Card>
+              <Card className="p-5">{detail.visual}</Card>
 
               {/* Description Card */}
               <Card title="Description" className="p-5">
@@ -216,10 +188,7 @@ export default function ContentReviewPage() {
               <Card title="Completeness Check" className="p-5">
                 <div className="flex flex-col gap-2">
                   {detail.completeness.map(({ label, ok }) => (
-                    <div
-                      key={label}
-                      className="flex items-center justify-between"
-                    >
+                    <div key={label} className="flex items-center justify-between">
                       <span className="text-base font-medium leading-[26px] text-[#2e3333]">
                         {label}
                       </span>

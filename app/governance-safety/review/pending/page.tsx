@@ -2,17 +2,13 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import {
-  ChevronLeftIcon,
-  ChevronDownIcon,
-  CheckCircleIcon,
-} from "@heroicons/react/24/outline";
+import { ChevronLeftIcon, ChevronDownIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
 
 import PageLayout from "@/components/layout/PageLayout";
 import MetricCard from "@/components/common/MetricCard";
 import Card from "@/components/common/Card";
 import Tabs from "@/components/common/Tabs";
-import QueueItem, { QueueItemData } from "@/components/common/QueueItem";
+import QueueItem, { type QueueItemData } from "@/components/common/QueueItem";
 import appData from "@/data/app-data.json";
 
 // ─── types ────────────────────────────────────────────────────────────────────
@@ -40,8 +36,7 @@ const ICON_MAP: Record<string, string> = {
 
 // ─── data ─────────────────────────────────────────────────────────────────────
 
-const { metrics, tabs, queueItems, users } =
-  appData.governanceSafety.userRiskMonitoring;
+const { metrics, tabs, queueItems, users } = appData.governanceSafety.userRiskMonitoring;
 
 const QUEUE_ITEMS = queueItems as QueueItemData[];
 const USERS = users as Record<string, User>;
@@ -76,9 +71,7 @@ export default function UserRiskMonitoringPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
-            <h1 className="text-xl sm:text-2xl font-medium text-[#2d2d2d]">
-              User Risk Monitoring
-            </h1>
+            <h1 className="text-xl sm:text-2xl font-medium text-[#2d2d2d]">User Risk Monitoring</h1>
             <p className="text-sm text-[#6b6b6b]">
               Users flagged by AI for emotional distress or overwhelm
             </p>
@@ -106,9 +99,7 @@ export default function UserRiskMonitoringPage() {
         {/* Tabs */}
         <Tabs
           items={TAB_ITEMS}
-          activeTab={
-            tabs.find((t) => t.value === activeTab)?.label || TAB_ITEMS[0]
-          }
+          activeTab={tabs.find((t) => t.value === activeTab)?.label || TAB_ITEMS[0]}
           onTabChange={(label: string) => {
             const selected = tabs.find((t) => t.label === label);
             if (selected) setActiveTab(selected.value);
@@ -118,10 +109,7 @@ export default function UserRiskMonitoringPage() {
         {/* Layout */}
         <div className="flex flex-col lg:flex-row gap-4 items-start">
           {/* Queue */}
-          <Card 
-            title="Queue: Priority Items" 
-            className="w-full lg:w-[328px] shrink-0"
-          >
+          <Card title="Queue: Priority Items" className="w-full lg:w-[328px] shrink-0">
             <div className="flex flex-col gap-2">
               {filtered.map((item) => (
                 <QueueItem
@@ -151,9 +139,7 @@ export default function UserRiskMonitoringPage() {
                       <span className="text-2xl sm:text-[32px] font-semibold text-[#2e3333]">
                         {user.name}
                       </span>
-                      <span className="text-sm font-semibold text-[#48664a]">
-                        {user.userId}
-                      </span>
+                      <span className="text-sm font-semibold text-[#48664a]">{user.userId}</span>
                     </div>
                     <p className="text-sm text-[#5b605f]">{user.contact}</p>
                   </div>

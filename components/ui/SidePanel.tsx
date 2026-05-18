@@ -1,6 +1,6 @@
 "use client";
 
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { type ReactNode, useEffect, useState } from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
 interface SidePanelProps {
@@ -57,15 +57,17 @@ export default function SidePanel({
     <div className={`fixed inset-0 ${zIndex} overflow-hidden`}>
       {/* Backdrop */}
       <div
-        className={`absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300 ease-in-out ${mounted ? "opacity-100" : "opacity-0"
-          }`}
+        className={`absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300 ease-in-out ${
+          mounted ? "opacity-100" : "opacity-0"
+        }`}
         onClick={onClose}
       />
 
       {/* Panel */}
       <div
-        className={`absolute inset-y-0 right-0 flex w-full ${width} shadow-2xl transition-transform duration-300 ease-in-out ${mounted ? "translate-x-0" : "translate-x-full"
-          }`}
+        className={`absolute inset-y-0 right-0 flex w-full ${width} shadow-2xl transition-transform duration-300 ease-in-out ${
+          mounted ? "translate-x-0" : "translate-x-full"
+        }`}
       >
         <div className="flex h-full w-full flex-col bg-white">
           {/* Header */}
@@ -80,16 +82,10 @@ export default function SidePanel({
           </div>
 
           {/* Content */}
-          <div className="flex-1 overflow-y-auto px-8 py-6 custom-scrollbar">
-            {children}
-          </div>
+          <div className="flex-1 overflow-y-auto px-8 py-6 custom-scrollbar">{children}</div>
 
           {/* Footer */}
-          {footer && (
-            <div className="border-t border-[#E5E5E5] bg-white px-8 py-6">
-              {footer}
-            </div>
-          )}
+          {footer && <div className="border-t border-[#E5E5E5] bg-white px-8 py-6">{footer}</div>}
         </div>
       </div>
     </div>

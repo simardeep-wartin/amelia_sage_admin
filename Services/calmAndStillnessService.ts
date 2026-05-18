@@ -1,5 +1,5 @@
 import type { ICalmAndStillnessService } from "@/Services/interfaces";
-import { ExerciseCategory, ExerciseSubCategory } from "@/types/mindful-exercise";
+import { type ExerciseCategory, type ExerciseSubCategory } from "@/types/mindful-exercise";
 
 const MOCK_CATEGORIES: ExerciseCategory[] = [
   {
@@ -39,7 +39,8 @@ const MOCK_CATEGORIES: ExerciseCategory[] = [
             title: "Belly Breath",
             subtitle: "Activates the diaphragm for a full, grounding breath that soothes the mind.",
             duration: "6 mins",
-            description: "Activates the diaphragm for a full, grounding breath that soothes the mind.",
+            description:
+              "Activates the diaphragm for a full, grounding breath that soothes the mind.",
             status: "active",
             videoUrl: "#",
             audioUrl: "#",
@@ -132,7 +133,8 @@ const MOCK_CATEGORIES: ExerciseCategory[] = [
             title: "Surya Bhedana",
             subtitle: "Invigorates and warms the body by breathing in through the right nostril.",
             duration: "6 mins",
-            description: "Invigorates and warms the body by breathing in through the right nostril.",
+            description:
+              "Invigorates and warms the body by breathing in through the right nostril.",
             status: "active",
             videoUrl: "#",
             audioUrl: "#",
@@ -188,9 +190,11 @@ const MOCK_CATEGORIES: ExerciseCategory[] = [
           {
             id: "gm-4",
             title: "Breath Awareness",
-            subtitle: "Anchors attention to the natural rhythm of the breath for present-moment stillness.",
+            subtitle:
+              "Anchors attention to the natural rhythm of the breath for present-moment stillness.",
             duration: "8 mins",
-            description: "Anchors attention to the natural rhythm of the breath for present-moment stillness.",
+            description:
+              "Anchors attention to the natural rhythm of the breath for present-moment stillness.",
             status: "active",
             videoUrl: "#",
             audioUrl: "#",
@@ -207,9 +211,11 @@ const MOCK_CATEGORIES: ExerciseCategory[] = [
           {
             id: "bs-1",
             title: "Full Body Scan",
-            subtitle: "Systematically brings awareness to each part of the body to release held tension.",
+            subtitle:
+              "Systematically brings awareness to each part of the body to release held tension.",
             duration: "20 mins",
-            description: "Systematically brings awareness to each part of the body to release held tension.",
+            description:
+              "Systematically brings awareness to each part of the body to release held tension.",
             status: "active",
             videoUrl: "#",
             audioUrl: "#",
@@ -231,7 +237,8 @@ const MOCK_CATEGORIES: ExerciseCategory[] = [
             title: "Grounding Scan",
             subtitle: "Connects awareness to the feeling of the body resting against the ground.",
             duration: "10 mins",
-            description: "Connects awareness to the feeling of the body resting against the ground.",
+            description:
+              "Connects awareness to the feeling of the body resting against the ground.",
             status: "active",
             videoUrl: "#",
             audioUrl: "#",
@@ -261,7 +268,8 @@ const MOCK_CATEGORIES: ExerciseCategory[] = [
             title: "Mountain Meditation",
             subtitle: "Draws on the image of a mountain to cultivate unshakeable inner stability.",
             duration: "15 mins",
-            description: "Draws on the image of a mountain to cultivate unshakeable inner stability.",
+            description:
+              "Draws on the image of a mountain to cultivate unshakeable inner stability.",
             status: "active",
             videoUrl: "#",
             audioUrl: "#",
@@ -295,9 +303,11 @@ const MOCK_CATEGORIES: ExerciseCategory[] = [
           {
             id: "pmr-1",
             title: "Full Body PMR",
-            subtitle: "Systematically tenses and releases muscle groups to achieve deep physical calm.",
+            subtitle:
+              "Systematically tenses and releases muscle groups to achieve deep physical calm.",
             duration: "20 mins",
-            description: "Systematically tenses and releases muscle groups to achieve deep physical calm.",
+            description:
+              "Systematically tenses and releases muscle groups to achieve deep physical calm.",
             status: "active",
             videoUrl: "#",
             audioUrl: "#",
@@ -308,7 +318,8 @@ const MOCK_CATEGORIES: ExerciseCategory[] = [
             title: "Upper Body Release",
             subtitle: "Targets the neck, shoulders, and arms where stress is most commonly stored.",
             duration: "12 mins",
-            description: "Targets the neck, shoulders, and arms where stress is most commonly stored.",
+            description:
+              "Targets the neck, shoulders, and arms where stress is most commonly stored.",
             status: "active",
             videoUrl: "#",
             audioUrl: "#",
@@ -349,7 +360,8 @@ const MOCK_CATEGORIES: ExerciseCategory[] = [
             title: "Crystal Bowl Immersion",
             subtitle: "Crystal bowl frequencies promote cellular relaxation and emotional release.",
             duration: "20 mins",
-            description: "Crystal bowl frequencies promote cellular relaxation and emotional release.",
+            description:
+              "Crystal bowl frequencies promote cellular relaxation and emotional release.",
             status: "active",
             videoUrl: "#",
             audioUrl: "#",
@@ -360,7 +372,8 @@ const MOCK_CATEGORIES: ExerciseCategory[] = [
             title: "Nature Soundscape",
             subtitle: "Layered nature sounds create a peaceful environment for rest and recovery.",
             duration: "15 mins",
-            description: "Layered nature sounds create a peaceful environment for rest and recovery.",
+            description:
+              "Layered nature sounds create a peaceful environment for rest and recovery.",
             status: "active",
             videoUrl: "#",
             audioUrl: "#",
@@ -377,9 +390,11 @@ const MOCK_CATEGORIES: ExerciseCategory[] = [
           {
             id: "rr-1",
             title: "Yoga Nidra",
-            subtitle: "A systematic relaxation between waking and sleep that deeply restores the body.",
+            subtitle:
+              "A systematic relaxation between waking and sleep that deeply restores the body.",
             duration: "30 mins",
-            description: "A systematic relaxation between waking and sleep that deeply restores the body.",
+            description:
+              "A systematic relaxation between waking and sleep that deeply restores the body.",
             status: "active",
             videoUrl: "#",
             audioUrl: "#",
@@ -390,7 +405,8 @@ const MOCK_CATEGORIES: ExerciseCategory[] = [
             title: "Savasana Practice",
             subtitle: "A guided corpse pose session designed to integrate and release all effort.",
             duration: "15 mins",
-            description: "A guided corpse pose session designed to integrate and release all effort.",
+            description:
+              "A guided corpse pose session designed to integrate and release all effort.",
             status: "active",
             videoUrl: "#",
             audioUrl: "#",
@@ -399,9 +415,11 @@ const MOCK_CATEGORIES: ExerciseCategory[] = [
           {
             id: "rr-3",
             title: "Sleep Preparation",
-            subtitle: "A gentle wind-down sequence that prepares the mind and body for restful sleep.",
+            subtitle:
+              "A gentle wind-down sequence that prepares the mind and body for restful sleep.",
             duration: "20 mins",
-            description: "A gentle wind-down sequence that prepares the mind and body for restful sleep.",
+            description:
+              "A gentle wind-down sequence that prepares the mind and body for restful sleep.",
             status: "active",
             videoUrl: "#",
             audioUrl: "#",

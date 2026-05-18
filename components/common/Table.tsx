@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { type ReactNode } from "react";
 
 export interface TableColumn<T extends object> {
   key: keyof T | string;
@@ -32,8 +32,8 @@ export default function Table<T extends object>({
                   col.align === "right"
                     ? "text-right"
                     : col.align === "center"
-                    ? "text-center"
-                    : "text-left"
+                      ? "text-center"
+                      : "text-left"
                 }`}
                 style={{ color: headerTextColor }}
               >
@@ -45,19 +45,13 @@ export default function Table<T extends object>({
         <tbody>
           {rows.length === 0 ? (
             <tr>
-              <td
-                colSpan={columns.length}
-                className="px-4 py-8 text-center text-sm text-[#6C6C6C]"
-              >
+              <td colSpan={columns.length} className="px-4 py-8 text-center text-sm text-[#6C6C6C]">
                 {emptyMessage}
               </td>
             </tr>
           ) : (
             rows.map((row, i) => (
-              <tr
-                key={i}
-                className="border-b border-[#F3F4F6] last:border-0 hover:bg-[#F9FAFB]"
-              >
+              <tr key={i} className="border-b border-[#F3F4F6] last:border-0 hover:bg-[#F9FAFB]">
                 {columns.map((col) => (
                   <td
                     key={String(col.key)}
@@ -65,8 +59,8 @@ export default function Table<T extends object>({
                       col.align === "right"
                         ? "text-right"
                         : col.align === "center"
-                        ? "text-center"
-                        : "text-left"
+                          ? "text-center"
+                          : "text-left"
                     }`}
                   >
                     {col.render

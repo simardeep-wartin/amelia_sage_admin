@@ -1,8 +1,6 @@
 "use client";
 
-import {
-  ArrowDownTrayIcon,
-} from "@heroicons/react/24/outline";
+import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 import { useMemo, useState, useEffect } from "react";
 import DemographicsLoader from "@/components/loaders/demographics-loader";
 import PageLayout from "@/components/layout/PageLayout";
@@ -64,7 +62,7 @@ export default function DemographicsPage() {
     return () => clearTimeout(timer);
   }, []);
 
-  const activeData: any = useMemo(() => {
+  const activeData = useMemo(() => {
     if (activeTab === "Overview") return null;
     if (activeTab === "Gender Identity") return demographicsTabsData.gender_identity;
     if (activeTab === "Cultural Identity") return demographicsTabsData.cultural_identity;
@@ -143,7 +141,11 @@ export default function DemographicsPage() {
               filters={demographicsData.growthTrend.filters}
               data={demographicsData.growthTrend.series}
               series={[
-                { key: "spiritualGrowthFaith", label: "Spiritual Growth and Faith", color: "#9CAF88" },
+                {
+                  key: "spiritualGrowthFaith",
+                  label: "Spiritual Growth and Faith",
+                  color: "#9CAF88",
+                },
                 { key: "wholeSelfRevival", label: "Whole Self Revival", color: "#D4A574" },
                 { key: "relationshipHealing", label: "Relationship Healing", color: "#7B4CE2" },
                 { key: "careerLeadership", label: "Career and Leadership", color: "#6B6B6B" },
@@ -155,8 +157,15 @@ export default function DemographicsPage() {
         {/* Dynamic Tabs */}
         {activeTab === "Gender Identity" && activeData && (
           <>
-            <DistributionBarChart {...activeData.groupedBar} data={activeData.groupedBar.categories} />
-            <ProgressCard title={activeData.conversion.title} subtitle={activeData.conversion.subtitle} items={activeData.conversion.items} />
+            <DistributionBarChart
+              {...activeData.groupedBar}
+              data={activeData.groupedBar.categories}
+            />
+            <ProgressCard
+              title={activeData.conversion.title}
+              subtitle={activeData.conversion.subtitle}
+              items={activeData.conversion.items}
+            />
             <InsightGrid title={activeData.insights.title} groups={activeData.insights.groups} />
           </>
         )}
@@ -171,8 +180,15 @@ export default function DemographicsPage() {
                 </div>
               ))}
             </div>
-            <ProgressCard title={activeData.progress.title} subtitle={activeData.progress.subtitle} items={activeData.progress.items} />
-            <DistributionBarChart {...activeData.groupedBar} data={activeData.groupedBar.categories} />
+            <ProgressCard
+              title={activeData.progress.title}
+              subtitle={activeData.progress.subtitle}
+              items={activeData.progress.items}
+            />
+            <DistributionBarChart
+              {...activeData.groupedBar}
+              data={activeData.groupedBar.categories}
+            />
           </>
         )}
 
@@ -182,32 +198,44 @@ export default function DemographicsPage() {
               {activeData.stats.map((item: StatItem) => (
                 <div key={item.title} className="rounded-[4px] bg-[#F9FAFB] p-4 text-center">
                   <p className="font-sans text-[16px] text-[#6B6B6B]">{item.title}</p>
-                  <p className="font-sans text-[44px] font-bold leading-[1] text-[#5A3FE0]">{item.value}</p>
-                  {item.subtitle && <p className="font-sans text-[18px] text-[#6B6B6B]">{item.subtitle}</p>}
+                  <p className="font-sans text-[44px] font-bold leading-[1] text-[#5A3FE0]">
+                    {item.value}
+                  </p>
+                  {item.subtitle && (
+                    <p className="font-sans text-[18px] text-[#6B6B6B]">{item.subtitle}</p>
+                  )}
                 </div>
               ))}
             </div>
             <div className="grid grid-cols-1 gap-4 l:grid-cols-2">
-              <DistributionPieChart 
-                title={activeData.donut.title} 
-                data={activeData.donut.items} 
-                lastUpdated={activeData.donut.lastUpdated ?? ""} 
+              <DistributionPieChart
+                title={activeData.donut.title}
+                data={activeData.donut.items}
+                lastUpdated={activeData.donut.lastUpdated ?? ""}
                 showList={false}
               />
-              <ProgressCard title={activeData.progress.title} subtitle={activeData.progress.subtitle} items={activeData.progress.items} />
+              <ProgressCard
+                title={activeData.progress.title}
+                subtitle={activeData.progress.subtitle}
+                items={activeData.progress.items}
+              />
             </div>
           </>
         )}
 
         {activeTab === "Wellness Needs" && activeData && (
           <div className="grid grid-cols-1 gap-4 l:grid-cols-2">
-            <DistributionPieChart 
-                title={activeData.donut.title} 
-                data={activeData.donut.items} 
-                lastUpdated={activeData.donut.lastUpdated ?? ""} 
-                showList={false}
+            <DistributionPieChart
+              title={activeData.donut.title}
+              data={activeData.donut.items}
+              lastUpdated={activeData.donut.lastUpdated ?? ""}
+              showList={false}
             />
-            <SummaryGrid title={activeData.progress.title} subtitle={activeData.progress.subtitle} items={activeData.progress.items} />
+            <SummaryGrid
+              title={activeData.progress.title}
+              subtitle={activeData.progress.subtitle}
+              items={activeData.progress.items}
+            />
           </div>
         )}
       </div>

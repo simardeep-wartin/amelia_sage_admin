@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import Modal from "@/components/ui/Modal";
 import Input from "@/components/ui/Input";
 import FileUploadZone from "@/components/ui/FileUploadZone";
@@ -12,11 +12,10 @@ interface ActionModalProps {
   onClose: () => void;
   type: ModalType;
   title: string;
-  categoryName?: string;
-  onSave: (data: any) => void;
+  onSave: (data: Record<string, unknown>) => void;
   actionText?: string;
   nameLabel?: string;
-  initialData?: any;
+  initialData?: Record<string, unknown>;
 }
 
 export default function ActionModal({
@@ -24,7 +23,6 @@ export default function ActionModal({
   onClose,
   type,
   title,
-  categoryName,
   onSave,
   actionText,
   nameLabel,
@@ -35,27 +33,27 @@ export default function ActionModal({
   const [field3, setField3] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  React.useEffect(() => {
-    if (initialData && isOpen) {
-      if (type === "category" || type === "exercise") {
-        setField1(initialData.title || initialData.name || "");
-        setField2(initialData.description || "");
-      } else if (type === "intro-screen") {
-        setField1(initialData.subtitle || "");
-        setField2(initialData.sageSays || "");
-        setField3(initialData.description || "");
-      }
-    } else if (!isOpen) {
-      resetForm();
-    }
-  }, [initialData, isOpen, type]);
-
-  const resetForm = () => {
+  const resetForm = useCallback(() => {
     setField1("");
     setField2("");
     setField3("");
     setSelectedFile(null);
-  };
+  }, []);
+
+  React.useEffect(() => {
+    if (initialData && isOpen) {
+      if (type === "category" || type === "exercise") {
+        setField1((initialData.title as string) || (initialData.name as string) || "");
+        setField2((initialData.description as string) || "");
+      } else if (type === "intro-screen") {
+        setField1((initialData.subtitle as string) || "");
+        setField2((initialData.sageSays as string) || "");
+        setField3((initialData.description as string) || "");
+      }
+    } else if (!isOpen) {
+      resetForm();
+    }
+  }, [initialData, isOpen, type, resetForm]);
 
   const handleSave = () => {
     if (type === "category") {
@@ -97,7 +95,9 @@ export default function ActionModal({
             disabled={!isFormValid}
             className={`w-full sm:flex-1 h-12 rounded-lg bg-sageGreen text-base font-semibold text-white transition-colors hover:bg-[#7fa18c] disabled:bg-[#C1D2A4] disabled:cursor-not-allowed disabled:bg-sageGreen/40 ${isEdit ? "sm:flex-[2]" : ""}`}
           >
-            {isEdit ? "Save Changes" : (actionText || (type === "exercise" ? "+ Publish Exercise" : "+ Add Intro Screen"))}
+            {isEdit
+              ? "Save Changes"
+              : actionText || (type === "exercise" ? "+ Publish Exercise" : "+ Add Intro Screen")}
           </button>
         </>
       ) : (
@@ -120,15 +120,22 @@ export default function ActionModal({
       zIndex={type !== "category" ? "z-[60]" : "z-50"}
     >
       <div className="space-y-6">
-        {/* Field 1 */}
         <Input
-          label={nameLabel || (type === "exercise" ? "Add Title" : type === "intro-screen" ? "Add Subtitle" : "Name")}
-          placeholder={type === "exercise" ? "Enter Title" : type === "intro-screen" ? "Enter Subtitle" : "Enter Name"}
+          label={
+            nameLabel ||
+            (type === "exercise" ? "Add Title" : type === "intro-screen" ? "Add Subtitle" : "Name")
+          }
+          placeholder={
+            type === "exercise"
+              ? "Enter Title"
+              : type === "intro-screen"
+                ? "Enter Subtitle"
+                : "Enter Name"
+          }
           value={field1}
           onChange={(e) => setField1(e.target.value)}
         />
 
-        {/* Field 2 */}
         {type === "intro-screen" && (
           <Input
             label="Sage Says"
@@ -138,16 +145,15 @@ export default function ActionModal({
           />
         )}
 
-        {/* Description / Field 3 */}
         <div className="space-y-1">
-          <label className="block text-s font-normal text-charcoal">
-            Add Description
-          </label>
+          <label className="block text-s font-normal text-charcoal">Add Description</label>
           <textarea
             className="w-full rounded-lg border border-[#ededed] bg-white px-5 py-4 font-normal text-m text-charcoal placeholder:text-[#e1e1e1] outline-none transition focus:border-sageGreen/55 focus:ring-2 focus:ring-sageGreen/20 min-h-[140px] resize-none"
             placeholder="Add Description Here"
             value={type === "intro-screen" ? field3 : field2}
-            onChange={(e) => type === "intro-screen" ? setField3(e.target.value) : setField2(e.target.value)}
+            onChange={(e) =>
+              type === "intro-screen" ? setField3(e.target.value) : setField2(e.target.value)
+            }
           />
         </div>
 

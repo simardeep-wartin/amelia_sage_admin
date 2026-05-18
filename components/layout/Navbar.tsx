@@ -1,6 +1,6 @@
 "use client";
 
-import { Bars3Icon, BellIcon, MagnifyingGlassIcon, UserIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon, BellIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 interface NavbarProps {
   title: string;
@@ -35,11 +35,7 @@ export default function Navbar({ title }: NavbarProps) {
           className="rounded-full bg-gradient-to-b from-sage to-[#9caf88] text-white w-8 h-8 text-center flex justify-center items-center"
           aria-label="Sage actions"
         >
-          <img
-          src="/auth/user.svg"
-          alt="icon"
-          className="h-4 w-4"
-        />
+          <img src="/auth/user.svg" alt="icon" className="h-4 w-4" />
         </button>
       </div>
     </header>

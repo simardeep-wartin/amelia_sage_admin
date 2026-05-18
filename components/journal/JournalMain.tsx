@@ -3,13 +3,13 @@
 import { useState, useMemo } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import Tabs from "@/components/common/Tabs";
-import Table, { TableColumn } from "@/components/common/Table";
+import Table, { type TableColumn } from "@/components/common/Table";
 import Badge from "@/components/common/Badge";
 import Pagination from "@/components/common/Pagination";
 import FilterDropdown from "@/components/ui/FilterDropdown";
 import ActionsDropdownMenu from "@/components/ui/ActionsDropdownMenu";
 import { useJournal } from "@/hooks/useJournal";
-import { JournalEntry, JournalTab, JOURNAL_TABS } from "@/types/journal";
+import { type JournalEntry, type JournalTab, JOURNAL_TABS } from "@/types/journal";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -21,14 +21,11 @@ function SourceBadge({ source }: { source: JournalEntry["source"] }) {
   );
 }
 
-
 const TABLE_COLUMNS: TableColumn<JournalEntry>[] = [
   {
     key: "title",
     label: "Title",
-    render: (row) => (
-      <span className="text-[14px] font-normal text-[#2D2D2D]">{row.title}</span>
-    ),
+    render: (row) => <span className="text-[14px] font-normal text-[#2D2D2D]">{row.title}</span>,
   },
   {
     key: "source",
@@ -38,9 +35,7 @@ const TABLE_COLUMNS: TableColumn<JournalEntry>[] = [
   {
     key: "day",
     label: "Day #",
-    render: (row) => (
-      <span className="text-[14px] font-normal text-[#6B6B6B]">{row.day}</span>
-    ),
+    render: (row) => <span className="text-[14px] font-normal text-[#6B6B6B]">{row.day}</span>,
   },
   {
     key: "status",
@@ -103,9 +98,7 @@ export default function JournalMain() {
 
     // Search filter
     if (searchQuery.trim()) {
-      result = result.filter((e) =>
-        e.title.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+      result = result.filter((e) => e.title.toLowerCase().includes(searchQuery.toLowerCase()));
     }
 
     return result;
@@ -114,7 +107,7 @@ export default function JournalMain() {
   const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
   const paginated = filtered.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
+    currentPage * ITEMS_PER_PAGE,
   );
 
   const handleTabChange = (tab: JournalTab) => {
@@ -141,7 +134,8 @@ export default function JournalMain() {
             Journal Library
           </h1>
           <p className="text-[14px] leading-[20px] text-[#6B6B6B] max-w-[420px]">
-            Manage the curated archive of transformative journaling prompts and long-term wellness plans.
+            Manage the curated archive of transformative journaling prompts and long-term wellness
+            plans.
           </p>
         </div>
         <div className="shrink-0">
@@ -155,11 +149,7 @@ export default function JournalMain() {
       </div>
 
       {/* Tabs */}
-      <Tabs
-        items={JOURNAL_TABS}
-        activeTab={activeTab}
-        onTabChange={handleTabChange}
-      />
+      <Tabs items={JOURNAL_TABS} activeTab={activeTab} onTabChange={handleTabChange} />
 
       {/* Table Card */}
       <div className="bg-white rounded-[14px] border border-[#F3F4F6] shadow-[0px_1px_1.5px_rgba(0,0,0,0.1),0px_1px_1px_rgba(0,0,0,0.1)] overflow-hidden">

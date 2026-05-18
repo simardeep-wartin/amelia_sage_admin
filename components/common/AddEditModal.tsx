@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Modal from "@/components/ui/Modal";
 import Input from "@/components/ui/Input";
@@ -13,15 +13,32 @@ import { thumbnailItemSchema, mediaItemSchema } from "@/lib/validators/common";
 // "media"     layout: title, subtitle, duration, description, video, audio  (exercises, modules, activities, etc.)
 export type ModalLayout = "thumbnail" | "media";
 
+// Merged superset of both schema shapes — all fields optional so useForm stays well-typed
+// across both layouts. Zod resolver enforces which fields are required at runtime.
+type FormValues = {
+  name?: string;
+  title?: string;
+  subtitle?: string;
+  duration?: string;
+  description?: string;
+  status?: "active" | "draft" | "inactive";
+};
+
+export type ModalSubmitData = FormValues & {
+  videoFile: File | null;
+  audioFile: File | null;
+  thumbnailFile: File | null;
+};
+
 export interface AddEditModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (data: any) => void;
+  onSave: (data: ModalSubmitData) => void;
   layout: ModalLayout;
   title: string;
   showDraft?: boolean;
   thumbnailLabel?: string;
-  initialData?: any;
+  initialData?: FormValues;
 }
 
 export default function AddEditModal({
@@ -41,8 +58,8 @@ export default function AddEditModal({
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<any>({
-    resolver: zodResolver(schema),
+  } = useForm<FormValues>({
+    resolver: zodResolver(schema) as Resolver<FormValues>,
     defaultValues: initialData || {
       name: "",
       title: "",
@@ -59,26 +76,28 @@ export default function AddEditModal({
 
   React.useEffect(() => {
     if (isOpen) {
-      reset(initialData || {
-        name: "",
-        title: "",
-        subtitle: "",
-        duration: "",
-        description: "",
-        status: "active",
-      });
+      reset(
+        initialData || {
+          name: "",
+          title: "",
+          subtitle: "",
+          duration: "",
+          description: "",
+          status: "active",
+        },
+      );
       setVideoFile(null);
       setAudioFile(null);
       setThumbnailFile(null);
     }
   }, [isOpen, initialData, reset]);
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: FormValues) => {
     onSave({ ...data, videoFile, audioFile, thumbnailFile });
     onClose();
   };
 
-  const handleSaveDraft = (data: any) => {
+  const handleSaveDraft = (data: FormValues) => {
     onSave({ ...data, status: "draft", videoFile, audioFile, thumbnailFile });
     onClose();
   };
@@ -119,8 +138,9 @@ export default function AddEditModal({
       footer={footer}
       maxWidth={layout === "media" ? "max-w-2xl" : "max-w-xl"}
     >
-      <form className={`space-y-6 ${layout === "media" ? "max-h-[70vh] overflow-y-auto px-1" : ""}`}>
-
+      <form
+        className={`space-y-6 ${layout === "media" ? "max-h-[70vh] overflow-y-auto px-1" : ""}`}
+      >
         {/* Media layout: title, subtitle, duration, description, video, audio */}
         {layout === "media" && (
           <>
@@ -146,9 +166,7 @@ export default function AddEditModal({
             />
 
             <div className="space-y-1">
-              <label className="block text-s font-medium text-charcoal">
-                Add Description
-              </label>
+              <label className="block text-s font-medium text-charcoal">Add Description</label>
               <textarea
                 className="w-full rounded-lg border border-[#ededed] bg-white px-5 py-4 font-normal text-m text-charcoal placeholder:text-[#e1e1e1] outline-none transition focus:border-sageGreen/55 focus:ring-2 focus:ring-sageGreen/20 min-h-[100px] resize-none"
                 placeholder="Add Description Here"

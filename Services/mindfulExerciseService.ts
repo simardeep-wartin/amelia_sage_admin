@@ -1,5 +1,5 @@
 import type { IMindfulExerciseService } from "@/Services/interfaces";
-import { ExerciseCategory, ExerciseSubCategory, Exercise } from "@/types/mindful-exercise";
+import { type ExerciseCategory, type ExerciseSubCategory } from "@/types/mindful-exercise";
 
 // Mock Data
 const MOCK_CATEGORIES: ExerciseCategory[] = [
@@ -40,7 +40,8 @@ const MOCK_CATEGORIES: ExerciseCategory[] = [
             title: "Supine Twist",
             subtitle: "A restorative twist that releases the spine and massages abdominal organs.",
             duration: "8 mins",
-            description: "A restorative twist that releases the spine and massages abdominal organs.",
+            description:
+              "A restorative twist that releases the spine and massages abdominal organs.",
             status: "active",
             videoUrl: "#",
             audioUrl: "#",
@@ -172,9 +173,11 @@ const MOCK_CATEGORIES: ExerciseCategory[] = [
           {
             id: "stdy-1",
             title: "Mountain Pose",
-            subtitle: "The foundation of all standing poses, improving posture and grounding energy.",
+            subtitle:
+              "The foundation of all standing poses, improving posture and grounding energy.",
             duration: "5 mins",
-            description: "The foundation of all standing poses, improving posture and grounding energy.",
+            description:
+              "The foundation of all standing poses, improving posture and grounding energy.",
             status: "active",
             videoUrl: "#",
             audioUrl: "#",
@@ -230,9 +233,11 @@ const MOCK_CATEGORIES: ExerciseCategory[] = [
           {
             id: "gs-1",
             title: "Neck Rolls",
-            subtitle: "Releases tension in the neck and upper shoulders with slow circular movements.",
+            subtitle:
+              "Releases tension in the neck and upper shoulders with slow circular movements.",
             duration: "4 mins",
-            description: "Releases tension in the neck and upper shoulders with slow circular movements.",
+            description:
+              "Releases tension in the neck and upper shoulders with slow circular movements.",
             status: "active",
             videoUrl: "#",
             audioUrl: "#",
@@ -372,7 +377,8 @@ const MOCK_CATEGORIES: ExerciseCategory[] = [
             title: "The Hundred",
             subtitle: "A classic Pilates warm-up that activates the core and promotes circulation.",
             duration: "5 mins",
-            description: "A classic Pilates warm-up that activates the core and promotes circulation.",
+            description:
+              "A classic Pilates warm-up that activates the core and promotes circulation.",
             status: "active",
             videoUrl: "#",
             audioUrl: "#",
@@ -381,9 +387,11 @@ const MOCK_CATEGORIES: ExerciseCategory[] = [
           {
             id: "mp-2",
             title: "Roll Up",
-            subtitle: "Builds abdominal strength and spinal articulation through a slow controlled movement.",
+            subtitle:
+              "Builds abdominal strength and spinal articulation through a slow controlled movement.",
             duration: "6 mins",
-            description: "Builds abdominal strength and spinal articulation through a slow controlled movement.",
+            description:
+              "Builds abdominal strength and spinal articulation through a slow controlled movement.",
             status: "active",
             videoUrl: "#",
             audioUrl: "#",
@@ -463,9 +471,11 @@ const MOCK_CATEGORIES: ExerciseCategory[] = [
           {
             id: "rp-1",
             title: "Footwork Series",
-            subtitle: "Develops lower body alignment and strength using the reformer spring resistance.",
+            subtitle:
+              "Develops lower body alignment and strength using the reformer spring resistance.",
             duration: "10 mins",
-            description: "Develops lower body alignment and strength using the reformer spring resistance.",
+            description:
+              "Develops lower body alignment and strength using the reformer spring resistance.",
             status: "active",
             videoUrl: "#",
             audioUrl: "#",
@@ -474,9 +484,11 @@ const MOCK_CATEGORIES: ExerciseCategory[] = [
           {
             id: "rp-2",
             title: "Long Stretch",
-            subtitle: "Challenges the core and shoulder stability in a plank-like position on the reformer.",
+            subtitle:
+              "Challenges the core and shoulder stability in a plank-like position on the reformer.",
             duration: "8 mins",
-            description: "Challenges the core and shoulder stability in a plank-like position on the reformer.",
+            description:
+              "Challenges the core and shoulder stability in a plank-like position on the reformer.",
             status: "active",
             videoUrl: "#",
             audioUrl: "#",
