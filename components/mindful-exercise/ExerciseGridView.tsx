@@ -13,9 +13,10 @@ import { ExerciseSubCategory, Exercise } from "@/types/mindful-exercise";
 
 interface ExerciseGridViewProps {
   subCategory: ExerciseSubCategory;
+  managementTitle?: string;
 }
 
-export default function ExerciseGridView({ subCategory }: ExerciseGridViewProps) {
+export default function ExerciseGridView({ subCategory, managementTitle = "Mindful Exercise Management" }: ExerciseGridViewProps) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -65,7 +66,7 @@ export default function ExerciseGridView({ subCategory }: ExerciseGridViewProps)
             <ChevronLeftIcon className="h-5 w-5 stroke-[2.5px]" />
           </button>
           <span className="text-[14px] text-[#A1A1A1] font-normalnfont-inter">
-            Back to yoga Mindful Exercise Management
+            Back to {managementTitle}
           </span>
         </div>
         
@@ -75,7 +76,7 @@ export default function ExerciseGridView({ subCategory }: ExerciseGridViewProps)
               {subCategory.name} Exercise Management
             </h1>
             <div className="flex items-center gap-1 text-[14px] text-slate mt-1 font-normal">
-              <span>Dashboard</span> / <span>Exercises</span> / <span>Mindful Exercise Management</span> / <span >Seated Yoga Asana</span>
+              <span>Dashboard</span> / <span>Exercises</span> / <span>{managementTitle}</span> / <span>{subCategory.name}</span>
             </div>
           </div>
           <Button 

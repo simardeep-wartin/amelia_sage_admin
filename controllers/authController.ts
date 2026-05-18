@@ -1,4 +1,6 @@
-﻿import type { SignInRequest, SignInResponse } from "@/types/auth";
+﻿// TODO: [DEAD CODE] This controller is never instantiated. If MVC controller pattern is
+// needed in the future, wire it up via the API route or delete this file.
+import type { SignInRequest, SignInResponse } from "@/types/auth";
 import type { authService } from "@/Services/authService";
 type AuthService = typeof authService;
 

@@ -23,76 +23,25 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import type { ComponentType, SVGProps } from "react";
+import { getNavigationSections } from "@/Services/navigationService";
 
-type NavItem = {
-  label: string;
-  href: string;
-  icon: ComponentType<SVGProps<SVGSVGElement>>;
+const ICON_MAP: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
+  "/dashboard": HomeIcon,
+  "/user-insights": ArrowTrendingUpIcon,
+  "/governance-safety": ShieldCheckIcon,
+  "/demographics": UsersIcon,
+  "/financial-management": BanknotesIcon,
+  "/access-tiers": StarIcon,
+  "/wellth-plans": HeartIcon,
+  "/work-on-me-exercises": SparklesIcon,
+  "/mindful-exercise-management": SignalIcon,
+  "/calm-stillness-management": SunIcon,
+  "/journal-management": BookOpenIcon,
+  "/sage-ai-settings": CpuChipIcon,
+  "/notifications": BellIcon,
+  "/settings": Cog6ToothIcon,
+  "/phase-2-roadmap": ClipboardDocumentListIcon,
 };
-
-type NavSection = {
-  title: string;
-  items: NavItem[];
-};
-
-const NAV_SECTIONS: NavSection[] = [
-  {
-    title: "Overview",
-    items: [
-      { label: "Dashboard", href: "/dashboard", icon: HomeIcon },
-      { label: "User Insights", href: "/user-insights", icon: ArrowTrendingUpIcon },
-      { label: "Governance & Safety", href: "/governance-safety", icon: ShieldCheckIcon },
-    ],
-  },
-  {
-    title: "User Data",
-    items: [{ label: "Demographics", href: "/demographics", icon: UsersIcon }],
-  },
-  {
-    title: "Financials",
-    items: [
-      { label: "Financial Management", href: "/financial-management", icon: BanknotesIcon },
-      { label: "Access & Tiers", href: "/access-tiers", icon: StarIcon },
-    ],
-  },
-  {
-    title: "Content",
-    items: [
-      { label: "Wellth Plans", href: "/wellth-plans", icon: HeartIcon },
-      { label: "Work on Me Exercises", href: "/work-on-me-exercises", icon: SparklesIcon },
-    ],
-  },
-  {
-    title: "Exercises",
-    items: [
-      {
-        label: "Mindful Exercise Management",
-        href: "/mindful-exercise-management",
-        icon: SignalIcon,
-      },
-      {
-        label: "Calm & Stillness Management",
-        href: "/calm-stillness-management",
-        icon: SunIcon,
-      },
-      { label: "Journal Management", href: "/journal-management", icon: BookOpenIcon },
-    ],
-  },
-  {
-    title: "AI & Engagement",
-    items: [
-      { label: "Sage AI Settings", href: "/sage-ai-settings", icon: CpuChipIcon },
-      { label: "Notifications", href: "/notifications", icon: BellIcon },
-    ],
-  },
-  {
-    title: "System",
-    items: [
-      { label: "Settings", href: "/settings", icon: Cog6ToothIcon },
-      { label: "Phase 2 Roadmap", href: "/phase-2-roadmap", icon: ClipboardDocumentListIcon },
-    ],
-  },
-];
 
 const AUTH_PATHS = ["/signin", "/signup"];
 const NAV_LINK_BASE =
@@ -103,6 +52,7 @@ const NAV_LINK_HOVER = "hover:bg-gold hover:shadow-sm";
 export default function Sidebar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const navSections = getNavigationSections();
 
   useEffect(() => {
     const openSidebar = () => setIsOpen(true);
@@ -152,9 +102,10 @@ export default function Sidebar() {
             <XMarkIcon className="h-5 w-5" />
           </button>
         </div>
-        {/* Navigation */}
+
+        {/* Navigation — source of truth: Services/navigationService.ts */}
         <nav className="flex flex-col gap-6 px-4 pb-6 pt-4">
-          {NAV_SECTIONS.map((section) => (
+          {navSections.map((section) => (
             <div key={section.title} className="flex flex-col gap-2">
               <p className="px-3 font-cormorant text-xs font-bold uppercase tracking-wide text-softstone">
                 {section.title}
@@ -162,7 +113,7 @@ export default function Sidebar() {
               <ul className="flex flex-col gap-1">
                 {section.items.map((item) => {
                   const isActive = pathname === item.href;
-                  const Icon = item.icon;
+                  const Icon = ICON_MAP[item.href];
                   return (
                     <li key={item.href}>
                       <Link
@@ -174,7 +125,7 @@ export default function Sidebar() {
                           isActive ? NAV_LINK_ACTIVE : NAV_LINK_HOVER,
                         ].join(" ")}
                       >
-                        <Icon className="h-5 w-5 shrink-0" aria-hidden="true" />
+                        {Icon && <Icon className="h-5 w-5 shrink-0" aria-hidden="true" />}
                         <span className="text-s font-medium">{item.label}</span>
                       </Link>
                     </li>

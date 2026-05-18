@@ -14,8 +14,8 @@ import SummaryStatCard from "@/components/common/SummaryStatCard";
 import ChartCard from "@/components/common/ChartCard";
 import Badge from "@/components/common/Badge";
 import { TableColumn } from "@/components/common/Table";
-import { FINANCIAL_TABS } from "@/features/financial/financial.types";
-import type { FinancialTab } from "@/features/financial/financial.types";
+import { FINANCIAL_TABS } from "@/types/financial";
+import type { FinancialTab } from "@/types/financial";
 import appData from "@/data/app-data.json";
 
 function FilterIcon() {

@@ -1,3 +1,5 @@
+// TODO: [DEAD CODE] Signup is not part of the admin navigation and calls Services/authApi
+// which is not yet wired to the backend. Implement or remove once backend is ready.
 "use client";
 
 import Link from "next/link";

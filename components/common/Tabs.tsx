@@ -19,7 +19,7 @@ export default function Tabs<T extends string>({ items, activeTab, onTabChange }
               onClick={() => onTabChange(tab)}
               className={`border-b-2 p-3 font-sans text-[14px] leading-[1.3] transition-colors cursor-pointer min-w-[130px] ${
                 isActive
-                  ? " font-semibold text-sageGreen bg-[#FFFFFF] rounded-t-[16px]"
+                  ? "border-sageGreen font-semibold text-sageGreen bg-[#FFFFFF] rounded-t-[16px]"
                   : "border-transparent font-medium text-[#6B6B6B] hover:text-sageGreen hover:bg-[#FFFFFF] rounded-t-[16px] hover:border-sageGreen"
               }`}
             >

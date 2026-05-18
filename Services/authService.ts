@@ -1,6 +1,7 @@
+import type { IAuthService } from "@/Services/interfaces";
 import type { SignInRequest, SignInResponse } from "@/types/auth";
 
-export const authService = {
+export const authService: IAuthService = {
   async login(payload: SignInRequest): Promise<SignInResponse> {
     const response = await fetch("/api/auth/signin", {
       method: "POST",

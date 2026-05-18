@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useRef } from "react";
-import { CloudArrowUpIcon } from "@heroicons/react/24/outline";
+import React, { useState } from "react";
 import Modal from "@/components/ui/Modal";
 import Input from "@/components/ui/Input";
+import FileUploadZone from "@/components/ui/FileUploadZone";
 
 export type ModalType = "category" | "exercise" | "intro-screen";
 
@@ -34,7 +34,6 @@ export default function ActionModal({
   const [field2, setField2] = useState("");
   const [field3, setField3] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
     if (initialData && isOpen) {
@@ -152,36 +151,15 @@ export default function ActionModal({
           />
         </div>
 
-        {/* Icon Upload (Category Only) */}
         {type === "category" && (
-          <div className="space-y-1">
-            <label className="block text-s font-normal text-charcoal">
-              Add Icon
-            </label>
-            <div
-              onClick={() => fileInputRef.current?.click()}
-              className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-[#E5E5E5] bg-[#FDFDFD] py-10 transition-colors hover:bg-gray-50 cursor-pointer"
-            >
-              <input
-                type="file"
-                ref={fileInputRef}
-                className="hidden"
-                accept="image/png, image/jpeg"
-                onChange={(e) => {
-                  if (e.target.files && e.target.files[0]) {
-                    setSelectedFile(e.target.files[0]);
-                  }
-                }}
-              />
-              <CloudArrowUpIcon className="h-8 w-8 text-[#9898A3] mb-3" strokeWidth={1} />
-              <span className="text-sm sm:text-[15px] font-medium text-[#5B4FDB] mb-1 px-4 text-center break-all sm:truncate max-w-full">
-                {selectedFile ? selectedFile.name : "Upload Icon"}
-              </span>
-              <span className="text-xs sm:text-[13px] text-[#A1A1AA] text-center px-4">
-                PNG, JPG up to 5MB (recommended: 40x40px)
-              </span>
-            </div>
-          </div>
+          <FileUploadZone
+            label="Add Icon"
+            accept="image/png, image/jpeg"
+            selectedFile={selectedFile}
+            onFileSelect={setSelectedFile}
+            placeholder="Upload Icon"
+            hint="PNG, JPG up to 5MB (recommended: 40x40px)"
+          />
         )}
       </div>
     </Modal>

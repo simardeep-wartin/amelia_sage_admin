@@ -31,8 +31,17 @@ export default function CategoryExercisePage() {
     }
   };
 
-  if (loading) return <MindfulExerciseLoader type="grid" />;
-  if (!subCategory) return <div className="p-8 text-charcoal">Category not found</div>;
+  if (loading) return (
+    <PageLayout title="Mindful Exercise Management">
+      <MindfulExerciseLoader type="grid" />
+    </PageLayout>
+  );
+
+  if (!subCategory) return (
+    <PageLayout title="Mindful Exercise Management">
+      <div className="p-8 text-charcoal">Category not found</div>
+    </PageLayout>
+  );
 
   return (
     <PageLayout title="Mindful Exercise Management">

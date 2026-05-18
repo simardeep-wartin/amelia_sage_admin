@@ -1,5 +1,10 @@
-import PlaceholderPage from "@/components/placeholder-page";
+import PageLayout from "@/components/layout/PageLayout";
+import JournalMain from "@/components/journal/JournalMain";
 
 export default function JournalManagementPage() {
-  return <PlaceholderPage title="Journal Management" />;
+  return (
+    <PageLayout title="Journal Management">
+      <JournalMain />
+    </PageLayout>
+  );
 }

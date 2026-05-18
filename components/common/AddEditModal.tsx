@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CloudArrowUpIcon } from "@heroicons/react/24/outline";
 import Modal from "@/components/ui/Modal";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
+import FileUploadZone from "@/components/ui/FileUploadZone";
 import { thumbnailItemSchema, mediaItemSchema } from "@/lib/validators/common";
 
 // "thumbnail" layout: name, subtitle, image upload  (categories, emotions, focus, plan sections, etc.)
@@ -52,10 +52,6 @@ export default function AddEditModal({
       status: "active",
     },
   });
-
-  const videoInputRef = useRef<HTMLInputElement>(null);
-  const audioInputRef = useRef<HTMLInputElement>(null);
-  const imageInputRef = useRef<HTMLInputElement>(null);
 
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [audioFile, setAudioFile] = useState<File | null>(null);
@@ -121,7 +117,7 @@ export default function AddEditModal({
       onClose={onClose}
       title={title}
       footer={footer}
-      width={layout === "media" ? "max-w-2xl" : "max-w-xl"}
+      maxWidth={layout === "media" ? "max-w-2xl" : "max-w-xl"}
     >
       <form className={`space-y-6 ${layout === "media" ? "max-h-[70vh] overflow-y-auto px-1" : ""}`}>
 
@@ -132,21 +128,21 @@ export default function AddEditModal({
               label="Add Title"
               placeholder="Enter Title Name"
               {...register("title")}
-              error={errors.title?.message}
+              error={errors.title?.message as string | undefined}
             />
 
             <Input
               label="Add Subtitle"
               placeholder="Enter Subtitle Name"
               {...register("subtitle")}
-              error={errors.subtitle?.message}
+              error={errors.subtitle?.message as string | undefined}
             />
 
             <Input
               label="Set Duration"
               placeholder="e.g. 5 mins"
               {...register("duration")}
-              error={errors.duration?.message}
+              error={errors.duration?.message as string | undefined}
             />
 
             <div className="space-y-1">
@@ -159,51 +155,27 @@ export default function AddEditModal({
                 {...register("description")}
               />
               {errors.description && (
-                <p className="text-xs text-red-500 mt-1">{errors.description.message}</p>
+                <p className="text-xs text-red-500 mt-1">{errors.description.message as string}</p>
               )}
             </div>
 
-            <div className="space-y-1">
-              <label className="block text-s font-medium text-charcoal">Add Video File</label>
-              <div
-                onClick={() => videoInputRef.current?.click()}
-                className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-[#E5E5E5] bg-[#FDFDFD] py-8 transition-colors hover:bg-gray-50 cursor-pointer"
-              >
-                <input
-                  type="file"
-                  ref={videoInputRef}
-                  className="hidden"
-                  accept="video/*"
-                  onChange={(e) => { if (e.target.files?.[0]) setVideoFile(e.target.files[0]); }}
-                />
-                <CloudArrowUpIcon className="h-8 w-8 text-[#9898A3] mb-2" strokeWidth={1} />
-                <span className="text-sm font-medium text-[#5B4FDB] mb-1">
-                  {videoFile ? videoFile.name : "Upload Video Animation"}
-                </span>
-                <span className="text-xs text-[#A1A1AA]">MP4, MOV up to 5MB</span>
-              </div>
-            </div>
+            <FileUploadZone
+              label="Add Video File"
+              accept="video/*"
+              selectedFile={videoFile}
+              onFileSelect={setVideoFile}
+              placeholder="Upload Video Animation"
+              hint="MP4, MOV up to 5MB"
+            />
 
-            <div className="space-y-1">
-              <label className="block text-s font-medium text-charcoal">Add Audio Script</label>
-              <div
-                onClick={() => audioInputRef.current?.click()}
-                className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-[#E5E5E5] bg-[#FDFDFD] py-8 transition-colors hover:bg-gray-50 cursor-pointer"
-              >
-                <input
-                  type="file"
-                  ref={audioInputRef}
-                  className="hidden"
-                  accept="audio/*"
-                  onChange={(e) => { if (e.target.files?.[0]) setAudioFile(e.target.files[0]); }}
-                />
-                <CloudArrowUpIcon className="h-8 w-8 text-[#9898A3] mb-2" strokeWidth={1} />
-                <span className="text-sm font-medium text-[#5B4FDB] mb-1">
-                  {audioFile ? audioFile.name : "Upload Audio Script"}
-                </span>
-                <span className="text-xs text-[#A1A1AA]">MP3, WAV up to 5MB</span>
-              </div>
-            </div>
+            <FileUploadZone
+              label="Add Audio Script"
+              accept="audio/*"
+              selectedFile={audioFile}
+              onFileSelect={setAudioFile}
+              placeholder="Upload Audio Script"
+              hint="MP3, WAV up to 5MB"
+            />
           </>
         )}
 
@@ -211,14 +183,14 @@ export default function AddEditModal({
         {layout === "thumbnail" && (
           <>
             <div>
-              <label className="block text-[14px] font-bold text-charcoal mb-2">Add Title</label>
+              <label className="block text-[14px] font-normal text-charcoal mb-2">Add Title</label>
               <input
                 {...register("name")}
                 placeholder="Enter Title Name"
                 className="w-full px-4 py-3 bg-white border border-[#E5E5E5] rounded-[10px] text-[14px] outline-none focus:border-sageGreen transition-all placeholder:text-[#D1D1D1]"
               />
               {errors.name && (
-                <p className="mt-1 text-xs text-red-500">{errors.name.message}</p>
+                <p className="mt-1 text-xs text-red-500">{errors.name.message as string}</p>
               )}
             </div>
 
@@ -226,35 +198,17 @@ export default function AddEditModal({
               label="Add Subtitle (Optional)"
               placeholder="Enter Subtitle Name"
               {...register("subtitle")}
-              error={errors.subtitle?.message}
+              error={errors.subtitle?.message as string | undefined}
             />
 
-            <div>
-              <label className="block text-[14px] font-bold text-charcoal mb-2">
-                {thumbnailLabel}
-              </label>
-              <div
-                className="relative group cursor-pointer"
-                onClick={() => imageInputRef.current?.click()}
-              >
-                <div className="flex flex-col items-center justify-center p-12 border-2 border-dashed border-[#E5E5E5] rounded-[20px] bg-[#FDFDFD] hover:border-sageGreen transition-all">
-                  <div className="flex flex-col items-center gap-2">
-                    <CloudArrowUpIcon className="h-10 w-10 text-[#D1D1D1] group-hover:text-sageGreen transition-colors" />
-                    <p className="text-[14px] font-semibold text-sageGreen hover:underline">
-                      {thumbnailFile ? thumbnailFile.name : "Upload Icon File"}
-                    </p>
-                    <p className="text-[11px] text-[#A1A1A1]">PNG, JPG up to 5MB (recommended: 40x40px)</p>
-                  </div>
-                </div>
-                <input
-                  type="file"
-                  ref={imageInputRef}
-                  className="hidden"
-                  accept="image/*"
-                  onChange={(e) => { if (e.target.files?.[0]) setThumbnailFile(e.target.files[0]); }}
-                />
-              </div>
-            </div>
+            <FileUploadZone
+              label={thumbnailLabel}
+              accept="image/*"
+              selectedFile={thumbnailFile}
+              onFileSelect={setThumbnailFile}
+              placeholder="Upload Icon File"
+              hint="PNG, JPG up to 5MB (recommended: 40x40px)"
+            />
           </>
         )}
       </form>

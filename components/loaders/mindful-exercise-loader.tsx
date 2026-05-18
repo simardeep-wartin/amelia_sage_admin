@@ -1,6 +1,7 @@
 "use client";
 
 import { Skeleton } from "./common/skeleton";
+import { UserIcon } from "@heroicons/react/24/solid";
 
 interface MindfulExerciseLoaderProps {
   type?: "main" | "grid";
@@ -16,22 +17,6 @@ export default function MindfulExerciseLoader({ type = "main" }: MindfulExercise
             <Skeleton className="h-10 w-10 rounded-full bg-[#E5E5E5]" />
             <Skeleton className="h-5 w-72 bg-[#E5E5E5]" />
           </div>
-
-          <div className="flex justify-between items-end">
-            <div className="space-y-3">
-              <Skeleton className="h-12 w-[400px] rounded-md bg-[#E5E5E5]" />
-              <div className="flex items-center gap-2">
-                <Skeleton className="h-4 w-20 bg-[#E5E5E5]" />
-                <span className="text-[#E5E7EB]">/</span>
-                <Skeleton className="h-4 w-20 bg-[#E5E5E5]" />
-                <span className="text-[#E5E7EB]">/</span>
-                <Skeleton className="h-4 w-40 bg-[#E5E5E5]" />
-                <span className="text-[#E5E7EB]">/</span>
-                <Skeleton className="h-4 w-32 bg-[#E5E5E5]" />
-              </div>
-            </div>
-            <Skeleton className="h-11 w-52 rounded-[10px] bg-[#E5E5E5]" />
-          </div>
         </div>
 
         {/* Filters Row Skeleton */}
@@ -45,7 +30,12 @@ export default function MindfulExerciseLoader({ type = "main" }: MindfulExercise
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div key={i} className="bg-white border border-[#F2F2F2] rounded-[20px] overflow-hidden space-y-4 shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
-              <Skeleton className="aspect-[1.1/1] w-full rounded-none bg-[#E5E5E5]" />
+              <div className="aspect-[1.1/1] w-full bg-[#F9F7F2] rounded-t-[20px] flex items-center justify-center p-8">
+                <div className="flex flex-col items-center justify-center gap-3 opacity-30">
+                  <UserIcon className="h-20 w-20 text-[#6B8F71] stroke-[1]" />
+                  <Skeleton className="h-2 w-20 bg-[#C8BFB0] rounded-full" />
+                </div>
+              </div>
               <div className="p-6 space-y-4">
                 <div className="flex justify-between items-center">
                   <Skeleton className="h-6 w-36 bg-[#E5E5E5]" />
@@ -78,21 +68,6 @@ export default function MindfulExerciseLoader({ type = "main" }: MindfulExercise
 
   return (
     <div className="space-y-6">
-      {/* Breadcrumbs & Title Skeleton */}
-      <div className="flex justify-between items-end mb-4 px-1">
-        <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <Skeleton className="h-4 w-20 bg-[#E5E5E5]" />
-            <span className="text-[#E5E7EB]">/</span>
-            <Skeleton className="h-4 w-20 bg-[#E5E5E5]" />
-            <span className="text-[#E5E7EB]">/</span>
-            <Skeleton className="h-4 w-32 bg-[#E5E5E5]" />
-          </div>
-          <Skeleton className="h-12 w-96 rounded-md bg-[#E5E5E5]" />
-        </div>
-        <Skeleton className="h-6 w-32 mb-2 bg-[#E5E5E5]" />
-      </div>
-
       {/* Main Container Skeleton */}
       <div className="rounded-[24px] shadow-sm border border-[#F2F2F2] overflow-hidden">
         {/* Tabs Row Skeleton */}

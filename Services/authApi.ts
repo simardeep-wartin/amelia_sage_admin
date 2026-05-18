@@ -1,3 +1,6 @@
+// TODO: [DEAD CODE] Real backend API client — never called because NEXT_PUBLIC_API_BASE_URL
+// is not configured. Wire up in authService.ts once the backend is ready, then delete the
+// mock route at app/api/auth/signin/route.ts.
 type ApiError = {
   message?: string;
 };

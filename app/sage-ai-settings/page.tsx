@@ -1,5 +1,10 @@
-import PlaceholderPage from "@/components/placeholder-page";
+import PageLayout from "@/components/layout/PageLayout";
+import SageAiMain from "@/components/sage-ai/SageAiMain";
 
 export default function SageAiSettingsPage() {
-  return <PlaceholderPage title="Sage AI Settings" />;
+  return (
+    <PageLayout title="Sage AI Settings">
+      <SageAiMain />
+    </PageLayout>
+  );
 }

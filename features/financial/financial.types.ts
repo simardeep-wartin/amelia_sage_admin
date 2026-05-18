@@ -1,3 +1,4 @@
+// TODO: [DEAD CODE] Moved to @/types/financial — update any remaining imports and delete this file.
 export const FINANCIAL_TABS = [
   "Revenue Dashboard",
   "Subscriptions",
