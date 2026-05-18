@@ -37,7 +37,7 @@ export default function Badge({ variant, label, className = "" }: BadgeProps) {
   const text = label ?? variant.toUpperCase();
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide ${STYLES[variant]} ${className}`}
+      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-wide ${STYLES[variant]} ${className}`}
     >
       {text}
     </span>

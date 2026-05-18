@@ -28,7 +28,7 @@ export default function Table<T extends object>({
             {columns.map((col) => (
               <th
                 key={String(col.key)}
-                className={`whitespace-nowrap px-4 py-3 text-xs font-semibold ${
+                className={`whitespace-nowrap px-4 py-3 text-[16px] font-inter font-medium ${
                   col.align === "right"
                     ? "text-right"
                     : col.align === "center"

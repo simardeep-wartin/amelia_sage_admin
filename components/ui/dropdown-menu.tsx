@@ -31,18 +31,20 @@ export function DropdownMenu({ children }: { children: React.ReactNode }) {
 export function DropdownMenuTrigger({
   children,
   className,
+  onClick: onClickProp,
   ...props
 }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   const { open, setOpen } = React.useContext(DropdownMenuContext);
   return (
     <button
       type="button"
+      {...props}
+      className={className}
       onClick={(e) => {
         e.stopPropagation();
         setOpen(!open);
+        onClickProp?.(e);
       }}
-      className={className}
-      {...props}
     >
       {children}
     </button>

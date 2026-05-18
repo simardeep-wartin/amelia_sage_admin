@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { XMarkIcon, SpeakerWaveIcon } from "@heroicons/react/24/outline";
+import SageAiLoader from "@/components/loaders/sage-ai-loader";
 
 const PROMPT_SECTIONS = [
   {
@@ -31,11 +32,7 @@ const PROMPT_SECTIONS = [
       "Encourage reflection rather than giving direct commands.",
       "Use optional language such as:",
     ],
-    extra: [
-      "“You might try...”",
-      "“It may help to...”",
-      "“Some people find it useful to...”",
-    ],
+    extra: ["“You might try...”", "“It may help to...”", "“Some people find it useful to...”"],
   },
   {
     title: "LANGUAGE PREFERENCES",
@@ -65,7 +62,7 @@ const PROMPT_SECTIONS = [
 
 function PromptContent() {
   return (
-    <div className="space-y-4 text-[#2b2b2b]">
+    <div className="space-y-4 text-[#171717] font-inter">
       {PROMPT_SECTIONS.map((section) => (
         <div key={section.title} className="space-y-[3px]">
           <p className="text-[14px] font-medium leading-[1.3]">{section.title}</p>
@@ -86,9 +83,15 @@ function PromptContent() {
 }
 
 export default function SageAiMain() {
+  const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState("");
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleOpenModal = () => {
     setIsEditing(false);
@@ -106,8 +109,8 @@ export default function SageAiMain() {
         (s) =>
           `${s.title}\n${s.bullets.map((b) => `• ${b}`).join("\n")}${
             s.extra ? "\n" + s.extra.join("\n") : ""
-          }`
-      ).join("\n\n")
+          }`,
+      ).join("\n\n"),
     );
     setIsEditing(true);
   };
@@ -121,17 +124,18 @@ export default function SageAiMain() {
     setIsEditing(false);
   };
 
+  if (loading) return <SageAiLoader />;
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
       <div className="flex flex-col gap-1">
-        <p className="text-[14px] leading-[20px] text-[#6b6b6b]">
-          Dashboard / AI &amp; Engagement /{" "}
-          <span className="text-[#2d2d2d]">Sage AI Settings</span>
-        </p>
-        <h1 className="text-[24px] font-medium leading-[32px] text-[#2d2d2d]">
+        <h1 className="text-[24px] font-bold font-arial leading-[32px] text-charcoal">
           Sage AI Settings
         </h1>
+        <p className="text-[14px] leading-[20px] font-arial font-bold text-[#6b6b6b]">
+          Dashboard / AI &amp; Engagement / Sage AI Settings
+        </p>
       </div>
 
       {/* Configuration Card — full width, clickable */}
@@ -143,7 +147,7 @@ export default function SageAiMain() {
             "linear-gradient(172deg, rgba(168,181,160,0.2) 0%, rgba(213,202,227,0.2) 50%, rgba(232,196,184,0.2) 100%)",
         }}
       >
-        <p className="text-[20px] font-medium leading-[20px] text-[#2b2b2b]">
+        <p className="text-[20px] font-medium leading-[20px] text-charcoal font-arial">
           Sage AI Configuration
         </p>
 
@@ -157,14 +161,11 @@ export default function SageAiMain() {
           >
             <SpeakerWaveIcon className="h-5 w-5 text-[#6b6b6b]" />
           </div>
-          <div className="flex flex-col gap-[3px]">
-            <p
-              className="text-[24px] font-semibold leading-[30px] text-[#2d2d2d]"
-              style={{ fontFamily: "'Cormorant Garamond', serif" }}
-            >
+          <div className="flex flex-col">
+            <p className="text-[24px] font-semibold leading-[30px] text-[#2d2d2d] font-cormorant">
               Voice and ChatBot Model
             </p>
-            <p className="text-[12px] font-normal leading-[1.3] text-[#6b6b6b]">
+            <p className="text-[12px] font-normal leading-[1.3] text-[#6b6b6b] font-inter">
               Warm, empathetic female voice
             </p>
           </div>
@@ -174,10 +175,10 @@ export default function SageAiMain() {
       {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-6">
-          <div className="w-full max-w-3xl bg-[#fafafa] rounded-[24px] p-8 flex flex-col gap-[30px] shadow-2xl max-h-[90vh]">
+          <div className="w-full max-w-3xl bg-[#fafafa] rounded-[24px] p-8 flex flex-col gap-[20px] shadow-2xl max-h-[90vh]">
             {/* Header */}
             <div className="flex items-start justify-between gap-4">
-              <h2 className="text-[24px] font-semibold leading-[1.5] text-[#2b2b2b]">
+              <h2 className="text-[24px] font-semibold leading-[1.5] text-charcoal font-inter">
                 Voice Assistance and ChatBot Configuration
               </h2>
               <button

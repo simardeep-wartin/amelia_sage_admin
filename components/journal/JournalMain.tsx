@@ -10,6 +10,7 @@ import FilterDropdown from "@/components/ui/FilterDropdown";
 import ActionsDropdownMenu from "@/components/ui/ActionsDropdownMenu";
 import { useJournal } from "@/hooks/useJournal";
 import { type JournalEntry, type JournalTab, JOURNAL_TABS } from "@/types/journal";
+import JournalLoader from "@/components/loaders/journal-loader";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -25,7 +26,9 @@ const TABLE_COLUMNS: TableColumn<JournalEntry>[] = [
   {
     key: "title",
     label: "Title",
-    render: (row) => <span className="text-[14px] font-normal text-[#2D2D2D]">{row.title}</span>,
+    render: (row) => (
+      <span className="text-[14px] font-normal text-[#2D2D2D] font-arial">{row.title}</span>
+    ),
   },
   {
     key: "source",
@@ -59,7 +62,6 @@ const TABLE_COLUMNS: TableColumn<JournalEntry>[] = [
   {
     key: "id",
     label: "Actions",
-    align: "right",
     render: (row) => (
       <ActionsDropdownMenu
         trigger="horizontal"
@@ -125,12 +127,14 @@ export default function JournalMain() {
     setCurrentPage(1);
   };
 
+  if (loading) return <JournalLoader />;
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="space-y-1">
-          <h1 className="text-[24px] font-medium leading-[32px] text-[#2D2D2D] font-sans">
+          <h1 className="text-[24px] font-medium leading-[32px] text-[#2D2D2D] font-arial">
             Journal Library
           </h1>
           <p className="text-[14px] leading-[20px] text-[#6B6B6B] max-w-[420px]">
@@ -143,7 +147,7 @@ export default function JournalMain() {
             options={["This Month", "This Week", "Today", "Custom"]}
             value="This Month"
             onChange={() => {}}
-            className="h-[48px] w-[148px] border-[#6C6C6C] text-[14px] font-normal text-[#2B2B2B] rounded-[9px]"
+            className="h-[48px] w-[148px] border-slate border-[0.6px] text-[14px] font-normal text-[#2B2B2B] rounded-[9px]"
           />
         </div>
       </div>
@@ -175,32 +179,23 @@ export default function JournalMain() {
 
         {/* Table */}
         <div className="mt-4">
-          {loading ? (
-            <div className="flex items-center justify-center py-16 text-[14px] text-[#6B6B6B]">
-              Loading...
-            </div>
-          ) : (
-            <Table
-              columns={TABLE_COLUMNS}
-              rows={paginated}
-              headerTextColor="#D6B26A"
-              emptyMessage="No journal entries found."
-            />
-          )}
+          <Table
+            columns={TABLE_COLUMNS}
+            rows={paginated}
+            headerTextColor="#D6B26A"
+            emptyMessage="No journal entries found."
+          />
         </div>
       </div>
 
-      {/* Pagination */}
-      {!loading && (
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          totalItems={filtered.length}
-          itemsPerPage={ITEMS_PER_PAGE}
-          onPageChange={setCurrentPage}
-          itemLabel="exercises"
-        />
-      )}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalItems={filtered.length}
+        itemsPerPage={ITEMS_PER_PAGE}
+        onPageChange={setCurrentPage}
+        itemLabel="exercises"
+      />
     </div>
   );
 }

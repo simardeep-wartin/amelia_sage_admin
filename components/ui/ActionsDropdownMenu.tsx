@@ -25,7 +25,7 @@ export default function ActionsDropdownMenu({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        className="p-1 text-[#D1D1D1] hover:text-[#2D2D2D] transition-colors outline-none"
+        className="p-1 text-slate hover:text-[#2D2D2D] transition-colors outline-none cursor-pointer"
         onClick={stopPropagation ? (e) => e.stopPropagation() : undefined}
       >
         <TriggerIcon className="h-5 w-5" />
