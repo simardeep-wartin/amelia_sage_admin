@@ -13,7 +13,6 @@ import ActionModal from "@/components/common/ActionModal";
 import CategoryManagementPanel from "@/components/common/CategoryManagementPanel";
 import WorkOnMeLoader from "@/components/loaders/work-on-me-loader";
 
-
 // --- Icons ---
 
 import appData from "@/data/app-data.json";
@@ -76,14 +75,20 @@ export default function WorkOnMeExercisesPage() {
   return (
     <PageLayout title="Work on Me Exercises">
       <div className="space-y-6">
-
         {/* Header Section */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-col gap-1">
-            <h1 className="text-[28px] font-bold text-charcoal tracking-tight">Work on Me Exercises</h1>
-            <p className="text-sm font-medium text-grey">Dashboard / Content / Work on me exercises</p>
+            <h1 className="text-[22px] sm:text-[28px] font-bold text-charcoal tracking-tight">
+              Work on Me Exercises
+            </h1>
+            <p className="text-sm font-medium text-grey">
+              Dashboard / Content / Work on me exercises
+            </p>
           </div>
-          <Button variant="ghost" className="text-sageGreen hover:bg-transparent hover:border cursor-pointer hover:text-sageGreen font-semibold px-0 sm:px-4">
+          <Button
+            variant="ghost"
+            className="text-sageGreen hover:bg-transparent hover:border cursor-pointer hover:text-sageGreen font-semibold px-0 sm:px-4"
+          >
             <ArrowUpRightIcon className="h-4 w-4" /> Go to Drafts
           </Button>
         </div>
@@ -129,7 +134,8 @@ export default function WorkOnMeExercisesPage() {
           className="p-6 md:p-8 font-bold"
         >
           <div className="mb-6 text-[15px] text-grey -mt-3 font-normal">
-            Manage how users are guided through different emotional states with tailored exercise recommendations.
+            Manage how users are guided through different emotional states with tailored exercise
+            recommendations.
           </div>
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -163,7 +169,8 @@ export default function WorkOnMeExercisesPage() {
           className="p-6 md:p-8 mb-10"
         >
           <p className="mb-6 text-[15px] text-grey -mt-3">
-            Define and manage focus areas that help users work on specific aspects of their wellbeing.
+            Define and manage focus areas that help users work on specific aspects of their
+            wellbeing.
           </p>
 
           <div className="flex flex-col gap-4">
@@ -180,7 +187,6 @@ export default function WorkOnMeExercisesPage() {
             ))}
           </div>
         </Card>
-
       </div>
 
       <ActionModal

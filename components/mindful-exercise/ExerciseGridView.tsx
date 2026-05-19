@@ -73,19 +73,19 @@ export default function ExerciseGridView({
           </span>
         </div>
 
-        <div className="flex justify-between items-end">
+        <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-end">
           <div>
-            <h1 className="text-[32px] font-cormorant text-[#2D2D2D] font-bold leading-tight">
+            <h1 className="text-[22px] sm:text-[28px] lg:text-[32px] font-cormorant text-[#2D2D2D] font-bold leading-tight">
               {subCategory.name} Exercise Management
             </h1>
-            <div className="flex items-center gap-1 text-[14px] text-slate mt-1 font-normal">
+            <div className="flex flex-wrap items-center gap-1 text-[12px] sm:text-[14px] text-slate mt-1 font-normal">
               <span>Dashboard</span> / <span>Exercises</span> / <span>{managementTitle}</span> /{" "}
               <span>{subCategory.name}</span>
             </div>
           </div>
           <Button
             onClick={handleAddExercise}
-            className="flex items-center gap-2 bg-sageGreen hover:bg-sageGreenHover h-[44px] px-8 rounded-[10px] text-white font-semibold"
+            className="flex items-center justify-center gap-2 bg-sageGreen hover:bg-sageGreenHover h-[44px] px-6 sm:px-8 rounded-[10px] text-white font-semibold w-full sm:w-auto shrink-0"
           >
             <PlusIcon className="h-5 w-5 stroke-[2.5px]" />
             Add New Exercise
@@ -94,7 +94,7 @@ export default function ExerciseGridView({
       </div>
 
       {/* Filters Area */}
-      <div className="grid grid-cols-[1fr_auto_auto] gap-4 items-center mb-8">
+      <div className="flex flex-col gap-3 mb-8 sm:grid sm:grid-cols-[1fr_auto_auto] sm:gap-4 sm:items-center">
         <div className="relative">
           <MagnifyingGlassIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#D1D1D1]" />
           <input
@@ -102,14 +102,25 @@ export default function ExerciseGridView({
             placeholder="Search exercises..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-4 py-[11px] bg-white border border-[#E5E5E5] rounded-[10px] text-[14px] outline-none focus:border-sageGreen transition-all shadow-sm"
+            className="w-full pl-12 pr-4 py-[11px] bg-white border border-[#E5E5E5] rounded-[10px] text-[14px] outline-none focus:border-sageGreen transition-all shadow-sm placeholder:text-[#9CA3AF]"
           />
         </div>
-        <FilterDropdown options={["Active", "Draft", "All Status"]} onChange={() => {}} />
-        <FilterDropdown
-          options={["Name (A-Z)", "Name (Z-A)", "Sort by: Name"]}
-          onChange={() => {}}
-        />
+        <div className="flex gap-3 sm:contents">
+          <div className="flex-1 sm:contents">
+            <FilterDropdown
+              options={["Active", "Draft", "All Status"]}
+              onChange={() => {}}
+              className="!w-full sm:!w-[148px]"
+            />
+          </div>
+          <div className="flex-1 sm:contents">
+            <FilterDropdown
+              options={["Name (A-Z)", "Name (Z-A)", "Sort by: Name"]}
+              onChange={() => {}}
+              className="!w-full sm:!w-[148px]"
+            />
+          </div>
+        </div>
       </div>
 
       {/* Exercise Grid */}

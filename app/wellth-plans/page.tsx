@@ -132,7 +132,9 @@ export default function WellthPlansPage() {
         {/* Header Section */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-col gap-1">
-            <h1 className="text-[28px] font-bold text-charcoal tracking-tight">Wellth Plans</h1>
+            <h1 className="text-[22px] sm:text-[28px] font-bold text-charcoal tracking-tight">
+              Wellth Plans
+            </h1>
             <p className="text-sm font-bold text-grey">Dashboard / Content / Wellth Plans</p>
           </div>
           <div className="flex items-center gap-3">

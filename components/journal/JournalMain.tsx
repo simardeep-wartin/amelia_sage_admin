@@ -134,7 +134,7 @@ export default function JournalMain() {
       {/* Page Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="space-y-1">
-          <h1 className="text-[24px] font-medium leading-[32px] text-[#2D2D2D] font-arial">
+          <h1 className="text-[18px] sm:text-[24px] font-medium leading-[32px] text-[#2D2D2D] font-arial">
             Journal Library
           </h1>
           <p className="text-[14px] leading-[20px] text-[#6B6B6B] max-w-[420px]">

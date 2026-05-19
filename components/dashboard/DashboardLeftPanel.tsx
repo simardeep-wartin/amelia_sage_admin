@@ -68,10 +68,7 @@ export default function DashboardLeftPanel({
         <Card
           title={dashboardData.activeUsers.title}
           actions={
-            <FilterDropdown
-              value={activeUsersFilter}
-              onChange={onActiveUsersFilterChange}
-            />
+            <FilterDropdown value={activeUsersFilter} onChange={onActiveUsersFilterChange} />
           }
         >
           <div className="mb-4">
@@ -164,15 +161,15 @@ export default function DashboardLeftPanel({
         }
       >
         <div className="overflow-hidden rounded-2xl">
-          <div className="grid grid-cols-[1fr_1.5fr]">
-            <div className="flex h-24 flex-col items-center justify-center bg-gradient-to-r from-sageGreen to-gold">
-              <p className="font-cormorant text-3xl font-bold text-customBlack">
+          <div className="grid grid-cols-2 sm:grid-cols-[1fr_1.5fr]">
+            <div className="flex min-h-[72px] sm:h-24 flex-col items-center justify-center bg-gradient-to-r from-sageGreen to-gold">
+              <p className="font-cormorant text-2xl sm:text-3xl font-bold text-customBlack">
                 {dashboardData.coreVsFree.core}
               </p>
               <p className="text-xs font-medium text-charcoal">Core</p>
             </div>
-            <div className="flex h-24 flex-col items-center justify-center bg-[linear-gradient(166deg,rgba(168,181,160,0.2)_0%,rgba(213,202,227,0.2)_50%,rgba(232,196,184,0.2)_100%)]">
-              <p className="font-cormorant text-3xl font-bold text-customBlack">
+            <div className="flex min-h-[72px] sm:h-24 flex-col items-center justify-center bg-[linear-gradient(166deg,rgba(168,181,160,0.2)_0%,rgba(213,202,227,0.2)_50%,rgba(232,196,184,0.2)_100%)]">
+              <p className="font-cormorant text-2xl sm:text-3xl font-bold text-customBlack">
                 {dashboardData.coreVsFree.free}
               </p>
               <p className="text-xs font-medium text-slate">Free</p>

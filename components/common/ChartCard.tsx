@@ -13,7 +13,7 @@ export default function ChartCard({ title, actions, children, footer }: ChartCar
   return (
     <div className="rounded-[14px] border border-cardBorder bg-paper p-5 shadow-sm">
       <div className="mb-4 flex items-center justify-between">
-        <p className="text-[20px] font-medium text-[#2B2B2B]">{title}</p>
+        <p className="text-[15px] sm:text-[20px] font-medium text-[#2B2B2B]">{title}</p>
         {actions}
       </div>
 

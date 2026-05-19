@@ -40,11 +40,11 @@ export default function InsightGrid({
   const filteredGroups = filter === "All" ? groups : groups.filter((g) => g.title === filter);
 
   return (
-    <Card 
+    <Card
       title={title}
       actions={<FilterDropdown options={filterOptions} value={filter} onChange={setFilter} />}
     >
-      <div className="grid grid-cols-1 gap-4 m:grid-cols-2 l:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {filteredGroups.map((group) => {
           const color = groupColors[group.title] || "#8BAA87";
           return (

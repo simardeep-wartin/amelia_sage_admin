@@ -53,7 +53,7 @@ export default function FinancialPage() {
   const financialData = appData.financial;
   const metrics =
     activeTab === "Revenue Dashboard" ? financialData.metrics.revenue : financialData.metrics.other;
-  const cols = activeTab === "Revenue Dashboard" ? "l:grid-cols-3" : "l:grid-cols-4";
+  const cols = activeTab === "Revenue Dashboard" ? "lg:grid-cols-3" : "lg:grid-cols-4";
 
   // --- Render Functions ---
 
@@ -63,13 +63,13 @@ export default function FinancialPage() {
     return (
       <div className="space-y-4">
         {/* Stat summary cards */}
-        <div className="grid grid-cols-1 gap-4 l:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <SummaryStatCard {...data.stats.monthlyRevenue} />
           <SummaryStatCard {...data.stats.trialConversion} />
         </div>
 
         {/* Charts */}
-        <div className="grid grid-cols-1 gap-4 l:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <ChartCard
             title="Revenue Over Time"
             actions={<FilterIcon />}
@@ -343,20 +343,22 @@ export default function FinancialPage() {
     <PageLayout title="Financial Management">
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex flex-col gap-4 s:flex-row s:items-center s:justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-col gap-1">
-            <h1 className="text-[24px] font-medium text-customBlack">Financial Management</h1>
-            <p className="text-[14px] text-[#6B6B6B]">
+            <h1 className="text-[20px] sm:text-[24px] font-medium text-customBlack">
+              Financial Management
+            </h1>
+            <p className="text-[13px] sm:text-[14px] text-[#6B6B6B]">
               Dashboard / Financial / Financial Management
             </p>
           </div>
-          <button className="flex h-12 items-center gap-2.5 rounded-[8px] bg-sageGreen px-6 font-semibold text-white hover:bg-sageGreenHover">
+          <button className="flex h-12 w-full sm:w-auto items-center justify-center gap-2.5 rounded-[8px] bg-sageGreen px-6 font-semibold text-white hover:bg-sageGreenHover">
             <ArrowDownTrayIcon className="h-4 w-4" /> Export Report
           </button>
         </div>
 
         {/* Metrics */}
-        <div className={`grid grid-cols-1 gap-4 s:grid-cols-2 ${cols}`}>
+        <div className={`grid grid-cols-1 gap-4 sm:grid-cols-2 ${cols}`}>
           {metrics.map((m) => (
             <MetricCard key={m.title} {...m} />
           ))}

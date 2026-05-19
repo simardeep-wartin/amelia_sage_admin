@@ -28,18 +28,20 @@ export default function SummaryGrid({
   const [filter, setFilter] = useState("This Week");
 
   return (
-    <Card 
+    <Card
       title={title}
-      actions={
-        <FilterDropdown variant="icon" value={filter} onChange={setFilter} />
-      }
+      actions={<FilterDropdown variant="icon" value={filter} onChange={setFilter} />}
     >
       {subtitle && <p className="mt-1 text-s text-slate">{subtitle}</p>}
       <div className={`mt-4 grid gap-4 ${columns}`}>
         {items.map((item) => (
           <div key={item.label} className="rounded-[10px] bg-[#F9F9F9] p-3">
-            <p className="font-sans text-[30px] font-semibold leading-[1.2]" style={{ color: item.color ?? "#2B2B2B" }}>
-              {item.value}{item.suffix || ""}
+            <p
+              className="font-sans text-[22px] sm:text-[30px] font-semibold leading-[1.2]"
+              style={{ color: item.color ?? "#2B2B2B" }}
+            >
+              {item.value}
+              {item.suffix || ""}
             </p>
             <p className="font-sans text-[16px] font-semibold text-[#2B2B2B]">{item.label}</p>
             <p className="mt-1 font-sans text-[14px] text-[#6B6B6B]">{item.detail}</p>

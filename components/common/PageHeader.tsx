@@ -14,16 +14,18 @@ type PageHeaderProps = {
 
 export default function PageHeader({ title, breadcrumbs, action, description }: PageHeaderProps) {
   return (
-    <div className="flex justify-between items-start mb-2 px-1">
+    <div className="flex flex-col gap-3 mb-2 sm:flex-row sm:justify-between sm:items-start">
       <div>
-        <h1 className="text-[32px] font-cormorant text-[#2D2D2D] font-bold leading-tight">
+        <h1 className="text-[18px] sm:text-[24px] lg:text-[32px] font-cormorant text-[#2D2D2D] font-bold leading-tight">
           {title}
         </h1>
         {description && (
-          <p className="text-[14px] leading-[20px] text-[#6B6B6B] max-w-[420px]">{description}</p>
+          <p className="text-[13px] sm:text-[14px] leading-[20px] text-[#6B6B6B] max-w-[420px]">
+            {description}
+          </p>
         )}
         {breadcrumbs && breadcrumbs.length > 0 && (
-          <div className="flex items-center gap-1 text-[13px] text-[#A1A1A1] mb-2 font-medium">
+          <div className="flex flex-wrap items-center gap-1 text-[12px] sm:text-[13px] text-[#A1A1A1] mb-2 font-medium">
             {breadcrumbs.map((crumb, i) => (
               <span key={crumb.label} className="flex items-center gap-1">
                 {i > 0 && <span>/</span>}

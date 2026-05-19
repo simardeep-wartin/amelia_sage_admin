@@ -66,7 +66,7 @@ export default function FinancialTableCard<T extends object>({
       </div>
 
       {stats && (
-        <div className="mb-5 grid grid-cols-1 gap-4 s:grid-cols-2">
+        <div className="mb-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
           {stats.map((stat, i) => (
             <StatCard key={i} {...stat} />
           ))}

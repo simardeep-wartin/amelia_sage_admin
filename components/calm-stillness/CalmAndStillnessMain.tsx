@@ -74,11 +74,13 @@ export default function CalmAndStillnessMain() {
             sortOptions={SORT_OPTIONS}
           />
 
-          <div className="flex justify-between items-center">
-            <h2 className="text-[24px] font-arial text-[#2D2D2D] font-normal">{activeTab}</h2>
+          <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center">
+            <h2 className="text-[20px] sm:text-[24px] font-arial text-[#2D2D2D] font-normal">
+              {activeTab}
+            </h2>
             <Button
               onClick={modal.openAdd}
-              className="flex items-center gap-2 bg-sageGreen hover:bg-sageGreenHover h-[44px] px-6 rounded-[10px] text-white font-semibold shadow-sm"
+              className="flex items-center justify-center gap-2 bg-sageGreen hover:bg-sageGreenHover h-[44px] px-6 rounded-[10px] text-white font-semibold shadow-sm w-full sm:w-auto"
             >
               <PlusIcon className="h-5 w-5 stroke-[2.5px]" />
               Add New Category

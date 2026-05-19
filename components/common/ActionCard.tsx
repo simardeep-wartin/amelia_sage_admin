@@ -31,7 +31,9 @@ export default function ActionCard({
           {icon}
         </div>
         <div className="flex flex-col">
-          <span className="font-cormorant text-[20px] font-bold text-charcoal">{title}</span>
+          <span className="font-cormorant text-[16px] sm:text-[20px] font-bold text-charcoal">
+            {title}
+          </span>
           {subtitle && <span className="text-s font-normal text-[#6D7280] mt-0.5">{subtitle}</span>}
         </div>
       </div>
@@ -40,7 +42,7 @@ export default function ActionCard({
         {/* Main Value/Label */}
         {(mainValue !== undefined || mainLabel) && (
           <div className="flex flex-col items-center justify-center mr-2">
-            <span className="font-cormorant text-[24px] font-medium italic text-charcoal leading-none">
+            <span className="font-cormorant text-[18px] sm:text-[24px] font-medium italic text-charcoal leading-none">
               {mainValue}
             </span>
             {mainLabel && <span className="text-xs font-normal text-grey mt-1">{mainLabel}</span>}

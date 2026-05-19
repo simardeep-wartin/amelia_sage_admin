@@ -76,18 +76,18 @@ export default function DemographicsPage() {
     <PageLayout title="Demographics">
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex flex-col gap-4 s:flex-row s:items-center s:justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-col gap-1">
-            <h1 className="font-arial text-[24px] font-medium leading-[32px] text-customBlack">
+            <h1 className="font-arial text-[20px] sm:text-[24px] font-medium leading-[32px] text-customBlack">
               {demographicsData.header.title}
             </h1>
-            <p className="font-arial text-[14px] leading-[20px] text-[#6B6B6B]">
+            <p className="font-arial text-[13px] sm:text-[14px] leading-[20px] text-[#6B6B6B]">
               {demographicsData.header.breadcrumb}
             </p>
           </div>
 
           <Button
-            className="h-12 w-full rounded-[8px] bg-sageGreen px-6 font-sans text-[16px] font-semibold leading-[1.5] text-white hover:bg-[#7F9F7B] s:w-auto s:min-w-[184px]"
+            className="h-12 w-full rounded-[8px] bg-sageGreen px-6 font-sans text-[16px] font-semibold leading-[1.5] text-white hover:bg-[#7F9F7B] sm:w-auto sm:min-w-[184px]"
             leftIcon={<ArrowDownTrayIcon className="h-4 w-4" />}
           >
             {demographicsData.header.exportButtonLabel}
@@ -95,7 +95,7 @@ export default function DemographicsPage() {
         </div>
 
         {/* Metrics */}
-        <div className="grid grid-cols-1 gap-4 l:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
           {demographicsData.metrics.map((metric) => {
             const iconSrc = ICON_MAP[metric.iconType as IconKey] ?? "/auth/multipleUser.svg";
             return (
@@ -115,7 +115,7 @@ export default function DemographicsPage() {
         {/* Overview Tab */}
         {activeTab === "Overview" && (
           <>
-            <div className="grid grid-cols-1 gap-4 l:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
               <DistributionPieChart
                 title={demographicsData.genderDistribution.title}
                 data={demographicsData.genderDistribution.items}
@@ -172,7 +172,7 @@ export default function DemographicsPage() {
 
         {activeTab === "Cultural Identity" && activeData && (
           <>
-            <div className="grid grid-cols-1 gap-3 m:grid-cols-2 l:grid-cols-6">
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-6">
               {activeData.stats.map((item: StatItem) => (
                 <div key={item.title} className="rounded-[4px] bg-[#F9FAFB] p-2 text-center">
                   <p className="font-sans text-[11px] text-[#6B6B6B]">{item.title}</p>
@@ -194,7 +194,7 @@ export default function DemographicsPage() {
 
         {activeTab === "Ethnicity" && activeData && (
           <>
-            <div className="grid grid-cols-1 gap-3 l:grid-cols-2">
+            <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
               {activeData.stats.map((item: StatItem) => (
                 <div key={item.title} className="rounded-[4px] bg-[#F9FAFB] p-4 text-center">
                   <p className="font-sans text-[16px] text-[#6B6B6B]">{item.title}</p>
@@ -207,7 +207,7 @@ export default function DemographicsPage() {
                 </div>
               ))}
             </div>
-            <div className="grid grid-cols-1 gap-4 l:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
               <DistributionPieChart
                 title={activeData.donut.title}
                 data={activeData.donut.items}
@@ -224,7 +224,7 @@ export default function DemographicsPage() {
         )}
 
         {activeTab === "Wellness Needs" && activeData && (
-          <div className="grid grid-cols-1 gap-4 l:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <DistributionPieChart
               title={activeData.donut.title}
               data={activeData.donut.items}

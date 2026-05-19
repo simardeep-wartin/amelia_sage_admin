@@ -12,7 +12,7 @@ export default function DashboardRightPanel() {
         <div className="flex flex-col items-center gap-4">
           <AvatarCircle src={dashboardData.sageAiImage} alt="Sage AI" />
           <div className="text-center">
-            <p className="font-cormorant text-5xl font-bold text-customBlack">
+            <p className="font-cormorant text-3xl sm:text-5xl font-bold text-customBlack">
               {dashboardData.sageAi.totalInteractions}
             </p>
             <p className="text-xs font-medium text-slate">Total Interactions</p>

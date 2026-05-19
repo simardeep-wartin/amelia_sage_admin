@@ -130,7 +130,7 @@ export default function SageAiMain() {
     <div className="space-y-6">
       {/* Page Header */}
       <div className="flex flex-col gap-1">
-        <h1 className="text-[24px] font-bold font-arial leading-[32px] text-charcoal">
+        <h1 className="text-[18px] sm:text-[24px] font-bold font-arial leading-[32px] text-charcoal">
           Sage AI Settings
         </h1>
         <p className="text-[14px] leading-[20px] font-arial font-bold text-[#6b6b6b]">
@@ -162,7 +162,7 @@ export default function SageAiMain() {
             <SpeakerWaveIcon className="h-5 w-5 text-[#6b6b6b]" />
           </div>
           <div className="flex flex-col">
-            <p className="text-[24px] font-semibold leading-[30px] text-[#2d2d2d] font-cormorant">
+            <p className="text-[18px] sm:text-[24px] font-semibold leading-[30px] text-[#2d2d2d] font-cormorant">
               Voice and ChatBot Model
             </p>
             <p className="text-[12px] font-normal leading-[1.3] text-[#6b6b6b] font-inter">
@@ -175,10 +175,10 @@ export default function SageAiMain() {
       {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-6">
-          <div className="w-full max-w-3xl bg-[#fafafa] rounded-[24px] p-8 flex flex-col gap-[20px] shadow-2xl max-h-[90vh]">
+          <div className="w-full max-w-3xl bg-[#fafafa] rounded-[24px] p-4 sm:p-8 flex flex-col gap-[20px] shadow-2xl max-h-[90vh]">
             {/* Header */}
             <div className="flex items-start justify-between gap-4">
-              <h2 className="text-[24px] font-semibold leading-[1.5] text-charcoal font-inter">
+              <h2 className="text-[16px] sm:text-[24px] font-semibold leading-[1.5] text-charcoal font-inter">
                 Voice Assistance and ChatBot Configuration
               </h2>
               <button
@@ -199,12 +199,12 @@ export default function SageAiMain() {
                 <textarea
                   value={editText}
                   onChange={(e) => setEditText(e.target.value)}
-                  className="w-full h-[520px] border-[0.5px] border-[#a3a3a3] rounded-[8px] px-4 py-[17px] text-[13px] text-[#2b2b2b] leading-[1.3] resize-none outline-none focus:border-sageGreen transition-colors"
+                  className="w-full h-[260px] sm:h-[420px] lg:h-[520px] border-[0.5px] border-[#a3a3a3] rounded-[8px] px-4 py-[17px] text-[13px] text-[#2b2b2b] leading-[1.3] resize-none outline-none focus:border-sageGreen transition-colors"
                 />
               ) : (
                 <div
-                  className="border-[0.5px] border-[#a3a3a3] rounded-[8px] px-4 py-[17px] overflow-y-auto"
-                  style={{ height: "520px", backdropFilter: "blur(15px)" }}
+                  className="border-[0.5px] border-[#a3a3a3] rounded-[8px] px-4 py-[17px] overflow-y-auto h-[260px] sm:h-[420px] lg:h-[520px]"
+                  style={{ backdropFilter: "blur(15px)" }}
                 >
                   <PromptContent />
                 </div>
