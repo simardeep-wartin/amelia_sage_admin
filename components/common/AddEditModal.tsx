@@ -138,9 +138,7 @@ export default function AddEditModal({
       footer={footer}
       maxWidth={layout === "media" ? "max-w-2xl" : "max-w-xl"}
     >
-      <form
-        className={`space-y-6 ${layout === "media" ? "max-h-[70vh] overflow-y-auto px-1" : ""}`}
-      >
+      <form className="space-y-6">
         {/* Media layout: title, subtitle, duration, description, video, audio */}
         {layout === "media" && (
           <>

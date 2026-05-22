@@ -44,7 +44,7 @@ export default function Modal({
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto overflow-x-hidden p-6 space-y-6 pt-2">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden pl-6 py-6 pr-2 space-y-6 pt-2">
           {children}
         </div>
 
