@@ -15,8 +15,22 @@ import Card from "@/components/common/Card";
 import FilterDropdown from "@/components/ui/FilterDropdown";
 import Chart from "@/components/charts/Chart";
 import appData from "@/data/app-data.json";
+import type {
+  WealthPlanItem,
+  PlanTypesData,
+  DashboardOverviewData,
+} from "@/Services/api/dashboard";
 
 const dashboardData = appData.dashboard;
+
+const PROGRESS_COLORS = [
+  "bg-[#9caf88]",
+  "bg-[#8b7ec8]",
+  "bg-[#d4a574]",
+  "bg-[#5B9BD5]",
+  "bg-[#E87C6B]",
+  "bg-[#6B6B6B]",
+];
 
 const ICONS = {
   plus: <PlusIcon className="h-4 w-4" />,
@@ -49,9 +63,12 @@ type DashboardLeftPanelProps = {
   activeUsersFilter: string;
   onActiveUsersFilterChange: (v: string) => void;
   progressFilter: string;
-  onProgressFilterChange: (v: string) => void;
+  onProgressFilterChange: (v: string, range?: { from: Date | null; to: Date | null }) => void;
   distributionFilter: string;
-  onDistributionFilterChange: (v: string) => void;
+  onDistributionFilterChange: (v: string, range?: { from: Date | null; to: Date | null }) => void;
+  wealthPlanItems?: WealthPlanItem[];
+  planTypes?: PlanTypesData;
+  overviewData?: DashboardOverviewData;
 };
 
 export default function DashboardLeftPanel({
@@ -61,6 +78,9 @@ export default function DashboardLeftPanel({
   onProgressFilterChange,
   distributionFilter,
   onDistributionFilterChange,
+  wealthPlanItems,
+  planTypes,
+  overviewData,
 }: DashboardLeftPanelProps) {
   return (
     <div className="space-y-4">
@@ -98,16 +118,30 @@ export default function DashboardLeftPanel({
           }
         >
           <div className="space-y-4">
-            {dashboardData.progressItems.map((item) => (
+            {(wealthPlanItems && wealthPlanItems.length > 0
+              ? wealthPlanItems.map((item, i) => ({
+                  label: item.title,
+                  value: item.percentage,
+                  detail: `${item.total_completions} / ${item.total_exercises} exercises`,
+                  color: PROGRESS_COLORS[i % PROGRESS_COLORS.length],
+                }))
+              : dashboardData.progressItems.map((item) => ({
+                  label: item.label,
+                  value: item.value,
+                  detail: null,
+                  color: item.color,
+                }))
+            ).map((item) => (
               <div key={item.label}>
                 <div className="mb-1 flex items-center justify-between text-sm">
                   <span className="font-cormorant text-customBlack">{item.label}</span>
                   <span className="text-[#6b6b6b]">{item.value}%</span>
                 </div>
+                {item.detail && <p className="mb-1 text-xs text-[#9b9b9b]">{item.detail}</p>}
                 <div className="h-2 rounded-full bg-[linear-gradient(178deg,rgba(168,181,160,0.2)_0%,rgba(213,202,227,0.2)_50%,rgba(232,196,184,0.2)_100%)]">
                   <div
                     className={`h-2 rounded-full ${item.color}`}
-                    style={{ width: `${item.value}%` }}
+                    style={{ width: `${Math.min(item.value, 100)}%` }}
                   />
                 </div>
               </div>
@@ -122,7 +156,9 @@ export default function DashboardLeftPanel({
             <div className="flex h-[76px] items-center justify-center rounded-2xl bg-[linear-gradient(165deg,rgba(168,181,160,0.2)_0%,rgba(213,202,227,0.2)_50%,rgba(232,196,184,0.2)_100%)]">
               <div className="text-center">
                 <p className="font-cormorant text-xl font-bold text-customBlack">
-                  {dashboardData.journalInsights.journalsCreated}
+                  {overviewData != null
+                    ? overviewData.journals.total
+                    : dashboardData.journalInsights.journalsCreated}
                 </p>
                 <p className="text-xs font-medium text-customBlack">Total journals created</p>
               </div>
@@ -130,7 +166,9 @@ export default function DashboardLeftPanel({
             <div className="flex h-[76px] items-center justify-center rounded-2xl bg-[linear-gradient(165deg,rgba(168,181,160,0.2)_0%,rgba(213,202,227,0.2)_50%,rgba(232,196,184,0.2)_100%)]">
               <div className="text-center">
                 <p className="font-cormorant text-xl font-bold text-customBlack">
-                  {dashboardData.journalInsights.insightsGenerated}
+                  {overviewData != null
+                    ? overviewData.journals.users_with_at_least_one
+                    : dashboardData.journalInsights.insightsGenerated}
                 </p>
                 <p className="text-xs font-medium text-customBlack">Insights generated</p>
               </div>
@@ -164,13 +202,13 @@ export default function DashboardLeftPanel({
           <div className="grid grid-cols-2 sm:grid-cols-[1fr_1.5fr]">
             <div className="flex min-h-[72px] sm:h-24 flex-col items-center justify-center bg-gradient-to-r from-sageGreen to-gold">
               <p className="font-cormorant text-2xl sm:text-3xl font-bold text-customBlack">
-                {dashboardData.coreVsFree.core}
+                {planTypes != null ? planTypes.premium : dashboardData.coreVsFree.core}
               </p>
               <p className="text-xs font-medium text-charcoal">Core</p>
             </div>
             <div className="flex min-h-[72px] sm:h-24 flex-col items-center justify-center bg-[linear-gradient(166deg,rgba(168,181,160,0.2)_0%,rgba(213,202,227,0.2)_50%,rgba(232,196,184,0.2)_100%)]">
               <p className="font-cormorant text-2xl sm:text-3xl font-bold text-customBlack">
-                {dashboardData.coreVsFree.free}
+                {planTypes != null ? planTypes.free : dashboardData.coreVsFree.free}
               </p>
               <p className="text-xs font-medium text-slate">Free</p>
             </div>

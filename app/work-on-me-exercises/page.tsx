@@ -12,62 +12,39 @@ import ActionModal from "@/components/common/ActionModal";
 
 import CategoryManagementPanel from "@/components/common/CategoryManagementPanel";
 import WorkOnMeLoader from "@/components/loaders/work-on-me-loader";
+import {
+  getWorkOnMeOverview,
+  getFeelings,
+  getFocusAreas,
+  createFeeling,
+  updateFeeling,
+  createFocusArea,
+  type WorkOnMeOverviewData,
+  type FeelingItem,
+  type FocusAreaItem,
+} from "@/Services/api/workOnMe";
+import { feelings as feelingPayloads, focusAreas as focusAreaPayloads } from "@/lib/payloads";
 
-// --- Icons ---
-
-import appData from "@/data/app-data.json";
-
-interface ExerciseData {
-  title: string;
-  usersCount: string;
-  exercisesCount: number;
-  icon: string;
-}
-
-interface AppData {
-  workOnMeExercises: {
-    emotionsData: ExerciseData[];
-    focusAreasData: ExerciseData[];
-  };
-}
-
-const typedAppData = appData as unknown as AppData;
-
-const iconMap: Record<string, React.ReactNode> = {
-  SunIcon: <img src="/auth/sun.png" alt="" className="h-6 w-6" />,
-  PlantIcon: <img src="/auth/leaves.png" alt="" className="h-6 w-6" />,
-  WaveIcon: <img src="/auth/wave.png" alt="" className="h-6 w-6" />,
-  EmptyCircleIcon: <img src="/auth/circle.svg" alt="" className="h-6 w-6" />,
-  DropIcon: <img src="/auth/drop.png" alt="" className="h-6 w-6" />,
-  BrokenHeartIcon: <img src="/auth/brokenHeart.png" alt="" className="h-6 w-6" />,
-  SpiralIcon: <img src="/auth/spiral.png" alt="" className="h-6 w-6" />,
-  HeartIcon: <img src="/auth/heartPurple.svg" alt="" className="h-6 w-6" />,
-  LeafIcon: <img src="/auth/leaf.png" alt="" className="h-6 w-6" />,
-  StarIcon: <img src="/auth/star.png" alt="" className="h-6 w-6" />,
-  ResetIcon: <img src="/auth/retry.png" alt="" className="h-6 w-6" />,
-};
-
-const emotionsData = typedAppData.workOnMeExercises.emotionsData.map((item) => ({
-  ...item,
-  icon: iconMap[item.icon],
-}));
-
-const focusAreasData = typedAppData.workOnMeExercises.focusAreasData.map((item) => ({
-  ...item,
-  icon: iconMap[item.icon],
-}));
+type ManagedCategory = { id: string; title: string; type: "feeling" | "focus-area" } | null;
 
 export default function WorkOnMeExercisesPage() {
   const [loading, setLoading] = useState(true);
+  const [overview, setOverview] = useState<WorkOnMeOverviewData | null>(null);
+  const [feelings, setFeelings] = useState<FeelingItem[]>([]);
+  const [focusAreas, setFocusAreas] = useState<FocusAreaItem[]>([]);
   const [isEmotionModalOpen, setIsEmotionModalOpen] = useState(false);
   const [isFocusModalOpen, setIsFocusModalOpen] = useState(false);
-  const [managedCategory, setManagedCategory] = useState<string | null>(null);
+  const [managedCategory, setManagedCategory] = useState<ManagedCategory>(null);
+  const [editingFeeling, setEditingFeeling] = useState<FeelingItem | null>(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1500);
-    return () => clearTimeout(timer);
+    Promise.all([getWorkOnMeOverview(), getFeelings(), getFocusAreas()])
+      .then(([overviewRes, feelingsRes, focusRes]) => {
+        setOverview(overviewRes.data);
+        setFeelings(feelingsRes.data ?? []);
+        setFocusAreas(focusRes.data ?? []);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   if (loading) return <WorkOnMeLoader />;
@@ -97,28 +74,28 @@ export default function WorkOnMeExercisesPage() {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           <MetricCard
             title="Total Emotional Flows"
-            value="6"
+            value={overview != null ? String(overview.total_emotional_flows) : "—"}
             subtitle="Active Flows"
             subtitleColor="#71717A"
             iconSrc="/auth/heartPurple.svg"
           />
           <MetricCard
             title="Focus Areas"
-            value="5"
+            value={overview != null ? String(overview.focus_areas) : "—"}
             subtitle="Active areas"
             subtitleColor="#71717A"
             iconSrc="/auth/circleTick.svg"
           />
           <MetricCard
             title="Total Exercises"
-            value="63"
+            value={overview != null ? String(overview.total_exercises) : "—"}
             subtitle="Across all flows"
             subtitleColor="#71717A"
             iconSrc="/auth/lock.svg"
           />
         </div>
 
-        {/* Emotions Section */}
+        {/* Emotions / Feelings Section */}
         <Card
           title="Help me work through how I am feeling"
           actions={
@@ -139,15 +116,25 @@ export default function WorkOnMeExercisesPage() {
           </div>
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            {emotionsData.map((emotion) => (
+            {feelings.map((feeling) => (
               <ActionCard
-                key={emotion.title}
-                title={emotion.title}
-                subtitle={emotion.usersCount}
-                mainValue={emotion.exercisesCount}
+                key={feeling.id}
+                title={feeling.title}
+                subtitle={feeling.description}
+                mainValue={feeling.exercise_count}
                 mainLabel="Exercises"
-                icon={emotion.icon}
-                onAction={() => setManagedCategory(emotion.title)}
+                icon={
+                  <img
+                    src={feeling.image_url}
+                    alt={feeling.title}
+                    className="h-6 w-6 object-contain"
+                  />
+                }
+                onAction={() =>
+                  setManagedCategory({ id: feeling.id, title: feeling.title, type: "feeling" })
+                }
+                hideActionButton
+                onSecondaryAction={() => setEditingFeeling(feeling)}
               />
             ))}
           </div>
@@ -174,15 +161,20 @@ export default function WorkOnMeExercisesPage() {
           </p>
 
           <div className="flex flex-col gap-4">
-            {focusAreasData.map((focus) => (
+            {focusAreas.map((focus) => (
               <ActionCard
-                key={focus.title}
+                key={focus.id}
                 title={focus.title}
-                subtitle={focus.usersCount}
-                mainValue={focus.exercisesCount}
+                subtitle={focus.description}
+                mainValue={focus.exercise_count}
                 mainLabel="Exercises"
-                icon={focus.icon}
-                onAction={() => setManagedCategory(focus.title)}
+                icon={
+                  <img src={focus.image_url} alt={focus.title} className="h-6 w-6 object-contain" />
+                }
+                onAction={() =>
+                  setManagedCategory({ id: focus.id, title: focus.title, type: "focus-area" })
+                }
+                hideActionButton
               />
             ))}
           </div>
@@ -196,7 +188,15 @@ export default function WorkOnMeExercisesPage() {
         title="Add New Emotion"
         nameLabel="Add Emotion Name"
         actionText="+ Add New Emotion"
-        onSave={(data) => console.log("New Emotion:", data)}
+        onSave={(data) => {
+          const payload = feelingPayloads.create(data.name as string, data.description as string);
+          createFeeling(payload)
+            .then((res) => {
+              setFeelings((prev) => [...prev, res.data]);
+              setIsEmotionModalOpen(false);
+            })
+            .catch(console.error);
+        }}
       />
       <ActionModal
         isOpen={isFocusModalOpen}
@@ -205,13 +205,61 @@ export default function WorkOnMeExercisesPage() {
         title="Add New Focus"
         nameLabel="Add Focus Name"
         actionText="+ Add New Focus"
-        onSave={(data) => console.log("New Focus Area:", data)}
+        onSave={(data) => {
+          const payload = focusAreaPayloads.create(
+            data.name as string,
+            data.description as string,
+            focusAreas.length + 1,
+          );
+          createFocusArea(payload)
+            .then((res) => {
+              setFocusAreas((prev) => [...prev, res.data]);
+              setIsFocusModalOpen(false);
+            })
+            .catch(console.error);
+        }}
+      />
+
+      {/* Edit Feeling / Emotion Category Modal */}
+      <ActionModal
+        isOpen={!!editingFeeling}
+        onClose={() => setEditingFeeling(null)}
+        type="category"
+        title="Edit Emotion"
+        nameLabel="Emotion Name"
+        initialData={
+          editingFeeling
+            ? { title: editingFeeling.title, description: editingFeeling.description }
+            : undefined
+        }
+        onSave={(data) => {
+          if (!editingFeeling) return;
+          const payload = feelingPayloads.update(
+            data.name as string,
+            data.description as string,
+            editingFeeling.image_url,
+          );
+          updateFeeling(editingFeeling.id, payload)
+            .then(() => {
+              setFeelings((prev) =>
+                prev.map((f) =>
+                  f.id === editingFeeling.id
+                    ? { ...f, title: payload.title, description: payload.description }
+                    : f,
+                ),
+              );
+            })
+            .catch(console.error)
+            .finally(() => setEditingFeeling(null));
+        }}
       />
 
       <CategoryManagementPanel
         isOpen={!!managedCategory}
         onClose={() => setManagedCategory(null)}
-        categoryName={managedCategory || ""}
+        categoryName={managedCategory?.title ?? ""}
+        categoryId={managedCategory?.id ?? ""}
+        categoryType={managedCategory?.type ?? "feeling"}
         itemType="exercise"
       />
     </PageLayout>

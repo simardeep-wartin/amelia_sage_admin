@@ -2,10 +2,15 @@ import Card from "@/components/common/Card";
 import AvatarCircle from "@/components/common/AvatarCircle";
 import StatsRow from "@/components/common/StatsRow";
 import appData from "@/data/app-data.json";
+import type { DashboardOverviewData } from "@/Services/api/dashboard";
 
 const dashboardData = appData.dashboard;
 
-export default function DashboardRightPanel() {
+type DashboardRightPanelProps = {
+  overviewData?: DashboardOverviewData;
+};
+
+export default function DashboardRightPanel({ overviewData }: DashboardRightPanelProps) {
   return (
     <div className="space-y-4">
       <Card title="Sage AI Interactions">
@@ -13,14 +18,30 @@ export default function DashboardRightPanel() {
           <AvatarCircle src={dashboardData.sageAiImage} alt="Sage AI" />
           <div className="text-center">
             <p className="font-cormorant text-3xl sm:text-5xl font-bold text-customBlack">
-              {dashboardData.sageAi.totalInteractions}
+              {overviewData != null
+                ? overviewData.sage.voice_interactions
+                : dashboardData.sageAi.totalInteractions}
             </p>
             <p className="text-xs font-medium text-slate">Total Interactions</p>
           </div>
         </div>
         <div className="mt-5 space-y-3 text-sm">
-          <StatsRow label="Voice interactions" value={dashboardData.sageAi.voiceInteractions} />
-          <StatsRow label="Chat sessions" value={dashboardData.sageAi.chatSessions} />
+          <StatsRow
+            label="Voice interactions"
+            value={
+              overviewData != null
+                ? overviewData.sage.voice_interactions
+                : dashboardData.sageAi.voiceInteractions
+            }
+          />
+          <StatsRow
+            label="Chat sessions"
+            value={
+              overviewData != null
+                ? overviewData.sage.total_threads
+                : dashboardData.sageAi.chatSessions
+            }
+          />
           <div className="border-t border-cardBorder pt-3">
             <StatsRow
               label="Satisfaction"

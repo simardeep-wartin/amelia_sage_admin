@@ -1,114 +1,159 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import PageLayout from "@/components/layout/PageLayout";
 import MetricCard from "@/components/common/MetricCard";
 import Card from "@/components/common/Card";
 import Button from "@/components/ui/Button";
 import ActionCard from "@/components/common/ActionCard";
-import { ArrowUpRightIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { ArrowUpRightIcon, PencilSquareIcon, PlusIcon } from "@heroicons/react/24/outline";
 import DynamicModal from "@/components/common/DynamicModal";
 import DynamicSidePanel from "@/components/common/DynamicSidePanel";
 import { WELLTH_MODAL_CONFIG } from "@/lib/wellth-plans.config";
+import {
+  wealthPlans as wealthPlanPayloads,
+  exercises as exercisePayloads,
+  introScreen as introScreenPayloads,
+} from "@/lib/payloads";
 import WellthPlanLoader from "@/components/loaders/wellth-plan-loader";
-
-// Mock data for Wellth Plans
-const INITIAL_WELLTH_PLANS = [
-  {
-    id: "1",
-    title: "Manage Spiritual Growth and Faith exercises",
-    description:
-      "Reconnect with your inner source through grounding, clarity and gentle spiritual alignment",
-    exercisesCount: 0,
-    icon: "/auth/sunriseCircle.png",
-  },
-  {
-    id: "2",
-    title: "Whole Self Revival",
-    description: "Restore your emotional balance, energy, identify, and sense of self",
-    exercisesCount: 0,
-    icon: "/auth/flower.png",
-  },
-  {
-    id: "3",
-    title: "Relationship Healing",
-    description:
-      "Heal relational patterns, strengthen boundaries, and nurture healthy, aligned love",
-    exercisesCount: 0,
-    icon: "/auth/circles.png",
-  },
-  {
-    id: "4",
-    title: "Career and Leadership",
-    description: "Grow in clarity, presence, confidence, and purpose",
-    exercisesCount: 0,
-    icon: "/auth/sunrise.png",
-  },
-];
+import {
+  getWealthPlansOverview,
+  type WealthPlansOverviewData,
+  getWealthPlans,
+  type WealthPlan,
+  getWealthPlanExercises,
+  createWealthPlan,
+  updateWealthPlan,
+  createWealthPlanExercise,
+  updateWealthPlanExercise,
+  deleteWealthPlanExercise,
+  updateIntroScreen,
+} from "@/Services/api/wealthPlans";
 
 export default function WellthPlansPage() {
   const [loading, setLoading] = useState(true);
-  const [plans, setPlans] = useState(INITIAL_WELLTH_PLANS);
+  const [wealthOverview, setWealthOverview] = useState<WealthPlansOverviewData | null>(null);
+  const [plans, setPlans] = useState<WealthPlan[]>([]);
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
   const [isAddPlanModalOpen, setIsAddPlanModalOpen] = useState(false);
   const [isDynamicModalOpen, setIsDynamicModalOpen] = useState(false);
   const [modalConfigKey, setModalConfigKey] = useState<string>("addExercise");
   const [editingItem, setEditingItem] = useState<Record<string, unknown> | null>(null);
+  const [editingPlanId, setEditingPlanId] = useState<string | null>(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1500);
-    return () => clearTimeout(timer);
+    Promise.all([getWealthPlansOverview(), getWealthPlans()])
+      .then(([ov, pl]) => {
+        setWealthOverview(ov.data);
+        setPlans(pl.data);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
-  // State for exercises within the selected plan
+  // State for exercises within the selected plan (keyed by plan ID — cached after first fetch)
   const [exercises, setExercises] = useState<Record<string, Record<string, unknown>[]>>({});
+  const [exercisesLoading, setExercisesLoading] = useState(false);
+
+  // Always fetch fresh exercises by category ID when the panel opens
+  useEffect(() => {
+    if (!selectedPlanId) return;
+    setExercisesLoading(true);
+    getWealthPlanExercises(selectedPlanId)
+      .then((res) => {
+        setExercises((prev) => ({
+          ...prev,
+          [selectedPlanId]: res.data.exercises as unknown as Record<string, unknown>[],
+        }));
+      })
+      .finally(() => setExercisesLoading(false));
+  }, [selectedPlanId]);
 
   const handleAddPlan = (data: Record<string, unknown>) => {
-    const newPlan = {
-      id: Math.random().toString(36).substr(2, 9),
-      title: data.name,
-      description: data.description,
-      exercisesCount: 0,
-      icon: data.icon ? URL.createObjectURL(data.icon) : "/auth/circle.svg",
-    };
-    setPlans((prev) => [...prev, newPlan]);
+    const payload = wealthPlanPayloads.create(
+      String(data.name ?? ""),
+      String(data.description ?? ""),
+      data.icon instanceof File ? URL.createObjectURL(data.icon) : undefined,
+    );
+
+    createWealthPlan(payload).then((res) => {
+      setPlans((prev) => [...prev, res.data]);
+      setIsAddPlanModalOpen(false);
+    });
+  };
+
+  const handleSaveIntro = (data: Record<string, unknown>) => {
+    if (!selectedPlanId) return;
+    const payload = introScreenPayloads.update(
+      String(data.subtitle ?? ""),
+      String(data.sageSays ?? ""),
+      String(data.description ?? ""),
+    );
+    updateIntroScreen(selectedPlanId, payload);
+  };
+
+  const handleSavePlan = (data: Record<string, unknown>) => {
+    if (!editingPlanId) return;
+    const payload = wealthPlanPayloads.update(
+      String(data.title ?? ""),
+      String(data.sub_title ?? ""),
+    );
+    updateWealthPlan(editingPlanId, payload).then((res) => {
+      setPlans((prev) => prev.map((p) => (p.id === editingPlanId ? { ...p, ...res.data } : p)));
+    });
+    setEditingPlanId(null);
   };
 
   const handleAddExercise = (data: Record<string, unknown>) => {
     if (!selectedPlanId) return;
-    const newExercise = {
-      id: Math.random().toString(36).substr(2, 9),
-      title: data.title,
-      description: data.description,
-      subtitle: data.subtitle || "",
-    };
-    setExercises((prev) => ({
-      ...prev,
-      [selectedPlanId]: [...(prev[selectedPlanId] || []), newExercise],
-    }));
-
-    // Update plan exercise count
-    setPlans((prev) =>
-      prev.map((p) =>
-        p.id === selectedPlanId
-          ? { ...p, exercisesCount: (exercises[selectedPlanId]?.length || 0) + 1 }
-          : p,
-      ),
+    const payload = exercisePayloads.create(
+      String(data.title ?? ""),
+      String(data.description ?? ""),
     );
+    createWealthPlanExercise(selectedPlanId, payload).then((res) => {
+      setExercises((prev) => ({
+        ...prev,
+        [selectedPlanId]: [
+          ...(prev[selectedPlanId] || []),
+          res.data as unknown as Record<string, unknown>,
+        ],
+      }));
+      setPlans((prev) =>
+        prev.map((p) =>
+          p.id === selectedPlanId
+            ? { ...p, exercise_count: (exercises[selectedPlanId]?.length || 0) + 1 }
+            : p,
+        ),
+      );
+    });
   };
 
   const handleSaveExercise = (data: Record<string, unknown>) => {
     if (!selectedPlanId) return;
 
     if (editingItem) {
+      const payload = exercisePayloads.edit(
+        String(data.title ?? ""),
+        String(data.description ?? ""),
+      );
+
+      // Optimistic update
       setExercises((prev) => ({
         ...prev,
         [selectedPlanId]: prev[selectedPlanId].map((item) =>
-          item.id === editingItem.id ? { ...item, ...data } : item,
+          item.id === editingItem.id ? { ...item, ...payload } : item,
         ),
       }));
+
+      // Persist to API
+      updateWealthPlanExercise(selectedPlanId, String(editingItem.id), payload).then((res) => {
+        // Reconcile with server response
+        setExercises((prev) => ({
+          ...prev,
+          [selectedPlanId]: prev[selectedPlanId].map((item) =>
+            item.id === editingItem.id ? { ...item, ...res.data } : item,
+          ),
+        }));
+      });
     } else {
       handleAddExercise(data);
     }
@@ -159,28 +204,28 @@ export default function WellthPlansPage() {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
           <MetricCard
             title="Active Plans"
-            value="6"
+            value={wealthOverview != null ? String(wealthOverview.active_plans) : "—"}
             subtitle="Published plans"
             subtitleColor="#71717A"
             iconSrc="/auth/leaves.png"
           />
           <MetricCard
             title="Total Participants"
-            value="14,580"
+            value={wealthOverview != null ? String(wealthOverview.total_participants) : "—"}
             subtitle="+23% this month"
             subtitleColor="#4BB05D"
             iconSrc="/auth/multipleUser.svg"
           />
           <MetricCard
             title="Average Completion"
-            value="55.6%"
+            value={wealthOverview != null ? `${wealthOverview.average_completion}%` : "—"}
             subtitle="+5% this week"
             subtitleColor="#4BB05D"
             iconSrc="/auth/growth.svg"
           />
           <MetricCard
             title="New This Month"
-            value="892"
+            value={wealthOverview != null ? String(wealthOverview.new_this_month) : "—"}
             subtitle="Enrollments"
             subtitleColor="#71717A"
             iconSrc="/auth/calander.svg"
@@ -199,10 +244,24 @@ export default function WellthPlansPage() {
               <ActionCard
                 key={plan.id}
                 title={plan.title}
-                subtitle={plan.description}
-                mainValue={plan.exercisesCount}
+                subtitle={plan.sub_title}
+                mainValue={plan.exercise_count}
                 mainLabel="Exercises"
-                icon={<img src={plan.icon} alt="" className="h-8 w-8" />}
+                icon={
+                  <img
+                    src={plan.image_url || "/auth/circle.svg"}
+                    alt={plan.title}
+                    className="h-8 w-8 rounded-full object-cover"
+                  />
+                }
+                onSecondaryAction={() => {
+                  setEditingPlanId(plan.id);
+                  setEditingItem({ title: plan.title, sub_title: plan.sub_title });
+                  setModalConfigKey("editPlan");
+                  setIsDynamicModalOpen(true);
+                }}
+                secondaryActionIcon={<PencilSquareIcon className="h-5 w-5 text-slate-500" />}
+                secondaryActionClassName="border border-cardBorder bg-white hover:bg-softstone"
                 onAction={() => setSelectedPlanId(plan.id)}
                 actionIcon={<ArrowUpRightIcon className="h-6 w-6 text-sageGreen" />}
                 actionClassName="border-none bg-transparent hover:bg-softstone"
@@ -227,29 +286,48 @@ export default function WellthPlansPage() {
           setEditingItem(null);
         }}
         config={WELLTH_MODAL_CONFIG[modalConfigKey]}
-        initialData={editingItem}
-        onSave={handleSaveExercise}
-        onSaveDraft={(data) => console.log("Draft Saved:", data)}
+        initialData={editingItem ?? undefined}
+        onSave={
+          modalConfigKey === "editPlan"
+            ? handleSavePlan
+            : modalConfigKey === "addIntro"
+              ? handleSaveIntro
+              : handleSaveExercise
+        }
+        onSaveDraft={(data) => console.warn("Draft Saved:", data)}
       />
 
       {/* Side Panel */}
       <DynamicSidePanel
         isOpen={!!selectedPlanId}
         onClose={() => setSelectedPlanId(null)}
-        title={`Manage ${selectedPlan?.title} exercises`}
+        title={
+          exercisesLoading ? "Loading exercises…" : `Manage ${selectedPlan?.title ?? ""} exercises`
+        }
         items={currentExercises}
         onAction={(action) => openModal(action)}
         onEditItem={(item) => {
-          console.log("Editing Wellth Plan Item:", item);
           setEditingItem(item);
           setModalConfigKey(item.sageSays ? "addIntro" : "addExercise");
           setIsDynamicModalOpen(true);
         }}
         onDeleteItem={(id) => {
+          if (!selectedPlanId) return;
+          // Optimistic remove
           setExercises((prev) => ({
             ...prev,
-            [selectedPlanId!]: prev[selectedPlanId!].filter((i) => i.id !== id),
+            [selectedPlanId]: prev[selectedPlanId].filter((i) => i.id !== id),
           }));
+          // Persist to API
+          deleteWealthPlanExercise(selectedPlanId, id).catch(() => {
+            // Rollback on failure — re-fetch exercises for this plan
+            getWealthPlanExercises(selectedPlanId).then((res) => {
+              setExercises((prev) => ({
+                ...prev,
+                [selectedPlanId]: res.data.exercises as unknown as Record<string, unknown>[],
+              }));
+            });
+          });
         }}
       />
     </PageLayout>

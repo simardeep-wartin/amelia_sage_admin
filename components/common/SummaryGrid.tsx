@@ -17,6 +17,7 @@ interface SummaryGridProps {
   subtitle?: string;
   items: SummaryItem[];
   columns?: string;
+  onFilter?: (value: string, range?: { from: Date | null; to: Date | null }) => void;
 }
 
 export default function SummaryGrid({
@@ -24,13 +25,19 @@ export default function SummaryGrid({
   subtitle,
   items,
   columns = "grid-cols-1",
+  onFilter,
 }: SummaryGridProps) {
-  const [filter, setFilter] = useState("This Week");
+  const [filter, setFilter] = useState("All");
+
+  const handleFilter = (val: string, range?: { from: Date | null; to: Date | null }) => {
+    setFilter(val);
+    onFilter?.(val, range);
+  };
 
   return (
     <Card
       title={title}
-      actions={<FilterDropdown variant="icon" value={filter} onChange={setFilter} />}
+      actions={<FilterDropdown variant="icon" value={filter} onChange={handleFilter} />}
     >
       {subtitle && <p className="mt-1 text-s text-slate">{subtitle}</p>}
       <div className={`mt-4 grid gap-4 ${columns}`}>

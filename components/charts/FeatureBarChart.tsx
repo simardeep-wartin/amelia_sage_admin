@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 export interface FeaturePoint {
   feature: string;
@@ -25,6 +17,11 @@ export default function FeatureBarChart({ data }: FeatureBarChartProps) {
     sessions: Number(point.sessions) || 0,
   }));
 
+  const maxVal = Math.max(...normalizedData.map((d) => d.sessions), 1);
+  const domainMax = Math.ceil(maxVal * 1.2);
+  const step = Math.ceil(domainMax / 4);
+  const yTicks = [0, step, step * 2, step * 3, domainMax];
+
   return (
     <div className="h-[300px] w-full">
       <ResponsiveContainer width="100%" height="100%">
@@ -39,12 +36,7 @@ export default function FeatureBarChart({ data }: FeatureBarChartProps) {
               <stop offset="100%" stopColor="#D6B26A" />
             </linearGradient>
           </defs>
-          <CartesianGrid
-            strokeDasharray="4 4"
-            stroke="#E5E7EB"
-            vertical={true}
-            horizontal={true}
-          />
+          <CartesianGrid strokeDasharray="4 4" stroke="#E5E7EB" vertical={true} horizontal={true} />
 
           <XAxis
             dataKey="feature"
@@ -58,8 +50,8 @@ export default function FeatureBarChart({ data }: FeatureBarChartProps) {
             axisLine={{ stroke: "#E5E7EB", strokeWidth: 1 }}
             tickLine={{ stroke: "#E5E7EB", strokeWidth: 1 }}
             tick={{ fontSize: 12, fill: "#6B6B6B" }}
-            ticks={[0, 2500, 5000, 7500, 10000]}
-            domain={[0, 10000]}
+            ticks={yTicks}
+            domain={[0, domainMax]}
             width={45}
           />
 

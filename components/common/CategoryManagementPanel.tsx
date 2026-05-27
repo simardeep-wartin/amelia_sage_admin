@@ -1,58 +1,146 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AccordionItem from "@/components/common/AccordionItem";
 import ActionModal from "@/components/common/ActionModal";
 import SidePanel from "@/components/ui/SidePanel";
 import Button from "../ui/Button";
+import {
+  getFeelingExercises,
+  getFocusAreaExercises,
+  createFeelingExercise,
+  createFocusAreaExercise,
+  updateFeelingExercise,
+  updateFocusAreaExercise,
+  deleteFeelingExercise,
+  deleteFocusAreaExercise,
+  updateFeelingIntroScreen,
+  updateFocusAreaIntroScreen,
+  type FeelingExercise,
+  type FeelingIntroScreen,
+} from "@/Services/api/workOnMe";
+import { exercises as exercisePayloads, introScreen as introScreenPayloads } from "@/lib/payloads";
 
 interface CategoryManagementPanelProps {
   isOpen: boolean;
   onClose: () => void;
   categoryName: string;
-  itemType?: string; // e.g. "exercise", "lesson", "tool"
+  /** MongoDB ObjectID of the category — used to fetch live exercises */
+  categoryId?: string;
+  /** Whether this panel manages a feeling or a focus-area — determines which endpoint to use */
+  categoryType?: "feeling" | "focus-area";
+  itemType?: string;
   showIntroScreenAction?: boolean;
 }
+
+/** Returns true for 24-character hex strings (MongoDB ObjectIDs) */
+const isMongoId = (v: string) => /^[0-9a-f]{24}$/.test(v);
 
 export default function CategoryManagementPanel({
   isOpen,
   onClose,
   categoryName,
+  categoryId,
+  categoryType = "feeling",
   itemType = "item",
   showIntroScreenAction = true,
 }: CategoryManagementPanelProps) {
-  const [items, setItems] = useState<{ id: string; title: string; description: string }[]>([
-    {
-      id: "1",
-      title: "Morning Gratitude Reflection",
-      description:
-        "A 5-minute guided session to start your day with positive intentions and thankfulness.",
-    },
-    {
-      id: "2",
-      title: "Daily Intention Setting",
-      description: "Clarify your goals for the day and align your actions with your core values.",
-    },
-  ]);
+  const [items, setItems] = useState<FeelingExercise[]>([]);
+  const [_introScreen, setIntroScreen] = useState<FeelingIntroScreen | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const [isIntroModalOpen, setIsIntroModalOpen] = useState(false);
   const [isAddItemModalOpen, setIsAddItemModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Record<string, unknown> | null>(null);
 
+  // Fetch exercises whenever the panel is opened with a valid category ID
+  useEffect(() => {
+    if (!isOpen || !categoryId || !isMongoId(categoryId)) return;
+
+    setLoading(true);
+
+    const fetcher =
+      categoryType === "focus-area"
+        ? getFocusAreaExercises(categoryId).then((res) => ({
+            exercises: (res.data.exercises ?? []).map((ex) => ({
+              id: ex.id,
+              title: ex.title,
+              // sub_content holds the main exercise text for focus areas
+              description: ex.description,
+              feeling_id: ex.focus_on_category_id,
+            })) as FeelingExercise[],
+            intro_screen: res.data.intro_screen,
+          }))
+        : getFeelingExercises(categoryId).then((res) => ({
+            exercises: res.data.exercises ?? [],
+            intro_screen: res.data.intro_screen,
+          }));
+
+    fetcher
+      .then(({ exercises, intro_screen }) => {
+        setItems(exercises);
+        setIntroScreen(intro_screen ?? null);
+      })
+      .catch(() => {
+        setItems([]);
+        setIntroScreen(null);
+      })
+      .finally(() => setLoading(false));
+  }, [isOpen, categoryId, categoryType]);
+
+  // Clear state when panel is closed
+  const handleClose = () => {
+    setItems([]);
+    setIntroScreen(null);
+    setEditingItem(null);
+    onClose();
+  };
+
   const handleAddItem = (data: { title: string; description: string }) => {
     if (editingItem) {
-      setItems((prev) =>
-        prev.map((item) => (item.id === editingItem.id ? { ...item, ...data } : item)),
-      );
+      // Edit flow — PUT to API (branch by categoryType)
+      if (!categoryId || !isMongoId(categoryId)) return;
+      const exerciseId = editingItem.id as string;
+      const payload = exercisePayloads.edit(data.title, data.description);
+      const updater =
+        categoryType === "focus-area"
+          ? updateFocusAreaExercise(categoryId, exerciseId, payload)
+          : updateFeelingExercise(categoryId, exerciseId, payload);
+
+      updater
+        .then(() => {
+          setItems((prev) =>
+            prev.map((item) =>
+              item.id === exerciseId
+                ? { ...item, title: data.title, description: data.description }
+                : item,
+            ),
+          );
+          setEditingItem(null);
+          setIsAddItemModalOpen(false);
+        })
+        .catch(console.error);
     } else {
-      const newItem = {
-        id: Math.random().toString(36).substr(2, 9),
-        title: data.title,
-        description: data.description,
-      };
-      setItems((prev) => [...prev, newItem]);
+      // Create flow — POST to API (branch by categoryType)
+      if (!categoryId || !isMongoId(categoryId)) return;
+      const payload = exercisePayloads.create(data.title, data.description);
+      const creator =
+        categoryType === "focus-area"
+          ? createFocusAreaExercise(categoryId, payload).then((res) => ({
+              id: res.data.id,
+              title: res.data.title,
+              description: res.data.description,
+              feeling_id: res.data.focus_on_category_id,
+            }))
+          : createFeelingExercise(categoryId, payload).then((res) => res.data);
+
+      creator
+        .then((newItem) => {
+          setItems((prev) => [...prev, newItem as FeelingExercise]);
+          setIsAddItemModalOpen(false);
+        })
+        .catch(console.error);
     }
-    setEditingItem(null);
   };
 
   const handleAddIntroScreen = (data: {
@@ -60,12 +148,34 @@ export default function CategoryManagementPanel({
     sageSays: string;
     description: string;
   }) => {
-    console.log("Intro Screen Saved:", data);
-    setEditingItem(null);
+    if (!categoryId || !isMongoId(categoryId)) return;
+    const payload = introScreenPayloads.update(data.subtitle, data.sageSays, data.description);
+    const updater =
+      categoryType === "focus-area"
+        ? updateFocusAreaIntroScreen(categoryId, payload)
+        : updateFeelingIntroScreen(categoryId, payload);
+
+    updater
+      .then(() => {
+        setIntroScreen({
+          subtitle: payload.subtitle,
+          sage_says: payload.sage_says,
+          description: payload.description,
+        });
+        setIsIntroModalOpen(false);
+      })
+      .catch(console.error);
   };
 
-  const handleDeleteItem = (id: string) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
+  const handleDeleteItem = (exerciseId: string) => {
+    if (!categoryId || !isMongoId(categoryId)) return;
+    const previous = items;
+    setItems((prev) => prev.filter((item) => item.id !== exerciseId));
+    const deleter =
+      categoryType === "focus-area"
+        ? deleteFocusAreaExercise(categoryId, exerciseId)
+        : deleteFeelingExercise(categoryId, exerciseId);
+    deleter.catch(() => setItems(previous)); // rollback on failure
   };
 
   const itemLabel = itemType.charAt(0).toUpperCase() + itemType.slice(1);
@@ -74,11 +184,15 @@ export default function CategoryManagementPanel({
     <>
       <SidePanel
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={handleClose}
         title={`Manage ${categoryName} ${itemType}s`}
         width="max-w-2xl"
       >
-        {items.length > 0 ? (
+        {loading ? (
+          <div className="flex items-center justify-center h-40">
+            <span className="text-sm text-grey animate-pulse">Loading {itemType}s…</span>
+          </div>
+        ) : items.length > 0 ? (
           <div className="space-y-6">
             <div className="flex justify-end items-center text-[13px] font-semibold text-sageGreen gap-4 mb-2">
               {showIntroScreenAction && (
@@ -106,7 +220,11 @@ export default function CategoryManagementPanel({
                   key={item.id}
                   title={item.title}
                   onEdit={() => {
-                    setEditingItem(item);
+                    setEditingItem({
+                      id: item.id,
+                      title: item.title,
+                      description: item.description,
+                    });
                     setIsAddItemModalOpen(true);
                   }}
                   onDelete={() => handleDeleteItem(item.id)}
@@ -130,7 +248,6 @@ export default function CategoryManagementPanel({
         ) : (
           /* Empty State */
           <div className="flex flex-col h-full w-full">
-            {/* Top / Center Content */}
             <div className="flex flex-col items-center justify-start text-center flex-1 space-y-10">
               <div className="flex flex-col justify-start items-start gap-1">
                 <h3 className="text-2xl sm:text-[32px] font-cormorant text-charcoal font-medium">
@@ -142,7 +259,6 @@ export default function CategoryManagementPanel({
                 </p>
               </div>
 
-              {/* Placeholder Graphic */}
               <div className="flex items-end justify-center gap-4 h-32 opacity-80">
                 <div className="w-10 h-16 bg-[#F9F7F2] rounded-sm"></div>
                 <div className="w-10 h-24 bg-[#F2F2F2] rounded-sm"></div>
@@ -151,7 +267,6 @@ export default function CategoryManagementPanel({
               </div>
             </div>
 
-            {/* Bottom Actions (Pinned) */}
             <div className="flex gap-2 justify-center pt-6">
               {showIntroScreenAction && (
                 <Button
@@ -175,7 +290,6 @@ export default function CategoryManagementPanel({
         )}
       </SidePanel>
 
-      {/* Nested Modals */}
       {showIntroScreenAction && (
         <ActionModal
           isOpen={isIntroModalOpen}
@@ -195,7 +309,7 @@ export default function CategoryManagementPanel({
         }}
         type={itemType === "exercise" ? "exercise" : "category"}
         title={`Add New ${itemLabel}`}
-        initialData={editingItem}
+        initialData={editingItem ?? undefined}
         onSave={handleAddItem}
       />
     </>

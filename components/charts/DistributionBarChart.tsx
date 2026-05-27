@@ -27,6 +27,8 @@ interface DistributionBarChartProps {
   series: SeriesConfig[];
   maxY?: number;
   note?: string;
+  filterOptions?: string[];
+  onFilterChange?: (value: string, range?: { from: Date | null; to: Date | null }) => void;
 }
 
 export default function DistributionBarChart({
@@ -36,13 +38,42 @@ export default function DistributionBarChart({
   series,
   maxY,
   note,
+  filterOptions,
+  onFilterChange,
 }: DistributionBarChartProps) {
   const [selected, setSelected] = useState("All");
-  const filterOptions = ["All", ...series.map((s) => s.label)];
+  const [timeFilter, setTimeFilter] = useState(filterOptions ? filterOptions[0] : "All");
+  const seriesOptions = ["All", ...series.map((s) => s.label)];
   const filteredSeries = selected === "All" ? series : series.filter((s) => s.label === selected);
 
   const actions = (
-    <FilterDropdown options={filterOptions} value={selected} onChange={setSelected} />
+    <div className="flex items-center gap-2">
+      {filterOptions && onFilterChange ? (
+        // Single text dropdown with explicit options (e.g. all / today / week / month / year / custom)
+        <FilterDropdown
+          options={filterOptions}
+          value={timeFilter}
+          onChange={(val, range) => {
+            setTimeFilter(val);
+            onFilterChange(val, range);
+          }}
+        />
+      ) : (
+        <>
+          {onFilterChange && (
+            <FilterDropdown
+              variant="icon"
+              value={timeFilter}
+              onChange={(val, range) => {
+                setTimeFilter(val);
+                onFilterChange(val, range);
+              }}
+            />
+          )}
+          <FilterDropdown options={seriesOptions} value={selected} onChange={setSelected} />
+        </>
+      )}
+    </div>
   );
 
   return (
@@ -69,7 +100,12 @@ export default function DistributionBarChart({
               tick={{ fontSize: 11, fill: "#6C6C6C" }}
             />
             <Tooltip
-              contentStyle={{ borderRadius: 10, border: "1px solid #F3F4F6", fontSize: 13 }}
+              contentStyle={{
+                borderRadius: 10,
+                border: "1px solid #F3F4F6",
+                fontSize: 13,
+                color: "#1F2937",
+              }}
             />
             {filteredSeries.map((s) => (
               <Bar

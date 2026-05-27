@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { SignInRequest } from "@/types/auth";
-import { authService } from "@/Services/authService";
+import { authApi } from "@/Services/api/auth";
 import { useAuthStore } from "@/store/authStore";
 
 export function useAuth() {
@@ -17,7 +17,7 @@ export function useAuth() {
       setIsLoading(true);
       setError(null);
       try {
-        const result = await authService.login(payload);
+        const result = await authApi.login(payload);
         setAuth(result.token, result.user);
         return result;
       } catch (e) {

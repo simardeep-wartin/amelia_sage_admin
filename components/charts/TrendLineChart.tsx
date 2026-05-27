@@ -32,7 +32,8 @@ interface TrendLineChartProps {
   data: Record<string, unknown>[];
   series: SeriesConfig[];
   yTicks?: number[];
-  yDomain?: [number, number];
+  yDomain?: [number | string, number | string];
+  onFilterChange?: (values: string[]) => void;
 }
 
 export default function TrendLineChart({
@@ -41,10 +42,11 @@ export default function TrendLineChart({
   filters = [],
   data,
   series,
-  yTicks = [0, 750, 1500, 2250, 3000],
-  yDomain = [0, 3000],
+  yTicks,
+  yDomain,
+  onFilterChange,
 }: TrendLineChartProps) {
-  const [filterValues, setFilterValues] = useState<string[]>(filters.map((f) => f.label));
+  const [filterValues, setFilterValues] = useState<string[]>(filters.map((f) => f.options[0]));
 
   const actions = (
     <div className="flex flex-wrap gap-3">
@@ -53,7 +55,11 @@ export default function TrendLineChart({
           key={filter.label}
           options={filter.options}
           value={filterValues[i]}
-          onChange={(val) => setFilterValues((prev) => prev.map((v, idx) => (idx === i ? val : v)))}
+          onChange={(val) => {
+            const next = filterValues.map((v, idx) => (idx === i ? val : v));
+            setFilterValues(next);
+            onFilterChange?.(next);
+          }}
         />
       ))}
     </div>
@@ -72,7 +78,11 @@ export default function TrendLineChart({
           <LineChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 8 }}>
             <CartesianGrid strokeDasharray="4 4" stroke="#E5E7EB" />
             <XAxis dataKey="month" tick={{ fontSize: 12, fill: "#6B6B6B" }} />
-            <YAxis tick={{ fontSize: 12, fill: "#6B6B6B" }} ticks={yTicks} domain={yDomain} />
+            <YAxis
+              tick={{ fontSize: 12, fill: "#6B6B6B" }}
+              {...(yTicks && { ticks: yTicks })}
+              {...(yDomain && { domain: yDomain })}
+            />
             <Tooltip
               contentStyle={{
                 border: "1px solid #F3F4F6",

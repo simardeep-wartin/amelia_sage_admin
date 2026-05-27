@@ -20,6 +20,8 @@ interface InsightGridProps {
   title: string;
   groups: InsightGroup[];
   groupColors?: Record<string, string>;
+  filterOptions?: string[];
+  onFilterChange?: (value: string, range?: { from: Date | null; to: Date | null }) => void;
 }
 
 const DEFAULT_COLORS: Record<string, string> = {
@@ -34,15 +36,27 @@ export default function InsightGrid({
   title,
   groups,
   groupColors = DEFAULT_COLORS,
+  filterOptions,
+  onFilterChange,
 }: InsightGridProps) {
-  const [filter, setFilter] = useState("All");
-  const filterOptions = ["All", ...groups.map((g) => g.title)];
-  const filteredGroups = filter === "All" ? groups : groups.filter((g) => g.title === filter);
+  const [filter, setFilter] = useState(filterOptions ? filterOptions[0] : "All");
+  const internalOptions = ["All", ...groups.map((g) => g.title)];
+  const activeOptions = filterOptions ?? internalOptions;
+  const filteredGroups = filterOptions
+    ? groups
+    : filter === "All"
+      ? groups
+      : groups.filter((g) => g.title === filter);
+
+  const handleFilter = (val: string, range?: { from: Date | null; to: Date | null }) => {
+    setFilter(val);
+    onFilterChange?.(val, range);
+  };
 
   return (
     <Card
       title={title}
-      actions={<FilterDropdown options={filterOptions} value={filter} onChange={setFilter} />}
+      actions={<FilterDropdown options={activeOptions} value={filter} onChange={handleFilter} />}
     >
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {filteredGroups.map((group) => {

@@ -6,8 +6,15 @@ import PageLayout from "@/components/layout/PageLayout";
 import Card from "@/components/common/Card";
 import MetricCard from "@/components/common/MetricCard";
 import FeatureBarChart from "@/components/charts/FeatureBarChart";
+import FilterDropdown from "@/components/ui/FilterDropdown";
 import UserInsightLoader from "@/components/loaders/user-insight-loader";
 import appData from "@/data/app-data.json";
+import {
+  getUserInsightsOverview,
+  type UserInsightsOverviewData,
+  getFeatureUsage,
+  type FeatureUsageItem,
+} from "@/Services/api/userInsights";
 
 const insightsData = appData.userInsights;
 
@@ -18,15 +25,59 @@ const ICON_MAP: Record<string, string> = {
 
 export default function UserInsightsPage() {
   const [loading, setLoading] = useState(true);
+  const [overview, setOverview] = useState<UserInsightsOverviewData | null>(null);
+  const [featureUsage, setFeatureUsage] = useState<FeatureUsageItem[] | null>(null);
+  const [featureFilter, setFeatureFilter] = useState("All");
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1500);
-    return () => clearTimeout(timer);
+    Promise.all([getUserInsightsOverview(), getFeatureUsage({ filter: "all" })])
+      .then(([ov, fu]) => {
+        setOverview(ov.data);
+        setFeatureUsage(fu.data);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
+  const handleFeatureFilter = (val: string, range?: { from: Date | null; to: Date | null }) => {
+    setFeatureFilter(val);
+    getFeatureUsage({ filter: val, range }).then((res) => setFeatureUsage(res.data));
+  };
+
   if (loading) return <UserInsightLoader />;
+
+  /* ── derived KPI metrics ── */
+  const metrics = overview
+    ? [
+        {
+          title: "Total Users",
+          value: String(overview.total_users),
+          subtitle: insightsData.metrics[0]?.trend ?? "",
+          iconSrc: "/auth/multipleUser.svg",
+        },
+        {
+          title: "Goal Completion",
+          value: `${overview.goal_completion.percentage}%`,
+          subtitle: `${overview.goal_completion.completed} / ${overview.goal_completion.total_possible} goals`,
+          iconSrc: "/auth/goal.svg",
+        },
+      ]
+    : insightsData.metrics.map((m) => ({
+        title: m.title,
+        value: m.value,
+        subtitle: m.trend,
+        iconSrc: ICON_MAP[m.iconType] ?? "/auth/goal.svg",
+      }));
+
+  /* ── derived age groups ── */
+  const ageGroups = overview
+    ? overview.demographics.top_age_groups.map((g) => ({
+        label: g.age_range,
+        percentage: `${g.percentage}%`,
+      }))
+    : insightsData.demographics.ageGroups.map((g) => ({
+        label: g.label,
+        percentage: g.percentage,
+      }));
 
   return (
     <PageLayout title="User Insights">
@@ -36,28 +87,41 @@ export default function UserInsightsPage() {
           <p className="text-s text-grey">Dashboard / Overview / User Insights</p>
         </div>
 
+        {/* KPI cards */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {insightsData.metrics.map((metric) => (
+          {metrics.map((metric) => (
             <MetricCard
               key={metric.title}
               title={metric.title}
               value={metric.value}
-              subtitle={metric.trend}
+              subtitle={metric.subtitle}
               subtitleColor="#00a63e"
-              iconSrc={ICON_MAP[metric.iconType] ?? "/auth/goal.svg"}
+              iconSrc={metric.iconSrc}
             />
           ))}
         </div>
 
-        <Card title="Feature Usage Breakdown">
-          <FeatureBarChart data={insightsData.featureUsage} />
+        <Card
+          title="Feature Usage Breakdown"
+          actions={
+            <FilterDropdown variant="icon" value={featureFilter} onChange={handleFeatureFilter} />
+          }
+        >
+          <FeatureBarChart
+            data={
+              featureUsage
+                ? featureUsage.map((item) => ({ feature: item.feature, sessions: item.count }))
+                : insightsData.featureUsage
+            }
+          />
         </Card>
 
+        {/* User Demographics & Behavior */}
         <Card title="User Demographics & Behavior">
           <div className="max-w-sm space-y-3">
             <p className="text-m font-medium text-gold">Top Age Groups</p>
             <div className="space-y-2">
-              {insightsData.demographics.ageGroups.map((group) => (
+              {ageGroups.map((group) => (
                 <div key={group.label} className="flex items-center justify-between">
                   <span className="text-s text-grey">{group.label}</span>
                   <span className="font-cormorant text-m font-semibold text-charcoal">

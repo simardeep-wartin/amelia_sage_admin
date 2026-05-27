@@ -24,6 +24,7 @@ interface HorizontalBarChartProps {
   xTicks?: number[];
   xDomain?: [number, number];
   barColor?: string;
+  onFilterChange?: (value: string, range?: { from: Date | null; to: Date | null }) => void;
 }
 
 export default function HorizontalBarChart({
@@ -34,16 +35,22 @@ export default function HorizontalBarChart({
   labelKey,
   highlights = [],
   lastUpdated,
-  xTicks = [0, 750, 1500, 2250, 3000],
-  xDomain = [0, 3000],
+  xTicks,
+  xDomain,
   barColor = "#8B7EC8",
+  onFilterChange,
 }: HorizontalBarChartProps) {
-  const [filter, setFilter] = useState("This Week");
+  const [filter, setFilter] = useState("All");
+
+  const handleFilter = (val: string, range?: { from: Date | null; to: Date | null }) => {
+    setFilter(val);
+    onFilterChange?.(val, range);
+  };
 
   return (
     <ChartCard
       title={title}
-      actions={<FilterDropdown variant="icon" value={filter} onChange={setFilter} />}
+      actions={<FilterDropdown value={filter} onChange={handleFilter} />}
       footer={
         <div className="space-y-4">
           {highlights.length > 0 && (
@@ -81,8 +88,8 @@ export default function HorizontalBarChart({
             <XAxis
               type="number"
               tick={{ fontSize: 12, fill: "#6B6B6B" }}
-              domain={xDomain}
-              ticks={xTicks}
+              {...(xDomain && { domain: xDomain })}
+              {...(xTicks && { ticks: xTicks })}
             />
             <YAxis
               type="category"
@@ -93,7 +100,16 @@ export default function HorizontalBarChart({
               tickLine={false}
             />
             <Tooltip
-              contentStyle={{ borderRadius: 10, border: "1px solid #F3F4F6", fontSize: 13 }}
+              contentStyle={{
+                borderRadius: 10,
+                border: "1px solid #F3F4F6",
+                fontSize: 13,
+                color: "#1F2937",
+              }}
+              formatter={(value, name, props) => {
+                const pct = (props.payload as Record<string, unknown>)?.percentage;
+                return pct !== undefined ? [`${value} (${pct}%)`, name] : [value, name];
+              }}
             />
             <Bar
               dataKey={dataKey}

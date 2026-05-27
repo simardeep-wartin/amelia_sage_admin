@@ -50,6 +50,26 @@ export const WELLTH_MODAL_CONFIG: Record<string, ModalConfig> = {
     ],
     actionText: "+ Add New Wellth Plan",
   },
+  editPlan: {
+    title: "Edit Wellth Plan",
+    fields: [
+      {
+        name: "title",
+        label: "Plan Title",
+        placeholder: "Enter title",
+        type: "text",
+        validation: { required: true },
+      },
+      {
+        name: "sub_title",
+        label: "Sub Title",
+        placeholder: "Enter subtitle",
+        type: "textarea",
+        validation: { required: true },
+      },
+    ],
+    actionText: "Save Changes",
+  },
   addExercise: {
     title: "Add New Exercise",
     fields: [
@@ -128,7 +148,8 @@ export const WELLTH_MODAL_CONFIG: Record<string, ModalConfig> = {
 export const WELLTH_PANEL_CONFIG = {
   emptyState: {
     title: "No Exercises Yet",
-    description: "You have not added any exercises yet. Start building your routine by adding exercises tailored to your goals.",
+    description:
+      "You have not added any exercises yet. Start building your routine by adding exercises tailored to your goals.",
     actions: [
       { label: "+ Create Intro Screen", variant: "outline" as const, action: "addIntro" },
       { label: "+ Create New Exercise", variant: "solid" as const, action: "addExercise" },
