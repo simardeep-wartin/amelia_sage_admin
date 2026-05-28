@@ -58,12 +58,14 @@ export default function FeatureBarChart({ data }: FeatureBarChartProps) {
           <Tooltip
             cursor={{ fill: "rgba(139,170,135,0.08)" }}
             contentStyle={{
-              border: "1px solid #F3F4F6",
-              borderRadius: "10px",
-              boxShadow: "0 4px 10px rgba(0,0,0,0.08)",
+              border: "1px solid #E5E7EB",
+              borderRadius: "8px",
+              boxShadow: "0 4px 16px rgba(0,0,0,0.15)",
               fontSize: "13px",
+              padding: "8px 12px",
             }}
-            labelStyle={{ color: "#2B2B2B", fontWeight: 500 }}
+            labelStyle={{ color: "#1F2937", fontWeight: 600, marginBottom: 4 }}
+            itemStyle={{ color: "#4B5563" }}
             formatter={(value) => [
               typeof value === "number" ? value.toLocaleString() : value,
               "Sessions",

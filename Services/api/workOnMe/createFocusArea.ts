@@ -4,7 +4,7 @@ import type { FocusAreaItem } from "./focusAreas";
 
 export type CreateFocusAreaPayload = {
   title: string;
-  description: string;
+  sub_title: string;
   image_url: string;
   sort_order: number;
 };

@@ -3,7 +3,7 @@ import { ENDPOINTS } from "@/lib/endpoints";
 
 export type UpdateFeelingPayload = {
   title: string;
-  description: string;
+  sub_title: string;
   image_url: string;
 };
 

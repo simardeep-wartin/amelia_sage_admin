@@ -5,12 +5,15 @@ import SidePanel from "@/components/ui/SidePanel";
 import AccordionItem from "@/components/common/AccordionItem";
 import Button from "@/components/ui/Button";
 import { WELLTH_PANEL_CONFIG } from "@/lib/wellth-plans.config";
+import PanelSkeleton from "@/components/loaders/panel-skeleton";
 
 interface DynamicSidePanelProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
   items: Record<string, unknown>[];
+  introScreen?: { intro_title: string; intro_description: string } | null;
+  loading?: boolean;
   onAction: (action: string) => void;
   onEditItem: (item: Record<string, unknown>) => void;
   onDeleteItem: (id: string) => void;
@@ -21,6 +24,8 @@ export default function DynamicSidePanel({
   onClose,
   title,
   items,
+  introScreen,
+  loading = false,
   onAction,
   onEditItem,
   onDeleteItem,
@@ -68,7 +73,7 @@ export default function DynamicSidePanel({
           onClick={() => onAction("addIntro")}
           className="hover:text-[#7fa18c] p-2 rounded-md cursor-pointer hover:border hover:border-[#7fa18c]"
         >
-          + Create Intro Screen
+          {introScreen ? "Edit Intro Screen" : "+ Create Intro Screen"}
         </button>
         <span className="text-[#E5E5E5] font-normal">|</span>
         <button
@@ -78,6 +83,26 @@ export default function DynamicSidePanel({
           + Create New Exercise
         </button>
       </div>
+
+      {/* Intro Screen accordion */}
+      {introScreen && (
+        <AccordionItem title="Intro Screen" onEdit={() => onAction("addIntro")}>
+          <div className="space-y-4 pt-2">
+            <div>
+              <p className="text-s tracking-wider text-sageGreen font-medium mb-1">Subtitle</p>
+              <p className="text-s text-slate font-normal">{introScreen.intro_title}</p>
+            </div>
+            <div>
+              <p className="text-s tracking-wider text-sageGreen font-medium mb-1">Sage Says</p>
+              <p className="text-s text-slate font-normal">—</p>
+            </div>
+            <div>
+              <p className="text-s tracking-wider text-sageGreen font-medium mb-1">Description</p>
+              <p className="text-s text-slate font-normal">{introScreen.intro_description}</p>
+            </div>
+          </div>
+        </AccordionItem>
+      )}
 
       <div className="space-y-4">
         {items.map((item) => (
@@ -117,7 +142,7 @@ export default function DynamicSidePanel({
 
   return (
     <SidePanel isOpen={isOpen} onClose={onClose} title={title} width="max-w-2xl">
-      {items.length > 0 ? renderList() : renderEmptyState()}
+      {loading ? <PanelSkeleton /> : items.length > 0 ? renderList() : renderEmptyState()}
     </SidePanel>
   );
 }

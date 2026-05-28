@@ -36,6 +36,6 @@ export function buildTrendChartData(trend: TrendGroup[]) {
 
 export const getGrowthTrend = (groupBy: string, filter: string) => {
   const apiGroupBy = groupBy === "all" ? "gender_identity" : groupBy;
-  const qs = new URLSearchParams({ group_by: apiGroupBy, filter }).toString();
+  const qs = new URLSearchParams({ group_by: apiGroupBy, filter: filter.toLowerCase() }).toString();
   return clientApi.get<GrowthTrendResponse>(`${ENDPOINTS.demographics.growthTrend}?${qs}`);
 };

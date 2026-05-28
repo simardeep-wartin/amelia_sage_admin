@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import ProgressBar from "@/components/ui/ProgressBar";
 import Card from "@/components/common/Card";
 import FilterDropdown from "@/components/ui/FilterDropdown";
+import EmptyState from "@/components/common/EmptyState";
 
 interface ProgressItem {
   label: string;
@@ -57,22 +58,26 @@ export default function ProgressCard({
       }
     >
       {subtitle && <p className="mt-1 text-s text-slate">{subtitle}</p>}
-      <div className="mt-4 space-y-4">
-        {filteredItems.map((item) => (
-          <div key={item.label}>
-            <div className="mb-1 flex items-center justify-between">
-              <p className="text-m font-medium text-charcoal">{item.label}</p>
-              <p className="text-m font-semibold text-sageGreen">{item.value.toFixed(1)}%</p>
+      {filteredItems.length === 0 ? (
+        <EmptyState className="min-h-[160px]" />
+      ) : (
+        <div className="mt-4 space-y-4">
+          {filteredItems.map((item) => (
+            <div key={item.label}>
+              <div className="mb-1 flex items-center justify-between">
+                <p className="text-m font-medium text-charcoal">{item.label}</p>
+                <p className="text-m font-semibold text-sageGreen">{item.value.toFixed(1)}%</p>
+              </div>
+              {item.detail && <p className="mb-1 text-xs text-slate">{item.detail}</p>}
+              <ProgressBar
+                progress={item.value}
+                gradient="linear-gradient(90deg, #8BAA87 0%, #D6B26A 100%)"
+                height="h-[10px]"
+              />
             </div>
-            {item.detail && <p className="mb-1 text-xs text-slate">{item.detail}</p>}
-            <ProgressBar
-              progress={item.value}
-              gradient="linear-gradient(90deg, #8BAA87 0%, #D6B26A 100%)"
-              height="h-[10px]"
-            />
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
       <p className="mt-4 text-xs text-slate">Last updated: {lastUpdated}</p>
     </Card>
   );

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import ChartCard from "@/components/common/ChartCard";
 import FilterDropdown from "@/components/ui/FilterDropdown";
+import EmptyState from "@/components/common/EmptyState";
 
 interface PieItem {
   label: string;
@@ -24,6 +25,9 @@ interface DistributionPieChartProps {
   showList?: boolean;
   filterOptions?: string[];
   onFilterChange?: (value: string, range?: { from: Date | null; to: Date | null }) => void;
+  cardClassName?: string;
+  /** When true the chart fills available card height and uses percentage-based radii */
+  fillHeight?: boolean;
 }
 
 export default function DistributionPieChart({
@@ -37,6 +41,8 @@ export default function DistributionPieChart({
   showList = true,
   filterOptions,
   onFilterChange,
+  cardClassName,
+  fillHeight = false,
 }: DistributionPieChartProps) {
   const chartData = data.map((item) => ({ ...item, chartValue: item.chartValue ?? item.value }));
 
@@ -50,6 +56,7 @@ export default function DistributionPieChart({
   return (
     <ChartCard
       title={title}
+      className={cardClassName}
       actions={
         filterOptions ? (
           <FilterDropdown options={filterOptions} value={filter} onChange={handleFilter} />
@@ -78,30 +85,38 @@ export default function DistributionPieChart({
         </div>
       }
     >
-      <div className="mx-auto h-[260px] w-full max-w-[300px]">
-        <ResponsiveContainer width="100%" height="100%">
-          <PieChart>
-            <Pie
-              data={chartData}
-              dataKey="chartValue"
-              nameKey="label"
-              innerRadius={innerRadius}
-              outerRadius={outerRadius}
-              startAngle={startAngle}
-              endAngle={endAngle}
-              stroke="none"
-              paddingAngle={0}
-              isAnimationActive={false}
-            >
-              {chartData.map((entry) => (
-                <Cell key={entry.label} fill={entry.color} />
-              ))}
-            </Pie>
-            <Tooltip
-              contentStyle={{ borderRadius: 10, border: "1px solid #F3F4F6", fontSize: 13 }}
-            />
-          </PieChart>
-        </ResponsiveContainer>
+      <div
+        className={
+          fillHeight ? "w-full flex-1 min-h-[260px]" : "mx-auto h-[260px] w-full max-w-[300px]"
+        }
+      >
+        {chartData.length === 0 ? (
+          <EmptyState />
+        ) : (
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={chartData}
+                dataKey="chartValue"
+                nameKey="label"
+                innerRadius={fillHeight ? "65%" : innerRadius}
+                outerRadius={fillHeight ? "80%" : outerRadius}
+                startAngle={startAngle}
+                endAngle={endAngle}
+                stroke="none"
+                paddingAngle={0}
+                isAnimationActive={false}
+              >
+                {chartData.map((entry) => (
+                  <Cell key={entry.label} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip
+                contentStyle={{ borderRadius: 10, border: "1px solid #F3F4F6", fontSize: 13 }}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+        )}
       </div>
     </ChartCard>
   );

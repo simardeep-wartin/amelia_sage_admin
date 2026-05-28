@@ -17,6 +17,8 @@ import ProgressCard from "@/components/common/ProgressCard";
 import InsightGrid from "@/components/common/InsightGrid";
 import SummaryGrid from "@/components/common/SummaryGrid";
 
+import ChartSkeleton from "@/components/common/ChartSkeleton";
+
 import {
   getOverview,
   type OverviewData,
@@ -78,6 +80,7 @@ const FILTER_OPTIONS = ["All", "Today", "Week", "Month", "Year", "Custom"];
 
 export default function DemographicsPage() {
   const [loading, setLoading] = useState(true);
+  const [tabLoading, setTabLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<DemographicTab>("Overview");
 
   // Overview
@@ -106,40 +109,66 @@ export default function DemographicsPage() {
 
   useEffect(() => {
     if (activeTab !== "Overview") return;
-    Promise.all([getOverview(), getGenderIdentity()])
-      .then(([ov, gd]) => {
+    setTabLoading(true);
+    Promise.all([
+      getOverview(),
+      getGenderIdentity(),
+      getCulturalIdentity(),
+      getGrowthTrend("gender_identity", "all"),
+    ])
+      .then(([ov, gd, ci, gt]) => {
         setOverview(ov);
         setGenderDistribution(gd.data.distribution);
+        setCulturalIdentity(ci.data);
+        setTrendGroups(gt.data.trend);
       })
-      .finally(() => setLoading(false));
-
-    getCulturalIdentity().then((res) => setCulturalIdentity(res.data));
-    getGrowthTrend("gender_identity", "all").then((res) => setTrendGroups(res.data.trend));
+      .finally(() => {
+        setLoading(false);
+        setTabLoading(false);
+      });
   }, [activeTab]);
 
   useEffect(() => {
     if (activeTab !== "Gender Identity") return;
-    getAgeDistribution().then((res) => setAgeDistribution(res.data));
-    getCoreConversion().then((res) => setCoreConversion(res.data));
+    setTabLoading(true);
+    Promise.all([getAgeDistribution(), getCoreConversion()])
+      .then(([ad, cc]) => {
+        setAgeDistribution(ad.data);
+        setCoreConversion(cc.data);
+      })
+      .finally(() => setTabLoading(false));
   }, [activeTab]);
 
   useEffect(() => {
     if (activeTab !== "Cultural Identity") return;
-    getCulturalIdentity({ filter: "all" }).then((res) => setCulturalIdentity(res.data));
-    getCulturalCoreConversion({ filter: "all" }).then((res) => setCulturalCoreConversion(res.data));
-    getCulturalAgeDistribution({ filter: "all" }).then((res) =>
-      setCulturalAgeDistribution(res.data),
-    );
+    setTabLoading(true);
+    Promise.all([
+      getCulturalIdentity({ filter: "all" }),
+      getCulturalCoreConversion({ filter: "all" }),
+      getCulturalAgeDistribution({ filter: "all" }),
+    ])
+      .then(([ci, cc, ca]) => {
+        setCulturalIdentity(ci.data);
+        setCulturalCoreConversion(cc.data);
+        setCulturalAgeDistribution(ca.data);
+      })
+      .finally(() => setTabLoading(false));
   }, [activeTab]);
 
   useEffect(() => {
     if (activeTab !== "Ethnicity") return;
-    getEthnicity({ filter: "all" }).then((res) => setEthnicity(res.data));
+    setTabLoading(true);
+    getEthnicity({ filter: "all" })
+      .then((res) => setEthnicity(res.data))
+      .finally(() => setTabLoading(false));
   }, [activeTab]);
 
   useEffect(() => {
     if (activeTab !== "Wellness Needs") return;
-    getWellnessNeeds({ filter: "all" }).then((res) => setWellnessNeeds(res.data));
+    setTabLoading(true);
+    getWellnessNeeds({ filter: "all" })
+      .then((res) => setWellnessNeeds(res.data))
+      .finally(() => setTabLoading(false));
   }, [activeTab]);
 
   if (loading) return <DemographicsLoader />;
@@ -208,6 +237,12 @@ export default function DemographicsPage() {
                 outerRadius={100}
                 startAngle={92}
                 endAngle={-268}
+                filterOptions={["All", "Today", "Week", "Month", "Year", "Custom"]}
+                onFilterChange={(val, range) =>
+                  getGenderIdentity({ filter: val, range }).then((res) =>
+                    setGenderDistribution(res.data.distribution),
+                  )
+                }
               />
               <HorizontalBarChart
                 title="Cultural Identity Distribution"
@@ -221,20 +256,28 @@ export default function DemographicsPage() {
                 highlights={
                   culturalIdentity
                     ? [
-                        {
-                          title: "Largest Group",
-                          label: culturalIdentity.largest_group.identity,
-                          detail: `${culturalIdentity.largest_group.percentage}%`,
-                          bgColor: "#EAF3E8",
-                          textColor: "#5A8C54",
-                        },
-                        {
-                          title: "Smallest Group",
-                          label: culturalIdentity.least_group.identity,
-                          detail: `${culturalIdentity.least_group.percentage}%`,
-                          bgColor: "#F5ECDA",
-                          textColor: "#C47D2E",
-                        },
+                        ...(culturalIdentity.largest_group
+                          ? [
+                              {
+                                title: "Largest Group",
+                                label: culturalIdentity.largest_group.identity,
+                                detail: `${culturalIdentity.largest_group.percentage}%`,
+                                bgColor: "#EAF3E8",
+                                textColor: "#5A8C54",
+                              },
+                            ]
+                          : []),
+                        ...(culturalIdentity.least_group
+                          ? [
+                              {
+                                title: "Smallest Group",
+                                label: culturalIdentity.least_group.identity,
+                                detail: `${culturalIdentity.least_group.percentage}%`,
+                                bgColor: "#F5ECDA",
+                                textColor: "#C47D2E",
+                              },
+                            ]
+                          : []),
                       ]
                     : []
                 }
@@ -267,89 +310,102 @@ export default function DemographicsPage() {
         )}
 
         {/* ── Gender Identity ── */}
-        {activeTab === "Gender Identity" && (
-          <>
-            {ageDistribution.length > 0 &&
-              (() => {
-                const genders = Array.from(
-                  new Set(ageDistribution.flatMap((item) => Object.keys(item.by_gender))),
-                );
-                const chartData = ageDistribution.map((item) => ({
-                  label: item.age_range,
-                  ...item.by_gender,
-                }));
-                const series = genders.map((g, i) => ({
-                  key: g,
-                  label: g,
-                  color: GENDER_COLORS[i % GENDER_COLORS.length],
-                }));
-                return (
-                  <DistributionBarChart
-                    title="Age Distribution by Gender Identity"
-                    data={chartData}
-                    series={series}
-                    onFilterChange={(val, range) =>
-                      getAgeDistribution({ filter: val, range }).then((res) =>
-                        setAgeDistribution(res.data),
-                      )
-                    }
-                  />
-                );
-              })()}
-            {coreConversion.length > 0 && (
-              <ProgressCard
-                title="Core Conversion by Gender"
-                filterOptions={["All", "Today", "Week", "Month", "Year", "Custom"]}
-                onFilter={(filter) =>
-                  getCoreConversion({ filter }).then((res) => setCoreConversion(res.data))
-                }
-                items={coreConversion.map((item) => ({
-                  label: item.gender,
-                  value: item.conversion_rate,
-                  detail: `${item.core_users} core / ${item.total_users} total users`,
-                }))}
-              />
-            )}
-            {ageDistribution.length > 0 &&
-              (() => {
-                const genders = Array.from(
-                  new Set(ageDistribution.flatMap((item) => Object.keys(item.by_gender))),
-                );
-                const insightGroups = genders.map((gender) => {
-                  const rows = ageDistribution
-                    .filter((item) => gender in item.by_gender)
-                    .map((item) => ({ label: item.age_range, count: item.by_gender[gender] }));
-                  const total = rows.reduce((sum, r) => sum + r.count, 0);
-                  return {
-                    title: gender,
-                    rows: rows.map((r) => {
-                      const pct = total > 0 ? Math.round((r.count / total) * 100) : 0;
-                      return { label: r.label, value: `${r.count} (${pct}%)`, progress: pct };
-                    }),
-                  };
-                });
-                const groupColors = Object.fromEntries(
-                  genders.map((g, i) => [g, GENDER_COLORS[i % GENDER_COLORS.length]]),
-                );
-                return (
-                  <InsightGrid
-                    title="Gender & Age Group Insights"
-                    groups={insightGroups}
-                    groupColors={groupColors}
-                    filterOptions={["All", "Today", "Week", "Month", "Year", "Custom"]}
-                    onFilterChange={(val, range) =>
-                      getAgeDistribution({ filter: val, range }).then((res) =>
-                        setAgeDistribution(res.data),
-                      )
-                    }
-                  />
-                );
-              })()}
-          </>
+        {activeTab === "Gender Identity" && tabLoading && (
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <ChartSkeleton height="h-[300px]" />
+            <ChartSkeleton height="h-[300px]" />
+            <ChartSkeleton height="h-[300px]" className="lg:col-span-2" />
+          </div>
         )}
+        {activeTab === "Gender Identity" &&
+          !tabLoading &&
+          (() => {
+            const genders = Array.from(
+              new Set(ageDistribution.flatMap((item) => Object.keys(item.by_gender))),
+            );
+            const ageChartData = ageDistribution.map((item) => ({
+              label: item.age_range,
+              ...item.by_gender,
+            }));
+            const ageSeries = genders.map((g, i) => ({
+              key: g,
+              label: g,
+              color: GENDER_COLORS[i % GENDER_COLORS.length],
+            }));
+            const insightGroups = genders.map((gender) => {
+              const rows = ageDistribution
+                .filter((item) => gender in item.by_gender)
+                .map((item) => ({ label: item.age_range, count: item.by_gender[gender] }));
+              const total = rows.reduce((sum, r) => sum + r.count, 0);
+              return {
+                title: gender,
+                rows: rows.map((r) => {
+                  const pct = total > 0 ? Math.round((r.count / total) * 100) : 0;
+                  return { label: r.label, value: `${r.count} (${pct}%)`, progress: pct };
+                }),
+              };
+            });
+            const groupColors = Object.fromEntries(
+              genders.map((g, i) => [g, GENDER_COLORS[i % GENDER_COLORS.length]]),
+            );
+            return (
+              <>
+                <DistributionBarChart
+                  title="Age Distribution by Gender Identity"
+                  data={ageChartData}
+                  series={ageSeries}
+                  filterOptions={["All", "Today", "Week", "Month", "Year", "Custom"]}
+                  onFilterChange={(val, range) =>
+                    getAgeDistribution({ filter: val, range }).then((res) =>
+                      setAgeDistribution(res.data),
+                    )
+                  }
+                />
+                <ProgressCard
+                  title="Core Conversion by Gender"
+                  filterOptions={["All", "Today", "Week", "Month", "Year", "Custom"]}
+                  onFilter={(filter) =>
+                    getCoreConversion({ filter }).then((res) => setCoreConversion(res.data))
+                  }
+                  items={coreConversion.map((item) => ({
+                    label: item.gender,
+                    value: item.conversion_rate,
+                    detail: `${item.core_users} core / ${item.total_users} total users`,
+                  }))}
+                />
+                <InsightGrid
+                  title="Gender & Age Group Insights"
+                  groups={insightGroups}
+                  groupColors={groupColors}
+                  filterOptions={["All", "Today", "Week", "Month", "Year", "Custom"]}
+                  onFilterChange={(val, range) =>
+                    getAgeDistribution({ filter: val, range }).then((res) =>
+                      setAgeDistribution(res.data),
+                    )
+                  }
+                />
+              </>
+            );
+          })()}
 
         {/* ── Cultural Identity ── */}
+        {activeTab === "Cultural Identity" && tabLoading && (
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="h-24 animate-pulse rounded-[4px] bg-[#E5E7EB]"
+                  style={{ animationDelay: `${i * 80}ms` }}
+                />
+              ))}
+            </div>
+            <ChartSkeleton height="h-[260px]" />
+            <ChartSkeleton height="h-[300px]" />
+          </div>
+        )}
         {activeTab === "Cultural Identity" &&
+          !tabLoading &&
           (() => {
             const cd = demographicsTabsData.cultural_identity;
             return (
@@ -377,22 +433,20 @@ export default function DemographicsPage() {
                     </div>
                   ))}
                 </div>
-                {culturalCoreConversion.length > 0 && (
-                  <ProgressCard
-                    title="Core Conversion by Cultural Identity"
-                    filterOptions={["All", "Today", "Week", "Month", "Year", "Custom"]}
-                    onFilter={(filter) =>
-                      getCulturalCoreConversion({ filter }).then((res) =>
-                        setCulturalCoreConversion(res.data),
-                      )
-                    }
-                    items={culturalCoreConversion.map((item) => ({
-                      label: item.identity,
-                      value: item.conversion_rate,
-                      detail: `${item.core_users} core / ${item.total_users} total users`,
-                    }))}
-                  />
-                )}
+                <ProgressCard
+                  title="Core Conversion by Cultural Identity"
+                  filterOptions={["All", "Today", "Week", "Month", "Year", "Custom"]}
+                  onFilter={(filter) =>
+                    getCulturalCoreConversion({ filter }).then((res) =>
+                      setCulturalCoreConversion(res.data),
+                    )
+                  }
+                  items={culturalCoreConversion.map((item) => ({
+                    label: item.identity,
+                    value: item.conversion_rate,
+                    detail: `${item.core_users} core / ${item.total_users} total users`,
+                  }))}
+                />
                 {(() => {
                   const identities = Array.from(
                     new Set(
@@ -434,15 +488,34 @@ export default function DemographicsPage() {
           })()}
 
         {/* ── Ethnicity ── */}
-        {activeTab === "Ethnicity" && ethnicity && (
+        {activeTab === "Ethnicity" && tabLoading && (
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="h-28 animate-pulse rounded-[4px] bg-[#E5E7EB]"
+                  style={{ animationDelay: `${i * 80}ms` }}
+                />
+              ))}
+            </div>
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+              <ChartSkeleton height="h-[300px]" />
+              <ChartSkeleton height="h-[300px]" />
+            </div>
+          </div>
+        )}
+        {activeTab === "Ethnicity" && !tabLoading && ethnicity && (
           <>
             <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
               {[
                 { title: "Total Users", value: String(ethnicity.total_users) },
                 {
                   title: "Majority Group",
-                  value: ethnicity.majority_group.label,
-                  subtitle: `${ethnicity.majority_group.percentage}%`,
+                  value: ethnicity.majority_group?.label ?? "—",
+                  subtitle: ethnicity.majority_group
+                    ? `${ethnicity.majority_group.percentage}%`
+                    : undefined,
                 },
                 { title: "Undisclosed", value: `${ethnicity.undisclosed_percentage}%` },
               ].map((item) => (
@@ -465,6 +538,8 @@ export default function DemographicsPage() {
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
               <DistributionPieChart
                 title="Ethnicity Distribution"
+                cardClassName="h-full"
+                fillHeight
                 data={ethnicity.distribution.map((item, i) => ({
                   label: item.display_label,
                   value: item.count,
@@ -496,7 +571,13 @@ export default function DemographicsPage() {
         )}
 
         {/* ── Wellness Needs ── */}
-        {activeTab === "Wellness Needs" && wellnessNeeds && (
+        {activeTab === "Wellness Needs" && tabLoading && (
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <ChartSkeleton height="h-[300px]" />
+            <ChartSkeleton height="h-[300px]" />
+          </div>
+        )}
+        {activeTab === "Wellness Needs" && !tabLoading && wellnessNeeds && (
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <DistributionPieChart
               title="Wellness Support Needs"
@@ -509,7 +590,6 @@ export default function DemographicsPage() {
               }))}
               lastUpdated=""
               showList={false}
-              filterOptions={["All", "Today", "Week", "Month", "Year", "Custom"]}
               onFilterChange={(val, range) =>
                 getWellnessNeeds({ filter: val, range }).then((res) => setWellnessNeeds(res.data))
               }

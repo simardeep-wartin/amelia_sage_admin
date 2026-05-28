@@ -29,6 +29,8 @@ type ManagedCategory = { id: string; title: string; type: "feeling" | "focus-are
 
 export default function WorkOnMeExercisesPage() {
   const [loading, setLoading] = useState(true);
+  const [feelingsLoading, setFeelingsLoading] = useState(false);
+  const [focusAreasLoading, setFocusAreasLoading] = useState(false);
   const [overview, setOverview] = useState<WorkOnMeOverviewData | null>(null);
   const [feelings, setFeelings] = useState<FeelingItem[]>([]);
   const [focusAreas, setFocusAreas] = useState<FocusAreaItem[]>([]);
@@ -116,27 +118,35 @@ export default function WorkOnMeExercisesPage() {
           </div>
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            {feelings.map((feeling) => (
-              <ActionCard
-                key={feeling.id}
-                title={feeling.title}
-                subtitle={feeling.description}
-                mainValue={feeling.exercise_count}
-                mainLabel="Exercises"
-                icon={
-                  <img
-                    src={feeling.image_url}
-                    alt={feeling.title}
-                    className="h-6 w-6 object-contain"
+            {feelingsLoading
+              ? Array.from({ length: feelings.length || 4 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="h-[72px] animate-pulse rounded-xl border border-cardBorder bg-[#F3F4F6]"
+                    style={{ animationDelay: `${i * 60}ms` }}
                   />
-                }
-                onAction={() =>
-                  setManagedCategory({ id: feeling.id, title: feeling.title, type: "feeling" })
-                }
-                hideActionButton
-                onSecondaryAction={() => setEditingFeeling(feeling)}
-              />
-            ))}
+                ))
+              : feelings.map((feeling) => (
+                  <ActionCard
+                    key={feeling.id}
+                    title={feeling.title}
+                    subtitle={feeling.description}
+                    mainValue={feeling.exercise_count}
+                    mainLabel="Exercises"
+                    icon={
+                      <img
+                        src={feeling.image_url}
+                        alt={feeling.title}
+                        className="h-6 w-6 object-contain"
+                      />
+                    }
+                    onAction={() =>
+                      setManagedCategory({ id: feeling.id, title: feeling.title, type: "feeling" })
+                    }
+                    hideActionButton
+                    onSecondaryAction={() => setEditingFeeling(feeling)}
+                  />
+                ))}
           </div>
         </Card>
 
@@ -161,22 +171,34 @@ export default function WorkOnMeExercisesPage() {
           </p>
 
           <div className="flex flex-col gap-4">
-            {focusAreas.map((focus) => (
-              <ActionCard
-                key={focus.id}
-                title={focus.title}
-                subtitle={focus.description}
-                mainValue={focus.exercise_count}
-                mainLabel="Exercises"
-                icon={
-                  <img src={focus.image_url} alt={focus.title} className="h-6 w-6 object-contain" />
-                }
-                onAction={() =>
-                  setManagedCategory({ id: focus.id, title: focus.title, type: "focus-area" })
-                }
-                hideActionButton
-              />
-            ))}
+            {focusAreasLoading
+              ? Array.from({ length: focusAreas.length || 4 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="h-[72px] animate-pulse rounded-xl border border-cardBorder bg-[#F3F4F6]"
+                    style={{ animationDelay: `${i * 60}ms` }}
+                  />
+                ))
+              : focusAreas.map((focus) => (
+                  <ActionCard
+                    key={focus.id}
+                    title={focus.title}
+                    subtitle={focus.description}
+                    mainValue={focus.exercise_count}
+                    mainLabel="Exercises"
+                    icon={
+                      <img
+                        src={focus.image_url}
+                        alt={focus.title}
+                        className="h-6 w-6 object-contain"
+                      />
+                    }
+                    onAction={() =>
+                      setManagedCategory({ id: focus.id, title: focus.title, type: "focus-area" })
+                    }
+                    hideActionButton
+                  />
+                ))}
           </div>
         </Card>
       </div>
@@ -191,11 +213,14 @@ export default function WorkOnMeExercisesPage() {
         onSave={(data) => {
           const payload = feelingPayloads.create(data.name as string, data.description as string);
           createFeeling(payload)
-            .then((res) => {
-              setFeelings((prev) => [...prev, res.data]);
+            .then(() => {
               setIsEmotionModalOpen(false);
+              setFeelingsLoading(true);
+              return getFeelings();
             })
-            .catch(console.error);
+            .then((res) => setFeelings(res.data ?? []))
+            .catch(console.error)
+            .finally(() => setFeelingsLoading(false));
         }}
       />
       <ActionModal
@@ -212,11 +237,14 @@ export default function WorkOnMeExercisesPage() {
             focusAreas.length + 1,
           );
           createFocusArea(payload)
-            .then((res) => {
-              setFocusAreas((prev) => [...prev, res.data]);
+            .then(() => {
               setIsFocusModalOpen(false);
+              setFocusAreasLoading(true);
+              return getFocusAreas();
             })
-            .catch(console.error);
+            .then((res) => setFocusAreas(res.data ?? []))
+            .catch(console.error)
+            .finally(() => setFocusAreasLoading(false));
         }}
       />
 
@@ -244,7 +272,7 @@ export default function WorkOnMeExercisesPage() {
               setFeelings((prev) =>
                 prev.map((f) =>
                   f.id === editingFeeling.id
-                    ? { ...f, title: payload.title, description: payload.description }
+                    ? { ...f, title: payload.title, description: payload.sub_title }
                     : f,
                 ),
               );

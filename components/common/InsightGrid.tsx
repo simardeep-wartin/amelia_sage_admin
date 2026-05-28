@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import ProgressBar from "@/components/ui/ProgressBar";
 import Card from "@/components/common/Card";
 import FilterDropdown from "@/components/ui/FilterDropdown";
+import EmptyState from "@/components/common/EmptyState";
 
 interface InsightRow {
   label: string;
@@ -58,30 +59,34 @@ export default function InsightGrid({
       title={title}
       actions={<FilterDropdown options={activeOptions} value={filter} onChange={handleFilter} />}
     >
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {filteredGroups.map((group) => {
-          const color = groupColors[group.title] || "#8BAA87";
-          return (
-            <div key={group.title} className="rounded-[12px] px-4 py-4 border border-[#E6E8EC]">
-              <div className="mb-3 flex items-center gap-2">
-                <span className="h-3 w-3 rounded-full" style={{ backgroundColor: color }} />
-                <p className="text-m font-semibold text-charcoal">{group.title}</p>
-              </div>
-              <div className="space-y-3">
-                {group.rows.map((row) => (
-                  <div key={row.label}>
-                    <div className="mb-1 flex items-center justify-between">
-                      <p className="text-xs text-slate">{row.label}</p>
-                      <p className="text-xs font-semibold text-charcoal">{row.value}</p>
+      {filteredGroups.length === 0 ? (
+        <EmptyState className="min-h-[160px]" />
+      ) : (
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {filteredGroups.map((group) => {
+            const color = groupColors[group.title] || "#8BAA87";
+            return (
+              <div key={group.title} className="rounded-[12px] px-4 py-4 border border-[#E6E8EC]">
+                <div className="mb-3 flex items-center gap-2">
+                  <span className="h-3 w-3 rounded-full" style={{ backgroundColor: color }} />
+                  <p className="text-m font-semibold text-charcoal">{group.title}</p>
+                </div>
+                <div className="space-y-3">
+                  {group.rows.map((row) => (
+                    <div key={row.label}>
+                      <div className="mb-1 flex items-center justify-between">
+                        <p className="text-xs text-slate">{row.label}</p>
+                        <p className="text-xs font-semibold text-charcoal">{row.value}</p>
+                      </div>
+                      <ProgressBar progress={row.progress} color={color} height="h-[6px]" />
                     </div>
-                    <ProgressBar progress={row.progress} color={color} height="h-[6px]" />
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </Card>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { CloudArrowUpIcon } from "@heroicons/react/24/outline";
+import { CloudArrowUpIcon, PlusIcon } from "@heroicons/react/24/outline";
 import Modal from "@/components/ui/Modal";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
@@ -12,7 +12,7 @@ interface DynamicModalProps {
   isOpen: boolean;
   onClose: () => void;
   config: ModalConfig;
-  onSave: (data: Record<string, unknown>) => void;
+  onSave: (data: Record<string, unknown>) => void | Promise<void>;
   onSaveDraft?: (data: Record<string, unknown>) => void;
   initialData?: Record<string, unknown>;
 }
@@ -30,6 +30,7 @@ export default function DynamicModal({
     config.tabs ? config.tabs[0].label : "",
   );
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [saving, setSaving] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -46,9 +47,22 @@ export default function DynamicModal({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = () => {
-    onSave({ ...formData, icon: selectedFile });
-    onClose();
+  const handleSave = async () => {
+    const data = { ...formData, icon: selectedFile };
+    const result = onSave(data);
+    if (result instanceof Promise) {
+      setSaving(true);
+      try {
+        await result;
+        onClose();
+      } catch {
+        // error handled by caller
+      } finally {
+        setSaving(false);
+      }
+    } else {
+      onClose();
+    }
   };
 
   const handleSaveDraft = () => {
@@ -133,6 +147,16 @@ export default function DynamicModal({
     : config.title;
   const actionText = isEdit ? "Save Changes" : config.actionText;
 
+  const hasChanges =
+    !isEdit ||
+    (() => {
+      if (!initialData) return true;
+      return (
+        Object.keys(formData).some((key) => formData[key] !== initialData[key]) ||
+        Object.keys(initialData).some((key) => formData[key] !== initialData[key])
+      );
+    })();
+
   const footer = (
     <div className="flex flex-col sm:flex-row gap-3 w-full">
       <Button
@@ -143,19 +167,45 @@ export default function DynamicModal({
         Cancel
       </Button>
 
-      {config.showDraftAction && (
+      {config.showDraftAction && (!isEdit || config.showDraftOnEdit) && (
         <Button
           variant="outline"
           onClick={handleSaveDraft}
-          disabled={!isFormValid()}
+          disabled={!isFormValid() || !hasChanges}
           className="flex-1"
         >
           Save as Draft
         </Button>
       )}
 
-      <Button variant="solid" onClick={handleSave} disabled={!isFormValid()} className="flex-1">
-        {actionText}
+      <Button
+        variant="solid"
+        onClick={handleSave}
+        disabled={!isFormValid() || !hasChanges || saving}
+        className="flex-1"
+      >
+        <span className="flex items-center gap-2">
+          {saving ? (
+            <svg className="h-[1em] w-[1em] animate-spin shrink-0" viewBox="0 0 24 24" fill="none">
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+              />
+            </svg>
+          ) : (
+            <PlusIcon className="h-[1em] w-[1em] shrink-0" />
+          )}
+          {actionText?.replace(/^\+\s*/, "")}
+        </span>
       </Button>
     </div>
   );

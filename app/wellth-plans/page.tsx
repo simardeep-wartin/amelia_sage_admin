@@ -34,6 +34,7 @@ export default function WellthPlansPage() {
   const [loading, setLoading] = useState(true);
   const [wealthOverview, setWealthOverview] = useState<WealthPlansOverviewData | null>(null);
   const [plans, setPlans] = useState<WealthPlan[]>([]);
+  const [plansLoading, setPlansLoading] = useState(false);
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
   const [isAddPlanModalOpen, setIsAddPlanModalOpen] = useState(false);
   const [isDynamicModalOpen, setIsDynamicModalOpen] = useState(false);
@@ -50,11 +51,13 @@ export default function WellthPlansPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  // State for exercises within the selected plan (keyed by plan ID — cached after first fetch)
   const [exercises, setExercises] = useState<Record<string, Record<string, unknown>[]>>({});
   const [exercisesLoading, setExercisesLoading] = useState(false);
+  const [planIntroScreen, setPlanIntroScreen] = useState<{
+    intro_title: string;
+    intro_description: string;
+  } | null>(null);
 
-  // Always fetch fresh exercises by category ID when the panel opens
   useEffect(() => {
     if (!selectedPlanId) return;
     setExercisesLoading(true);
@@ -64,21 +67,31 @@ export default function WellthPlansPage() {
           ...prev,
           [selectedPlanId]: res.data.exercises as unknown as Record<string, unknown>[],
         }));
+        setPlanIntroScreen(
+          res.data.intro_title || res.data.intro_description
+            ? { intro_title: res.data.intro_title, intro_description: res.data.intro_description }
+            : null,
+        );
       })
       .finally(() => setExercisesLoading(false));
   }, [selectedPlanId]);
 
-  const handleAddPlan = (data: Record<string, unknown>) => {
+  const handleAddPlan = async (data: Record<string, unknown>) => {
     const payload = wealthPlanPayloads.create(
       String(data.name ?? ""),
-      String(data.description ?? ""),
+      String(data.sub_title ?? ""),
       data.icon instanceof File ? URL.createObjectURL(data.icon) : undefined,
     );
-
-    createWealthPlan(payload).then((res) => {
-      setPlans((prev) => [...prev, res.data]);
-      setIsAddPlanModalOpen(false);
-    });
+    try {
+      await createWealthPlan(payload);
+      setPlansLoading(true);
+      const res = await getWealthPlans();
+      setPlans(res.data);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setPlansLoading(false);
+    }
   };
 
   const handleSaveIntro = (data: Record<string, unknown>) => {
@@ -240,33 +253,41 @@ export default function WellthPlansPage() {
           </p>
 
           <div className="flex flex-col gap-4">
-            {plans.map((plan) => (
-              <ActionCard
-                key={plan.id}
-                title={plan.title}
-                subtitle={plan.sub_title}
-                mainValue={plan.exercise_count}
-                mainLabel="Exercises"
-                icon={
-                  <img
-                    src={plan.image_url || "/auth/circle.svg"}
-                    alt={plan.title}
-                    className="h-8 w-8 rounded-full object-cover"
+            {plansLoading
+              ? Array.from({ length: plans.length || 3 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="h-[72px] animate-pulse rounded-xl border border-cardBorder bg-[#F3F4F6]"
+                    style={{ animationDelay: `${i * 60}ms` }}
                   />
-                }
-                onSecondaryAction={() => {
-                  setEditingPlanId(plan.id);
-                  setEditingItem({ title: plan.title, sub_title: plan.sub_title });
-                  setModalConfigKey("editPlan");
-                  setIsDynamicModalOpen(true);
-                }}
-                secondaryActionIcon={<PencilSquareIcon className="h-5 w-5 text-slate-500" />}
-                secondaryActionClassName="border border-cardBorder bg-white hover:bg-softstone"
-                onAction={() => setSelectedPlanId(plan.id)}
-                actionIcon={<ArrowUpRightIcon className="h-6 w-6 text-sageGreen" />}
-                actionClassName="border-none bg-transparent hover:bg-softstone"
-              />
-            ))}
+                ))
+              : plans.map((plan) => (
+                  <ActionCard
+                    key={plan.id}
+                    title={plan.title}
+                    subtitle={plan.sub_title}
+                    mainValue={plan.exercise_count}
+                    mainLabel="Exercises"
+                    icon={
+                      <img
+                        src={plan.image_url || "/auth/circle.svg"}
+                        alt={plan.title}
+                        className="h-8 w-8 rounded-full object-cover"
+                      />
+                    }
+                    onSecondaryAction={() => {
+                      setEditingPlanId(plan.id);
+                      setEditingItem({ title: plan.title, sub_title: plan.sub_title });
+                      setModalConfigKey("editPlan");
+                      setIsDynamicModalOpen(true);
+                    }}
+                    secondaryActionIcon={<PencilSquareIcon className="h-5 w-5 text-slate-500" />}
+                    secondaryActionClassName="border border-cardBorder bg-white hover:bg-softstone"
+                    onAction={() => setSelectedPlanId(plan.id)}
+                    actionIcon={<ArrowUpRightIcon className="h-6 w-6 text-sageGreen" />}
+                    actionClassName="border-none bg-transparent hover:bg-softstone"
+                  />
+                ))}
           </div>
         </Card>
       </div>
@@ -305,7 +326,21 @@ export default function WellthPlansPage() {
           exercisesLoading ? "Loading exercises…" : `Manage ${selectedPlan?.title ?? ""} exercises`
         }
         items={currentExercises}
-        onAction={(action) => openModal(action)}
+        introScreen={planIntroScreen}
+        loading={exercisesLoading}
+        onAction={(action) => {
+          if (action === "addIntro" && planIntroScreen) {
+            setEditingItem({
+              subtitle: planIntroScreen.intro_title,
+              sageSays: "",
+              description: planIntroScreen.intro_description,
+            });
+            setModalConfigKey("addIntro");
+            setIsDynamicModalOpen(true);
+          } else {
+            openModal(action);
+          }
+        }}
         onEditItem={(item) => {
           setEditingItem(item);
           setModalConfigKey(item.sageSays ? "addIntro" : "addExercise");

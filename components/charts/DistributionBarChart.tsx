@@ -13,6 +13,7 @@ import {
 } from "recharts";
 import FilterDropdown from "@/components/ui/FilterDropdown";
 import ChartCard from "@/components/common/ChartCard";
+import EmptyState from "@/components/common/EmptyState";
 
 interface SeriesConfig {
   key: string;
@@ -91,37 +92,41 @@ export default function DistributionBarChart({
       {subtitle && <p className="mt-1 text-[14px] text-slate">{subtitle}</p>}
 
       <div className="mt-4 h-[300px] w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} barGap={4}>
-            <CartesianGrid strokeDasharray="4 4" stroke="#E5E7EB" />
-            <XAxis dataKey="label" tick={{ fontSize: 11, fill: "#6C6C6C" }} />
-            <YAxis
-              domain={maxY !== undefined ? [0, maxY] : undefined}
-              tick={{ fontSize: 11, fill: "#6C6C6C" }}
-            />
-            <Tooltip
-              contentStyle={{
-                borderRadius: 10,
-                border: "1px solid #F3F4F6",
-                fontSize: 13,
-                color: "#1F2937",
-              }}
-            />
-            {filteredSeries.map((s) => (
-              <Bar
-                key={s.key}
-                dataKey={s.key}
-                fill={s.color}
-                radius={[2, 2, 0, 0]}
-                maxBarSize={26}
+        {data.length === 0 ? (
+          <EmptyState />
+        ) : (
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={data} barGap={4}>
+              <CartesianGrid strokeDasharray="4 4" stroke="#E5E7EB" />
+              <XAxis dataKey="label" tick={{ fontSize: 11, fill: "#6C6C6C" }} />
+              <YAxis
+                domain={maxY !== undefined ? [0, maxY] : undefined}
+                tick={{ fontSize: 11, fill: "#6C6C6C" }}
               />
-            ))}
-            <Legend
-              verticalAlign="bottom"
-              wrapperStyle={{ fontSize: "11px", paddingTop: "10px" }}
-            />
-          </BarChart>
-        </ResponsiveContainer>
+              <Tooltip
+                contentStyle={{
+                  borderRadius: 10,
+                  border: "1px solid #F3F4F6",
+                  fontSize: 13,
+                  color: "#1F2937",
+                }}
+              />
+              {filteredSeries.map((s) => (
+                <Bar
+                  key={s.key}
+                  dataKey={s.key}
+                  fill={s.color}
+                  radius={[2, 2, 0, 0]}
+                  maxBarSize={26}
+                />
+              ))}
+              <Legend
+                verticalAlign="bottom"
+                wrapperStyle={{ fontSize: "11px", paddingTop: "10px" }}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        )}
       </div>
     </ChartCard>
   );

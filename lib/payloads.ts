@@ -3,10 +3,10 @@ export const auth = {
 };
 
 export const wealthPlans = {
-  create: (title: string, subTitle: string, imageUrl?: string) => ({
+  create: (title: string, subTitle: string, imageUrl = "") => ({
     title,
     sub_title: subTitle,
-    ...(imageUrl ? { image_url: imageUrl } : {}),
+    image_url: imageUrl,
   }),
 
   update: (title: string, subTitle: string) => ({
@@ -25,24 +25,24 @@ export const introScreen = {
 };
 
 export const focusAreas = {
-  create: (title: string, description: string, sortOrder: number, imageUrl = "") => ({
+  create: (title: string, subTitle: string, sortOrder: number, imageUrl = "") => ({
     title,
-    description,
+    sub_title: subTitle,
     image_url: imageUrl,
     sort_order: sortOrder,
   }),
 };
 
 export const feelings = {
-  create: (title: string, description: string, imageUrl = "") => ({
+  create: (title: string, subTitle: string, imageUrl = "") => ({
     title,
-    description,
+    sub_title: subTitle,
     image_url: imageUrl,
   }),
 
-  update: (title: string, description: string, imageUrl: string) => ({
+  update: (title: string, subTitle: string, imageUrl: string) => ({
     title,
-    description,
+    sub_title: subTitle,
     image_url: imageUrl,
   }),
 };

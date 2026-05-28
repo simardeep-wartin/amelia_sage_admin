@@ -1,46 +1,39 @@
 "use client";
 
 import React from "react";
-import Button from "@/components/ui/Button";
 
 interface EmptyStateProps {
-  title: string;
-  description: string;
-  actionLabel?: string;
-  onAction?: () => void;
-  icon?: React.ReactNode;
+  message?: string;
+  hint?: string;
+  className?: string;
 }
 
 export default function EmptyState({
-  title,
-  description,
-  actionLabel,
-  onAction,
-  icon,
+  message = "No data available",
+  hint = "Try selecting a different filter",
+  className = "",
 }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
-      <div className="mb-6">
-        {icon || (
-          <div className="flex items-end justify-center gap-4 h-32 opacity-80">
-            <div className="w-10 h-16 bg-[#F9F7F2] rounded-sm animate-pulse"></div>
-            <div className="w-10 h-24 bg-[#F2F2F2] rounded-sm animate-pulse delay-75"></div>
-            <div className="w-10 h-32 bg-[#F9F7F2] rounded-sm animate-pulse delay-150"></div>
-            <div className="w-10 h-20 bg-[#F2F2F2] rounded-sm animate-pulse delay-100"></div>
-          </div>
-        )}
+    <div
+      className={`flex h-full min-h-[200px] flex-col items-center justify-center gap-3 text-center ${className}`}
+    >
+      <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#F3F4F6]">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-[#9CA3AF]">
+          <circle
+            cx="12"
+            cy="12"
+            r="9"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeDasharray="3 3"
+          />
+          <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.5" />
+        </svg>
       </div>
-      <h3 className="text-2xl sm:text-[32px] font-cormorant text-charcoal font-medium mb-2">
-        {title}
-      </h3>
-      <p className="text-[14px] text-grey max-w-md mb-10">
-        {description}
-      </p>
-      {actionLabel && onAction && (
-        <Button onClick={onAction} className="px-8 py-3">
-          {actionLabel}
-        </Button>
-      )}
+      <div>
+        <p className="text-sm font-medium text-[#374151]">{message}</p>
+        <p className="mt-0.5 text-xs text-[#9CA3AF]">{hint}</p>
+      </div>
     </div>
   );
 }
