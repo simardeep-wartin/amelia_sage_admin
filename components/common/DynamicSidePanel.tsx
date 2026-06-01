@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import SidePanel from "@/components/ui/SidePanel";
 import AccordionItem from "@/components/common/AccordionItem";
 import Button from "@/components/ui/Button";
@@ -33,6 +34,15 @@ export default function DynamicSidePanel({
   onDeleteItem,
 }: DynamicSidePanelProps) {
   const config = WELLTH_PANEL_CONFIG;
+  const [showIntroRequired, setShowIntroRequired] = useState(false);
+
+  const handleAddExercise = () => {
+    if (!introScreen) {
+      setShowIntroRequired(true);
+    } else {
+      onAction("addExercise");
+    }
+  };
 
   const renderEmptyState = () => (
     <div className="flex flex-col h-full w-full">
@@ -58,7 +68,9 @@ export default function DynamicSidePanel({
           <Button
             key={idx}
             variant={action.variant}
-            onClick={() => onAction(action.action)}
+            onClick={() =>
+              action.action === "addExercise" ? handleAddExercise() : onAction(action.action)
+            }
             className="w-full"
           >
             {action.label}
@@ -79,7 +91,7 @@ export default function DynamicSidePanel({
         </button>
         <span className="text-[#E5E5E5] font-normal">|</span>
         <button
-          onClick={() => onAction("addExercise")}
+          onClick={handleAddExercise}
           className="hover:text-[#7fa18c] p-2 rounded-md cursor-pointer hover:border hover:border-[#7fa18c]"
         >
           + Create New Exercise
@@ -143,8 +155,57 @@ export default function DynamicSidePanel({
   );
 
   return (
-    <SidePanel isOpen={isOpen} onClose={onClose} title={title} width="max-w-2xl">
-      {loading ? <PanelSkeleton /> : items.length > 0 ? renderList() : renderEmptyState()}
-    </SidePanel>
+    <>
+      <SidePanel isOpen={isOpen} onClose={onClose} title={title} width="max-w-2xl">
+        {loading ? <PanelSkeleton /> : items.length > 0 ? renderList() : renderEmptyState()}
+      </SidePanel>
+
+      {showIntroRequired && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-2xl shadow-xl p-8 max-w-sm w-full mx-4 flex flex-col items-center gap-4 text-center">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-amber-50">
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                className="text-amber-500"
+              >
+                <path
+                  d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-charcoal mb-1">Intro Screen Required</h3>
+              <p className="text-sm text-grey">
+                Please create an Intro Screen before adding exercises.
+              </p>
+            </div>
+            <div className="flex gap-3 w-full mt-2">
+              <button
+                onClick={() => setShowIntroRequired(false)}
+                className="flex-1 h-10 rounded-lg border border-border text-sm font-semibold text-slate hover:bg-softstone transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  setShowIntroRequired(false);
+                  onAction("addIntro");
+                }}
+                className="flex-1 h-10 rounded-lg bg-sageGreen text-sm font-semibold text-white hover:bg-[#7fa18c] transition-colors cursor-pointer"
+              >
+                Create Intro Screen
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import PageLayout from "@/components/layout/PageLayout";
 import MetricCard from "@/components/common/MetricCard";
 import Card from "@/components/common/Card";
@@ -28,6 +29,7 @@ import { feelings as feelingPayloads, focusAreas as focusAreaPayloads } from "@/
 type ManagedCategory = { id: string; title: string; type: "feeling" | "focus-area" } | null;
 
 export default function WorkOnMeExercisesPage() {
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [feelingsLoading, setFeelingsLoading] = useState(false);
   const [focusAreasLoading, setFocusAreasLoading] = useState(false);
@@ -67,6 +69,7 @@ export default function WorkOnMeExercisesPage() {
           <Button
             variant="ghost"
             className="text-sageGreen hover:bg-transparent hover:border cursor-pointer hover:text-sageGreen font-semibold px-0 sm:px-4"
+            onClick={() => router.push("/journal-management")}
           >
             <ArrowUpRightIcon className="h-4 w-4" /> Go to Drafts
           </Button>
@@ -135,7 +138,7 @@ export default function WorkOnMeExercisesPage() {
                     mainLabel="Exercises"
                     icon={
                       <img
-                        src={feeling.image_url}
+                        src={feeling.image_url || "/auth/circle.svg"}
                         alt={feeling.title}
                         className="h-6 w-6 object-contain"
                       />
@@ -188,7 +191,7 @@ export default function WorkOnMeExercisesPage() {
                     mainLabel="Exercises"
                     icon={
                       <img
-                        src={focus.image_url}
+                        src={focus.image_url || "/auth/circle.svg"}
                         alt={focus.title}
                         className="h-6 w-6 object-contain"
                       />

@@ -52,7 +52,16 @@ export default function CategoryManagementPanel({
   const [isIntroModalOpen, setIsIntroModalOpen] = useState(false);
   const [isEditingIntro, setIsEditingIntro] = useState(false);
   const [isAddItemModalOpen, setIsAddItemModalOpen] = useState(false);
+  const [showIntroRequired, setShowIntroRequired] = useState(false);
   const [editingItem, setEditingItem] = useState<Record<string, unknown> | null>(null);
+
+  const handleOpenAddItem = () => {
+    if (showIntroScreenAction && !introScreen) {
+      setShowIntroRequired(true);
+    } else {
+      setIsAddItemModalOpen(true);
+    }
+  };
 
   const fetchExercises = (showFullLoader = false) => {
     if (!categoryId || !isMongoId(categoryId)) return;
@@ -237,7 +246,7 @@ export default function CategoryManagementPanel({
                 </>
               )}
               <button
-                onClick={() => setIsAddItemModalOpen(true)}
+                onClick={handleOpenAddItem}
                 className="hover:text-[#7fa18c] p-2 rounded-md cursor-pointer hover:border hover:border-[#7fa18c]"
               >
                 + Create New {itemLabel}
@@ -339,11 +348,7 @@ export default function CategoryManagementPanel({
                     + Create Intro Screen
                   </Button>
                 )}
-                <Button
-                  onClick={() => setIsAddItemModalOpen(true)}
-                  className="w-full"
-                  variant="solid"
-                >
+                <Button onClick={handleOpenAddItem} className="w-full" variant="solid">
                   + Create New {itemLabel}
                 </Button>
               </div>
@@ -381,6 +386,55 @@ export default function CategoryManagementPanel({
         initialData={editingItem ?? undefined}
         onSave={handleAddItem}
       />
+
+      {/* Intro screen required warning */}
+      {showIntroRequired && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-2xl shadow-xl p-8 max-w-sm w-full mx-4 flex flex-col items-center gap-4 text-center">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-amber-50">
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                className="text-amber-500"
+              >
+                <path
+                  d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-charcoal mb-1">Intro Screen Required</h3>
+              <p className="text-sm text-grey">
+                Please create an Intro Screen for <strong>{categoryName}</strong> before adding
+                exercises.
+              </p>
+            </div>
+            <div className="flex gap-3 w-full mt-2">
+              <button
+                onClick={() => setShowIntroRequired(false)}
+                className="flex-1 h-10 rounded-lg border border-border text-sm font-semibold text-slate hover:bg-softstone transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  setShowIntroRequired(false);
+                  openCreateIntro();
+                }}
+                className="flex-1 h-10 rounded-lg bg-sageGreen text-sm font-semibold text-white hover:bg-[#7fa18c] transition-colors"
+              >
+                Create Intro Screen
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

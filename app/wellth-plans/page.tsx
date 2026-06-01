@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import PageLayout from "@/components/layout/PageLayout";
 import MetricCard from "@/components/common/MetricCard";
 import Card from "@/components/common/Card";
@@ -32,6 +33,7 @@ import {
 } from "@/Services/api/wealthPlans";
 
 export default function WellthPlansPage() {
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [wealthOverview, setWealthOverview] = useState<WealthPlansOverviewData | null>(null);
   const [plans, setPlans] = useState<WealthPlan[]>([]);
@@ -199,6 +201,7 @@ export default function WellthPlansPage() {
             <Button
               variant="ghost"
               className="text-sageGreen hover:bg-transparent hover:border cursor-pointer hover:text-sageGreen font-semibold px-0 sm:px-4"
+              onClick={() => router.push("/journal-management")}
             >
               <ArrowUpRightIcon className="h-4 w-4" /> Go to Drafts
             </Button>
