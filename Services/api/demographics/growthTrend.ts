@@ -18,17 +18,19 @@ function fmtMonth(ym: string) {
 }
 
 export function buildTrendChartData(trend: TrendGroup[]) {
-  const months = Array.from(new Set(trend.flatMap((g) => g.data.map((d) => d.month)))).sort();
+  const months = Array.from(
+    new Set(trend.flatMap((group) => group.data.map((dataPoint) => dataPoint.month))),
+  ).sort();
   const data = months.map((month) => {
     const row: Record<string, unknown> = { month: fmtMonth(month) };
-    trend.forEach((g) => {
-      row[g.group] = g.data.find((d) => d.month === month)?.count ?? 0;
+    trend.forEach((group) => {
+      row[group.group] = group.data.find((dataPoint) => dataPoint.month === month)?.count ?? 0;
     });
     return row;
   });
-  const series = trend.map((g, i) => ({
-    key: g.group,
-    label: g.group,
+  const series = trend.map((group, i) => ({
+    key: group.group,
+    label: group.group,
     color: COLORS[i % COLORS.length],
   }));
   return { data, series };

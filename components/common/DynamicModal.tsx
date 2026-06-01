@@ -71,7 +71,7 @@ export default function DynamicModal({
   };
 
   const currentFields = config.tabs
-    ? config.tabs.find((t) => t.label === activeTabLabel)?.fields || []
+    ? config.tabs.find((tab) => tab.label === activeTabLabel)?.fields || []
     : config.fields || [];
 
   const isFormValid = () => {
@@ -91,7 +91,7 @@ export default function DynamicModal({
             key={field.name}
             label={field.label}
             placeholder={field.placeholder}
-            value={formData[field.name] || ""}
+            value={(formData[field.name] as string) || ""}
             onChange={(e) => handleInputChange(field.name, e.target.value)}
           />
         );
@@ -102,7 +102,7 @@ export default function DynamicModal({
             <textarea
               className="w-full rounded-lg border border-[#ededed] bg-white px-5 py-4 font-normal text-m text-charcoal placeholder:text-[#e1e1e1] outline-none transition focus:border-sageGreen/55 focus:ring-2 focus:ring-sageGreen/20 min-h-[140px] resize-none"
               placeholder={field.placeholder}
-              value={formData[field.name] || ""}
+              value={(formData[field.name] as string) || ""}
               onChange={(e) => handleInputChange(field.name, e.target.value)}
             />
           </div>
@@ -216,7 +216,7 @@ export default function DynamicModal({
         {config.tabs && (
           <div className="-mx-8 -mt-6 mb-6">
             <Tabs
-              items={config.tabs.map((t) => t.label)}
+              items={config.tabs.map((tab) => tab.label)}
               activeTab={activeTabLabel}
               onTabChange={setActiveTabLabel}
             />

@@ -1,11 +1,7 @@
 "use client";
 
 import { Area, AreaChart, ResponsiveContainer, Tooltip } from "recharts";
-
-export interface ChartPoint {
-  label: string;
-  value: number;
-}
+import type { ChartPoint } from "@/types";
 
 interface ChartProps {
   data: ChartPoint[];

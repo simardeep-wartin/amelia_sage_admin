@@ -107,7 +107,7 @@ export default function Sidebar() {
         <nav className="flex flex-col gap-6 px-4 pb-6 pt-4">
           {navSections.map((section) => (
             <div key={section.title} className="flex flex-col gap-2">
-              <p className="px-3 font-cormorant text-xs font-bold uppercase tracking-wide text-softstone">
+              <p className="px-3 font-cormorant text-xs font-bold tracking-wide text-softstone">
                 {section.title}
               </p>
               <ul className="flex flex-col gap-1">

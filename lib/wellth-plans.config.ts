@@ -2,7 +2,7 @@ export type FieldType = "text" | "textarea" | "upload" | "select";
 
 export interface FormField {
   name: string;
-  label: string;
+  label?: string;
   placeholder?: string;
   type: FieldType;
   options?: string[]; // For select

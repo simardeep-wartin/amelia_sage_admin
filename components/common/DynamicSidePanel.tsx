@@ -1,21 +1,23 @@
 "use client";
 
-import React from "react";
 import SidePanel from "@/components/ui/SidePanel";
 import AccordionItem from "@/components/common/AccordionItem";
 import Button from "@/components/ui/Button";
 import { WELLTH_PANEL_CONFIG } from "@/lib/wellth-plans.config";
 import PanelSkeleton from "@/components/loaders/panel-skeleton";
+import type { PanelItem } from "@/types";
+
+export type { PanelItem };
 
 interface DynamicSidePanelProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-  items: Record<string, unknown>[];
+  items: PanelItem[];
   introScreen?: { intro_title: string; intro_description: string } | null;
   loading?: boolean;
   onAction: (action: string) => void;
-  onEditItem: (item: Record<string, unknown>) => void;
+  onEditItem: (item: PanelItem) => void;
   onDeleteItem: (id: string) => void;
 }
 

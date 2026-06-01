@@ -1,6 +1,6 @@
 import { clientApi } from "@/lib/clientApi";
 import { ENDPOINTS } from "@/lib/endpoints";
-import type { SignInRequest, SignInResponse } from "@/types/auth";
+import type { SignInRequest, SignInResponse } from "@/types";
 
 export const authApi = {
   login: (payload: SignInRequest) =>

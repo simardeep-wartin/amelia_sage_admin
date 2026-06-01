@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { calmAndStillnessService } from "@/Services/calmAndStillnessService";
-import { type ExerciseCategory } from "@/types/mindful-exercise";
+import type { ExerciseCategory } from "@/types";
 
 export function useCalmAndStillness() {
   const [categories, setCategories] = useState<ExerciseCategory[]>([]);

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { mindfulExerciseService } from "@/Services/mindfulExerciseService";
-import { type ExerciseCategory } from "@/types/mindful-exercise";
+import type { ExerciseCategory } from "@/types";
 
 export function useMindfulExercise() {
   const [categories, setCategories] = useState<ExerciseCategory[]>([]);

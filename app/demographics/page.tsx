@@ -327,26 +327,26 @@ export default function DemographicsPage() {
               label: item.age_range,
               ...item.by_gender,
             }));
-            const ageSeries = genders.map((g, i) => ({
-              key: g,
-              label: g,
+            const ageSeries = genders.map((gender, i) => ({
+              key: gender,
+              label: gender,
               color: GENDER_COLORS[i % GENDER_COLORS.length],
             }));
             const insightGroups = genders.map((gender) => {
               const rows = ageDistribution
                 .filter((item) => gender in item.by_gender)
                 .map((item) => ({ label: item.age_range, count: item.by_gender[gender] }));
-              const total = rows.reduce((sum, r) => sum + r.count, 0);
+              const total = rows.reduce((sum, row) => sum + row.count, 0);
               return {
                 title: gender,
-                rows: rows.map((r) => {
-                  const pct = total > 0 ? Math.round((r.count / total) * 100) : 0;
-                  return { label: r.label, value: `${r.count} (${pct}%)`, progress: pct };
+                rows: rows.map((row) => {
+                  const pct = total > 0 ? Math.round((row.count / total) * 100) : 0;
+                  return { label: row.label, value: `${row.count} (${pct}%)`, progress: pct };
                 }),
               };
             });
             const groupColors = Object.fromEntries(
-              genders.map((g, i) => [g, GENDER_COLORS[i % GENDER_COLORS.length]]),
+              genders.map((gender, i) => [gender, GENDER_COLORS[i % GENDER_COLORS.length]]),
             );
             return (
               <>

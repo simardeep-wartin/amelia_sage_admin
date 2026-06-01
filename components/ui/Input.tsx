@@ -3,7 +3,7 @@
 import { forwardRef, type ReactNode, useId } from "react";
 
 type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> & {
-  label: string;
+  label?: string;
   error?: string;
   rightSlot?: ReactNode;
 };

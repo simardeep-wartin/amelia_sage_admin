@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { journalService } from "@/Services/journalService";
-import { type JournalEntry } from "@/types/journal";
+import type { JournalEntry } from "@/types";
 
 export function useJournal() {
   const [entries, setEntries] = useState<JournalEntry[]>([]);

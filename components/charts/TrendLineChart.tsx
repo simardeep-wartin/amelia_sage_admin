@@ -14,17 +14,7 @@ import {
 import FilterDropdown from "@/components/ui/FilterDropdown";
 import ChartCard from "@/components/common/ChartCard";
 import EmptyState from "@/components/common/EmptyState";
-
-interface SeriesConfig {
-  key: string;
-  label: string;
-  color: string;
-}
-
-interface FilterConfig {
-  label: string;
-  options: string[];
-}
+import type { SeriesConfig, FilterConfig } from "@/types";
 
 interface TrendLineChartProps {
   title: string;
@@ -47,7 +37,9 @@ export default function TrendLineChart({
   yDomain,
   onFilterChange,
 }: TrendLineChartProps) {
-  const [filterValues, setFilterValues] = useState<string[]>(filters.map((f) => f.options[0]));
+  const [filterValues, setFilterValues] = useState<string[]>(
+    filters.map((filter) => filter.options[0]),
+  );
 
   const actions = (
     <div className="flex flex-wrap gap-3">
@@ -57,7 +49,7 @@ export default function TrendLineChart({
           options={filter.options}
           value={filterValues[i]}
           onChange={(val) => {
-            const next = filterValues.map((v, idx) => (idx === i ? val : v));
+            const next = filterValues.map((value, idx) => (idx === i ? val : value));
             setFilterValues(next);
             onFilterChange?.(next);
           }}
@@ -95,12 +87,12 @@ export default function TrendLineChart({
                   fontSize: "13px",
                 }}
               />
-              {series.map((s) => (
+              {series.map((seriesItem) => (
                 <Line
-                  key={s.key}
+                  key={seriesItem.key}
                   type="monotone"
-                  dataKey={s.key}
-                  stroke={s.color}
+                  dataKey={seriesItem.key}
+                  stroke={seriesItem.color}
                   strokeWidth={1.75}
                   dot={{ r: 2.8, strokeWidth: 1.2, fill: "#fff" }}
                   activeDot={{ r: 4 }}
@@ -109,7 +101,9 @@ export default function TrendLineChart({
               <Legend
                 verticalAlign="bottom"
                 wrapperStyle={{ fontSize: "10px", color: "#6B6B6B", paddingTop: "8px" }}
-                formatter={(value) => series.find((s) => s.key === value)?.label ?? value}
+                formatter={(value) =>
+                  series.find((seriesItem) => seriesItem.key === value)?.label ?? value
+                }
               />
             </LineChart>
           </ResponsiveContainer>

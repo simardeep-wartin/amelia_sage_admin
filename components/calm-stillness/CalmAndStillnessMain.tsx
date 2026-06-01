@@ -12,7 +12,7 @@ import CategoryTabs from "@/components/common/CategoryTabs";
 import ListFilters from "@/components/common/ListFilters";
 import { useCalmAndStillness } from "@/hooks/useCalmAndStillness";
 import { useModalState } from "@/hooks/useModalState";
-import { type ExerciseSubCategory } from "@/types/mindful-exercise";
+import type { ExerciseSubCategory } from "@/types";
 
 const BREADCRUMBS = [
   { label: "Dashboard" },
@@ -32,8 +32,8 @@ export default function CalmAndStillnessMain() {
 
   const currentCategory = categories.find((cat) => cat.name === activeTab);
   const sections = currentCategory?.subCategories ?? [];
-  const filteredSections = sections.filter((s) =>
-    s.name.toLowerCase().includes(searchQuery.toLowerCase()),
+  const filteredSections = sections.filter((section) =>
+    section.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const handleConfirmDelete = () => {

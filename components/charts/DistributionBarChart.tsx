@@ -14,12 +14,7 @@ import {
 import FilterDropdown from "@/components/ui/FilterDropdown";
 import ChartCard from "@/components/common/ChartCard";
 import EmptyState from "@/components/common/EmptyState";
-
-interface SeriesConfig {
-  key: string;
-  label: string;
-  color: string;
-}
+import type { SeriesConfig } from "@/types";
 
 interface DistributionBarChartProps {
   title: string;
@@ -44,8 +39,9 @@ export default function DistributionBarChart({
 }: DistributionBarChartProps) {
   const [selected, setSelected] = useState("All");
   const [timeFilter, setTimeFilter] = useState(filterOptions ? filterOptions[0] : "All");
-  const seriesOptions = ["All", ...series.map((s) => s.label)];
-  const filteredSeries = selected === "All" ? series : series.filter((s) => s.label === selected);
+  const seriesOptions = ["All", ...series.map((seriesItem) => seriesItem.label)];
+  const filteredSeries =
+    selected === "All" ? series : series.filter((seriesItem) => seriesItem.label === selected);
 
   const actions = (
     <div className="flex items-center gap-2">
@@ -111,11 +107,11 @@ export default function DistributionBarChart({
                   color: "#1F2937",
                 }}
               />
-              {filteredSeries.map((s) => (
+              {filteredSeries.map((seriesItem) => (
                 <Bar
-                  key={s.key}
-                  dataKey={s.key}
-                  fill={s.color}
+                  key={seriesItem.key}
+                  dataKey={seriesItem.key}
+                  fill={seriesItem.color}
                   radius={[2, 2, 0, 0]}
                   maxBarSize={26}
                 />

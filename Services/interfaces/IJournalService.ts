@@ -1,4 +1,4 @@
-import type { JournalEntry } from "@/types/journal";
+import type { JournalEntry } from "@/types";
 
 export interface IJournalService {
   getEntries(): Promise<JournalEntry[]>;

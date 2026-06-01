@@ -22,8 +22,7 @@ import FinancialTableCard from "@/components/common/FinancialTableCard";
 import SummaryStatCard from "@/components/common/SummaryStatCard";
 import ChartCard from "@/components/common/ChartCard";
 import Badge from "@/components/common/Badge";
-import { FINANCIAL_TABS } from "@/types/financial";
-import type { FinancialTab } from "@/types/financial";
+import { FINANCIAL_TABS, type FinancialTab } from "@/types";
 import type { BadgeVariant } from "@/components/common/Badge";
 import appData from "@/data/app-data.json";
 
@@ -181,12 +180,12 @@ export default function FinancialPage() {
   };
 
   const renderSubscriptions = () => {
-    const rows = appData.subscriptions.rows.filter((r) => {
+    const rows = appData.subscriptions.rows.filter((row) => {
       const q = subSearch.toLowerCase();
       return (
-        (r.email.toLowerCase().includes(q) || r.plan.toLowerCase().includes(q)) &&
-        (subPlan === "All Plans" || r.plan === subPlan) &&
-        (subStatus === "All Status" || r.status === subStatus)
+        (row.email.toLowerCase().includes(q) || row.plan.toLowerCase().includes(q)) &&
+        (subPlan === "All Plans" || row.plan === subPlan) &&
+        (subStatus === "All Status" || row.status === subStatus)
       );
     });
 
@@ -207,8 +206,8 @@ export default function FinancialPage() {
               onChange={(e) => setSubPlan(e.target.value)}
               className="h-[37px] rounded-[9px] border border-[#CDCDCD] px-3 text-[14px]"
             >
-              {["All Plans", "Core Monthly", "Core Annual", "Freemium"].map((p) => (
-                <option key={p}>{p}</option>
+              {["All Plans", "Core Monthly", "Core Annual", "Freemium"].map((planOption) => (
+                <option key={planOption}>{planOption}</option>
               ))}
             </select>
             <select
@@ -216,8 +215,8 @@ export default function FinancialPage() {
               onChange={(e) => setSubStatus(e.target.value)}
               className="h-[37px] rounded-[9px] border border-[#CDCDCD] px-3 text-[14px]"
             >
-              {["All Status", "active", "trial", "cancelled"].map((s) => (
-                <option key={s}>{s}</option>
+              {["All Status", "active", "trial", "cancelled"].map((statusOption) => (
+                <option key={statusOption}>{statusOption}</option>
               ))}
             </select>
           </div>
@@ -359,8 +358,8 @@ export default function FinancialPage() {
 
         {/* Metrics */}
         <div className={`grid grid-cols-1 gap-4 sm:grid-cols-2 ${cols}`}>
-          {metrics.map((m) => (
-            <MetricCard key={m.title} {...m} />
+          {metrics.map((metric) => (
+            <MetricCard key={metric.title} {...metric} />
           ))}
         </div>
 

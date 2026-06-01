@@ -9,7 +9,7 @@ import Pagination from "@/components/common/Pagination";
 import FilterDropdown from "@/components/ui/FilterDropdown";
 import ActionsDropdownMenu from "@/components/ui/ActionsDropdownMenu";
 import { useJournal } from "@/hooks/useJournal";
-import { type JournalEntry, type JournalTab, JOURNAL_TABS } from "@/types/journal";
+import { type JournalEntry, type JournalTab, JOURNAL_TABS } from "@/types";
 import JournalLoader from "@/components/loaders/journal-loader";
 
 const ITEMS_PER_PAGE = 5;
@@ -84,23 +84,25 @@ export default function JournalMain() {
 
     // Tab filter
     if (activeTab === "Work on Me (7 Days)") {
-      result = result.filter((e) => e.source === "Work on Me");
+      result = result.filter((entry) => entry.source === "Work on Me");
     } else if (activeTab === "Wellth plan (30 Days)") {
-      result = result.filter((e) => e.source === "Wellth Plan");
+      result = result.filter((entry) => entry.source === "Wellth Plan");
     } else if (activeTab === "Drafts") {
-      result = result.filter((e) => e.status === "draft");
+      result = result.filter((entry) => entry.status === "draft");
     }
 
     // Status dropdown filter
     if (statusFilter === "Published") {
-      result = result.filter((e) => e.status === "published");
+      result = result.filter((entry) => entry.status === "published");
     } else if (statusFilter === "Draft") {
-      result = result.filter((e) => e.status === "draft");
+      result = result.filter((entry) => entry.status === "draft");
     }
 
     // Search filter
     if (searchQuery.trim()) {
-      result = result.filter((e) => e.title.toLowerCase().includes(searchQuery.toLowerCase()));
+      result = result.filter((entry) =>
+        entry.title.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
     }
 
     return result;

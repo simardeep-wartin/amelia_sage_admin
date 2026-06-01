@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
-import type { SignInRequest } from "@/types/auth";
+import type { SignInRequest } from "@/types";
 import { authApi } from "@/Services/api/auth";
 import { useAuthStore } from "@/store/authStore";
 

@@ -3,7 +3,7 @@
 import { CheckCircleIcon, ClockIcon } from "@heroicons/react/24/solid";
 import Badge from "@/components/common/Badge";
 import ActionsDropdownMenu from "@/components/ui/ActionsDropdownMenu";
-import { type Exercise } from "@/types/mindful-exercise";
+import type { Exercise } from "@/types";
 
 interface ExerciseCardProps {
   exercise: Exercise;

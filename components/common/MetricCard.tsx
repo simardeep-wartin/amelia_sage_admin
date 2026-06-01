@@ -26,29 +26,34 @@ export default function MetricCard({
 }: MetricCardProps) {
   return (
     <div
-      className={`flex min-h-[100px] sm:h-[125px] flex-col justify-center rounded-[14px] border border-cardBorder bg-white px-4 sm:px-5 shadow-sm ${className}`}
+      className={`flex min-h-[90px] flex-col justify-center rounded-[14px] border border-cardBorder bg-white px-3 sm:px-4 py-3 sm:py-4 shadow-sm ${className}`}
     >
-      <p className="font-sans text-m font-medium text-charcoal">{title}</p>
-      <div className="mt-4 flex items-center gap-4">
+      <p className="font-sans text-xs sm:text-sm font-medium text-charcoal leading-tight truncate">
+        {title}
+      </p>
+      <div className="mt-2 sm:mt-3 flex items-center gap-2 sm:gap-3">
         <div
-          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full"
+          className="flex h-9 w-9 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-full"
           style={{ backgroundImage: ICON_GRADIENT }}
         >
           {Icon ? (
-            <Icon className="h-6 w-6 text-charcoal" />
+            <Icon className="h-4 w-4 sm:h-5 sm:w-5 text-charcoal" />
           ) : iconSrc ? (
-            <img src={iconSrc} alt="" className="h-6 w-6" />
+            <img src={iconSrc} alt="" className="h-4 w-4 sm:h-5 sm:w-5" />
           ) : null}
         </div>
-        <div>
+        <div className="min-w-0">
           <p
-            className="text-[20px] sm:text-[24px] font-bold leading-tight text-charcoal"
+            className="text-base sm:text-lg lg:text-xl font-bold leading-tight text-charcoal"
             style={valueColor ? { color: valueColor } : undefined}
           >
             {value}
           </p>
           {subtitle && (
-            <p className="mt-0.5 text-xs" style={{ color: subtitleColor }}>
+            <p
+              className="mt-0.5 text-[10px] sm:text-xs leading-tight"
+              style={{ color: subtitleColor }}
+            >
               {subtitle}
             </p>
           )}

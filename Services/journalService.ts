@@ -1,5 +1,5 @@
 import type { IJournalService } from "@/Services/interfaces";
-import { type JournalEntry } from "@/types/journal";
+import type { JournalEntry } from "@/types";
 
 const MOCK_ENTRIES: JournalEntry[] = [
   {

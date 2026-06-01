@@ -6,7 +6,7 @@ import PageLayout from "@/components/layout/PageLayout";
 import ExerciseGridView from "@/components/mindful-exercise/ExerciseGridView";
 import MindfulExerciseLoader from "@/components/loaders/mindful-exercise-loader";
 import { mindfulExerciseService } from "@/Services/mindfulExerciseService";
-import { type ExerciseSubCategory } from "@/types/mindful-exercise";
+import type { ExerciseSubCategory } from "@/types";
 
 export default function CategoryExercisePage() {
   const { categoryId } = useParams();

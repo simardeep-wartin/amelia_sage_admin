@@ -2,15 +2,9 @@
 
 import React from "react";
 import Badge from "@/components/common/Badge";
+import type { QueueItemData } from "@/types";
 
-export interface QueueItemData {
-  id: string;
-  title: string;
-  source: string;
-  status: "PENDING" | "RESOLVED" | "APPROVED";
-  level?: "HIGH" | "MEDIUM" | "LOW";
-  tags?: string[];
-}
+export type { QueueItemData };
 
 interface QueueItemProps {
   item: QueueItemData;
@@ -19,18 +13,11 @@ interface QueueItemProps {
   indicatorColor?: string;
 }
 
-export default function QueueItem({
-  item,
-  active,
-  onClick,
-  indicatorColor,
-}: QueueItemProps) {
+export default function QueueItem({ item, active, onClick, indicatorColor }: QueueItemProps) {
   // Determine indicator color if not provided
-  const resolvedIndicatorColor = indicatorColor || (
-    item.level === "HIGH" ? "#aa371c" : 
-    item.level === "MEDIUM" ? "#7a582e" : 
-    "#8baa87"
-  );
+  const resolvedIndicatorColor =
+    indicatorColor ||
+    (item.level === "HIGH" ? "#aa371c" : item.level === "MEDIUM" ? "#7a582e" : "#8baa87");
 
   return (
     <button
@@ -46,19 +33,15 @@ export default function QueueItem({
           {item.id || item.title}
         </span>
         {item.level && (
-          <Badge 
-            variant={item.level.toLowerCase() as "high" | "medium" | "low"} 
+          <Badge
+            variant={item.level.toLowerCase() as "high" | "medium" | "low"}
             label={item.level}
           />
         )}
-        {item.status === "APPROVED" && !item.level && (
-          <Badge variant="active" label="APPROVED" />
-        )}
+        {item.status === "APPROVED" && !item.level && <Badge variant="active" label="APPROVED" />}
       </div>
 
-      <p className="text-xs font-semibold text-[#2e3333] mb-1.5 leading-tight">
-        {item.title}
-      </p>
+      <p className="text-xs font-semibold text-[#2e3333] mb-1.5 leading-tight">{item.title}</p>
 
       {item.tags && item.tags.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-2">
@@ -75,9 +58,7 @@ export default function QueueItem({
 
       <div className="flex justify-between text-[10px] font-bold uppercase text-[#767c7b]">
         <span>{item.source || (item.tags ? "" : "Source Unknown")}</span>
-        <span className={item.status === "PENDING" ? "text-[#7a582e]" : ""}>
-          {item.status}
-        </span>
+        <span className={item.status === "PENDING" ? "text-[#7a582e]" : ""}>{item.status}</span>
       </div>
     </button>
   );

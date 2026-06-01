@@ -8,7 +8,8 @@ import PageLayout from "@/components/layout/PageLayout";
 import MetricCard from "@/components/common/MetricCard";
 import Card from "@/components/common/Card";
 import Tabs from "@/components/common/Tabs";
-import QueueItem, { type QueueItemData } from "@/components/common/QueueItem";
+import QueueItem from "@/components/common/QueueItem";
+import type { QueueItemData } from "@/types";
 import appData from "@/data/app-data.json";
 
 // ─── types ────────────────────────────────────────────────────────────────────
@@ -54,7 +55,7 @@ export default function UserRiskMonitoringPage() {
   });
 
   const user = USERS[selectedId];
-  const TAB_ITEMS = tabs.map((t) => t.label);
+  const TAB_ITEMS = tabs.map((tab) => tab.label);
 
   return (
     <PageLayout title="Governance & Safety">
@@ -99,9 +100,9 @@ export default function UserRiskMonitoringPage() {
         {/* Tabs */}
         <Tabs
           items={TAB_ITEMS}
-          activeTab={tabs.find((t) => t.value === activeTab)?.label || TAB_ITEMS[0]}
+          activeTab={tabs.find((tab) => tab.value === activeTab)?.label || TAB_ITEMS[0]}
           onTabChange={(label: string) => {
-            const selected = tabs.find((t) => t.label === label);
+            const selected = tabs.find((tab) => tab.label === label);
             if (selected) setActiveTab(selected.value);
           }}
         />

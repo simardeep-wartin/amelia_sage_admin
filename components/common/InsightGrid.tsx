@@ -41,13 +41,13 @@ export default function InsightGrid({
   onFilterChange,
 }: InsightGridProps) {
   const [filter, setFilter] = useState(filterOptions ? filterOptions[0] : "All");
-  const internalOptions = ["All", ...groups.map((g) => g.title)];
+  const internalOptions = ["All", ...groups.map((group) => group.title)];
   const activeOptions = filterOptions ?? internalOptions;
   const filteredGroups = filterOptions
     ? groups
     : filter === "All"
       ? groups
-      : groups.filter((g) => g.title === filter);
+      : groups.filter((group) => group.title === filter);
 
   const handleFilter = (val: string, range?: { from: Date | null; to: Date | null }) => {
     setFilter(val);

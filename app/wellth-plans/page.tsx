@@ -9,6 +9,7 @@ import ActionCard from "@/components/common/ActionCard";
 import { ArrowUpRightIcon, PencilSquareIcon, PlusIcon } from "@heroicons/react/24/outline";
 import DynamicModal from "@/components/common/DynamicModal";
 import DynamicSidePanel from "@/components/common/DynamicSidePanel";
+import type { PanelItem } from "@/types";
 import { WELLTH_MODAL_CONFIG } from "@/lib/wellth-plans.config";
 import {
   wealthPlans as wealthPlanPayloads,
@@ -51,7 +52,7 @@ export default function WellthPlansPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const [exercises, setExercises] = useState<Record<string, Record<string, unknown>[]>>({});
+  const [exercises, setExercises] = useState<Record<string, PanelItem[]>>({});
   const [exercisesLoading, setExercisesLoading] = useState(false);
   const [planIntroScreen, setPlanIntroScreen] = useState<{
     intro_title: string;
@@ -65,7 +66,7 @@ export default function WellthPlansPage() {
       .then((res) => {
         setExercises((prev) => ({
           ...prev,
-          [selectedPlanId]: res.data.exercises as unknown as Record<string, unknown>[],
+          [selectedPlanId]: res.data.exercises as unknown as PanelItem[],
         }));
         setPlanIntroScreen(
           res.data.intro_title || res.data.intro_description
@@ -111,7 +112,9 @@ export default function WellthPlansPage() {
       String(data.sub_title ?? ""),
     );
     updateWealthPlan(editingPlanId, payload).then((res) => {
-      setPlans((prev) => prev.map((p) => (p.id === editingPlanId ? { ...p, ...res.data } : p)));
+      setPlans((prev) =>
+        prev.map((plan) => (plan.id === editingPlanId ? { ...plan, ...res.data } : plan)),
+      );
     });
     setEditingPlanId(null);
   };
@@ -125,16 +128,13 @@ export default function WellthPlansPage() {
     createWealthPlanExercise(selectedPlanId, payload).then((res) => {
       setExercises((prev) => ({
         ...prev,
-        [selectedPlanId]: [
-          ...(prev[selectedPlanId] || []),
-          res.data as unknown as Record<string, unknown>,
-        ],
+        [selectedPlanId]: [...(prev[selectedPlanId] || []), res.data as unknown as PanelItem],
       }));
       setPlans((prev) =>
-        prev.map((p) =>
-          p.id === selectedPlanId
-            ? { ...p, exercise_count: (exercises[selectedPlanId]?.length || 0) + 1 }
-            : p,
+        prev.map((plan) =>
+          plan.id === selectedPlanId
+            ? { ...plan, exercise_count: (exercises[selectedPlanId]?.length || 0) + 1 }
+            : plan,
         ),
       );
     });
@@ -179,8 +179,8 @@ export default function WellthPlansPage() {
     setIsDynamicModalOpen(true);
   };
 
-  const selectedPlan = plans.find((p) => p.id === selectedPlanId);
-  const currentExercises = selectedPlanId ? exercises[selectedPlanId] || [] : [];
+  const selectedPlan = plans.find((plan) => plan.id === selectedPlanId);
+  const currentExercises: PanelItem[] = selectedPlanId ? (exercises[selectedPlanId] ?? []) : [];
 
   if (loading) return <WellthPlanLoader />;
 
@@ -351,7 +351,7 @@ export default function WellthPlansPage() {
           // Optimistic remove
           setExercises((prev) => ({
             ...prev,
-            [selectedPlanId]: prev[selectedPlanId].filter((i) => i.id !== id),
+            [selectedPlanId]: prev[selectedPlanId].filter((exercise) => exercise.id !== id),
           }));
           // Persist to API
           deleteWealthPlanExercise(selectedPlanId, id).catch(() => {
@@ -359,7 +359,7 @@ export default function WellthPlansPage() {
             getWealthPlanExercises(selectedPlanId).then((res) => {
               setExercises((prev) => ({
                 ...prev,
-                [selectedPlanId]: res.data.exercises as unknown as Record<string, unknown>[],
+                [selectedPlanId]: res.data.exercises as unknown as PanelItem[],
               }));
             });
           });

@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import Badge from "@/components/common/Badge";
 import ActionsDropdownMenu from "@/components/ui/ActionsDropdownMenu";
-import { type ExerciseSubCategory } from "@/types/mindful-exercise";
+import type { ExerciseSubCategory } from "@/types";
 
 interface CategorySectionListProps {
   sections: ExerciseSubCategory[];

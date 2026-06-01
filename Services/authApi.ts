@@ -1,6 +1,10 @@
 // TODO: [DEAD CODE] Real backend API client — never called because NEXT_PUBLIC_API_BASE_URL
 // is not configured. Wire up in authService.ts once the backend is ready, then delete the
 // mock route at app/api/auth/signin/route.ts.
+import type { SignInRequest, SignupRequest, AuthUser } from "@/types";
+
+export type { SignInRequest, SignupRequest };
+
 type ApiError = {
   message?: string;
 };
@@ -20,9 +24,7 @@ async function parseError(response: Response): Promise<string> {
   }
 }
 
-export type SignInRequest = { email: string; password: string };
-export type SignupRequest = { fullName: string; email: string; password: string };
-export type AuthResponse = { token: string; user: { id: string; fullName: string; email: string } };
+export type AuthResponse = { token: string; user: AuthUser };
 
 export async function loginApi(payload: SignInRequest): Promise<AuthResponse> {
   const response = await fetch(`${getApiBaseUrl()}/users/login`, {

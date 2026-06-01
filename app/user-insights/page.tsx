@@ -61,22 +61,22 @@ export default function UserInsightsPage() {
           iconSrc: "/auth/goal.svg",
         },
       ]
-    : insightsData.metrics.map((m) => ({
-        title: m.title,
-        value: m.value,
-        subtitle: m.trend,
-        iconSrc: ICON_MAP[m.iconType] ?? "/auth/goal.svg",
+    : insightsData.metrics.map((metric) => ({
+        title: metric.title,
+        value: metric.value,
+        subtitle: metric.trend,
+        iconSrc: ICON_MAP[metric.iconType] ?? "/auth/goal.svg",
       }));
 
   /* ── derived age groups ── */
   const ageGroups = overview
-    ? overview.demographics.top_age_groups.map((g) => ({
-        label: g.age_range,
-        percentage: `${g.percentage}%`,
+    ? overview.demographics.top_age_groups.map((ageGroup) => ({
+        label: ageGroup.age_range,
+        percentage: `${ageGroup.percentage}%`,
       }))
-    : insightsData.demographics.ageGroups.map((g) => ({
-        label: g.label,
-        percentage: g.percentage,
+    : insightsData.demographics.ageGroups.map((ageGroup) => ({
+        label: ageGroup.label,
+        percentage: ageGroup.percentage,
       }));
 
   return (

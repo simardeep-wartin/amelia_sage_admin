@@ -11,7 +11,8 @@ import {
 import PageLayout from "@/components/layout/PageLayout";
 import FilterDropdown from "@/components/ui/FilterDropdown";
 import Card from "@/components/common/Card";
-import QueueItem, { type QueueItemData } from "@/components/common/QueueItem";
+import QueueItem from "@/components/common/QueueItem";
+import type { QueueItemData } from "@/types";
 import appData from "@/data/app-data.json";
 
 // ─── types ────────────────────────────────────────────────────────────────────
@@ -29,22 +30,22 @@ type DetailData = {
 
 const { filterOptions, sortOptions, items: rawItems } = appData.governanceSafety.contentReview;
 
-const PENDING_ITEMS: QueueItemData[] = rawItems.map((i) => ({
-  id: i.id,
-  title: i.title,
-  tags: i.tags,
-  status: i.status as "PENDING" | "APPROVED",
+const PENDING_ITEMS: QueueItemData[] = rawItems.map((item) => ({
+  id: item.id,
+  title: item.title,
+  tags: item.tags,
+  status: item.status as "PENDING" | "APPROVED",
   source: "Content Review",
 }));
 
 const DETAIL_DATA: Record<string, DetailData> = Object.fromEntries(
-  rawItems.map((i) => [
-    i.id,
+  rawItems.map((item) => [
+    item.id,
     {
-      title: i.title,
-      duration: i.duration,
-      tags: i.tags,
-      description: i.description,
+      title: item.title,
+      duration: item.duration,
+      tags: item.tags,
+      description: item.description,
       visual: (
         <div className="flex h-full min-h-[183px] items-center justify-center">
           <img
@@ -54,7 +55,7 @@ const DETAIL_DATA: Record<string, DetailData> = Object.fromEntries(
           />
         </div>
       ),
-      completeness: i.completeness,
+      completeness: item.completeness,
     },
   ]),
 );
@@ -75,8 +76,8 @@ export default function ContentReviewPage() {
     );
   }
 
-  const pendingCount = items.filter((i) => i.status === "PENDING").length;
-  const approvedCount = items.filter((i) => i.status === "APPROVED").length;
+  const pendingCount = items.filter((item) => item.status === "PENDING").length;
+  const approvedCount = items.filter((item) => item.status === "APPROVED").length;
   const detail = DETAIL_DATA[selectedId];
 
   return (

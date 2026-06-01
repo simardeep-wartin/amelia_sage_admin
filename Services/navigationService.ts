@@ -1,5 +1,6 @@
-export type NavigationItem = { label: string; href: string };
-export type NavigationSection = { title: string; items: NavigationItem[] };
+import type { NavigationItem, NavigationSection } from "@/types";
+
+export type { NavigationItem, NavigationSection };
 
 const navigationSections: NavigationSection[] = [
   {
@@ -57,7 +58,7 @@ export function getNavigationSections(): NavigationSection[] {
 }
 
 export function getNavigationItems(): NavigationItem[] {
-  return navigationSections.flatMap((s) => s.items);
+  return navigationSections.flatMap((section) => section.items);
 }
 
 export function getNavigationPayload() {

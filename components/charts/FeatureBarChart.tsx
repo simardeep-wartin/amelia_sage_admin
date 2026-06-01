@@ -1,11 +1,7 @@
 "use client";
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-
-export interface FeaturePoint {
-  feature: string;
-  sessions: number;
-}
+import type { FeaturePoint } from "@/types";
 
 interface FeatureBarChartProps {
   data: FeaturePoint[];
@@ -17,7 +13,7 @@ export default function FeatureBarChart({ data }: FeatureBarChartProps) {
     sessions: Number(point.sessions) || 0,
   }));
 
-  const maxVal = Math.max(...normalizedData.map((d) => d.sessions), 1);
+  const maxVal = Math.max(...normalizedData.map((point) => point.sessions), 1);
   const domainMax = Math.ceil(maxVal * 1.2);
   const step = Math.ceil(domainMax / 4);
   const yTicks = [0, step, step * 2, step * 3, domainMax];

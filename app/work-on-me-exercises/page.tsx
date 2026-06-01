@@ -270,10 +270,10 @@ export default function WorkOnMeExercisesPage() {
           updateFeeling(editingFeeling.id, payload)
             .then(() => {
               setFeelings((prev) =>
-                prev.map((f) =>
-                  f.id === editingFeeling.id
-                    ? { ...f, title: payload.title, description: payload.sub_title }
-                    : f,
+                prev.map((feeling) =>
+                  feeling.id === editingFeeling.id
+                    ? { ...feeling, title: payload.title, description: payload.sub_title }
+                    : feeling,
                 ),
               );
             })
