@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
@@ -53,8 +53,11 @@ function PasswordInput({
 
 export default function ResetPasswordForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token") ?? "";
   const [showSuccess, setShowSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
 
   const {
     register,
@@ -66,11 +69,30 @@ export default function ResetPasswordForm() {
     mode: "onBlur",
   });
 
-  async function onSubmit(_values: ResetPasswordFormValues) {
+  async function onSubmit(values: ResetPasswordFormValues) {
+    if (!token) {
+      setServerError("Invalid or missing reset token. Please request a new link.");
+      return;
+    }
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    setIsLoading(false);
-    setShowSuccess(true);
+    setServerError(null);
+    try {
+      const res = await fetch("/api/auth/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, new_password: values.password }),
+      });
+      const data = (await res.json().catch(() => null)) as { message?: string } | null;
+      if (!res.ok) {
+        setServerError(data?.message ?? "Something went wrong. Please try again.");
+        return;
+      }
+      setShowSuccess(true);
+    } catch {
+      setServerError("Something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   function handleSuccessClose() {
@@ -113,6 +135,8 @@ export default function ResetPasswordForm() {
             error={errors.confirmPassword?.message}
             {...register("confirmPassword")}
           />
+
+          {serverError && <p className="text-xs text-red-600">{serverError}</p>}
 
           {/* Actions */}
           <div className="flex flex-col gap-2 pt-2">

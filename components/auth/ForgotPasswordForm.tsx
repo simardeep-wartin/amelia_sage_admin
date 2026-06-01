@@ -22,12 +22,24 @@ export default function ForgotPasswordForm() {
     mode: "onBlur",
   });
 
-  async function onSubmit(_values: ForgotPasswordFormValues) {
+  async function onSubmit(values: ForgotPasswordFormValues) {
     setIsLoading(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    setIsLoading(false);
-    setShowSuccess(true);
+    try {
+      const res = await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
+      if (!res.ok) {
+        const data = (await res.json().catch(() => null)) as { message?: string } | null;
+        throw new Error(data?.message ?? "Something went wrong.");
+      }
+      setShowSuccess(true);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -42,9 +54,7 @@ export default function ForgotPasswordForm() {
             Amelia Sage
           </h1>
           <div className="flex flex-col gap-1">
-            <p className="text-[20px] font-semibold leading-[1.5] text-gold">
-              Forgot Password
-            </p>
+            <p className="text-[20px] font-semibold leading-[1.5] text-gold">Forgot Password</p>
             <p className="text-[14px] font-normal leading-[1.3] text-[#2b2b2b]">
               Enter your registered email address and we&apos;ll send you a password reset link.
             </p>
@@ -55,9 +65,7 @@ export default function ForgotPasswordForm() {
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-10">
           {/* Email field */}
           <div className="flex flex-col gap-1">
-            <label className="text-[14px] font-normal leading-[1.3] text-[#2b2b2b]">
-              Email
-            </label>
+            <label className="text-[14px] font-normal leading-[1.3] text-[#2b2b2b]">Email</label>
             <input
               type="email"
               placeholder="Enter email"
@@ -65,9 +73,7 @@ export default function ForgotPasswordForm() {
               {...register("email")}
               className="h-[48px] w-full rounded-[20px] border border-[#ededed] bg-white px-5 py-3 text-[16px] font-medium text-[#2b2b2b] placeholder:text-[#e1e1e1] outline-none transition focus:border-sageGreen/55 focus:ring-2 focus:ring-sageGreen/20"
             />
-            {errors.email && (
-              <p className="text-xs text-red-600">{errors.email.message}</p>
-            )}
+            {errors.email && <p className="text-xs text-red-600">{errors.email.message}</p>}
           </div>
 
           {/* Actions */}
