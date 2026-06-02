@@ -264,11 +264,7 @@ export default function CategoryManagementPanel({
 
             {/* Intro Screen accordion (shown when data exists) */}
             {introScreen && showIntroScreenAction && (
-              <AccordionItem
-                title="Intro Screen"
-                onEdit={openEditIntro}
-                onDelete={() => setIntroScreen(null)}
-              >
+              <AccordionItem title="Intro Screen" onEdit={openEditIntro}>
                 <div className="space-y-4 pt-2">
                   <div>
                     <p className="text-s tracking-wider text-sageGreen font-medium mb-1">

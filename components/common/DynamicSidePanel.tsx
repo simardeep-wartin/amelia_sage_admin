@@ -109,6 +109,7 @@ export default function DynamicSidePanel({
       {introScreen && (
         <AccordionItem title="Intro Screen" onEdit={() => onAction("addIntro")}>
           <div className="space-y-4 pt-2">
+            {/* Intro Screen tab fields */}
             <div>
               <p className="text-s tracking-wider text-sageGreen font-medium mb-1">Subtitle</p>
               <p className="text-s text-slate font-normal">{introScreen.greet || "—"}</p>
@@ -121,6 +122,39 @@ export default function DynamicSidePanel({
               <p className="text-s tracking-wider text-sageGreen font-medium mb-1">Description</p>
               <p className="text-s text-slate font-normal">{introScreen.description}</p>
             </div>
+
+            {/* Sub-intro Screen tab fields */}
+            {introScreen.intro_title && (
+              <div>
+                <p className="text-s tracking-wider text-sageGreen font-medium mb-1">
+                  Sub-intro Title
+                </p>
+                <p className="text-s text-slate font-normal">{introScreen.intro_title}</p>
+              </div>
+            )}
+            {introScreen.intro_description && (
+              <div>
+                <p className="text-s tracking-wider text-sageGreen font-medium mb-1">
+                  Sub-intro Description
+                </p>
+                <p className="text-s text-slate font-normal">{introScreen.intro_description}</p>
+              </div>
+            )}
+            {introScreen.focused_intentions?.length > 0 && (
+              <div>
+                <p className="text-s tracking-wider text-sageGreen font-medium mb-2">
+                  Focused Intentions
+                </p>
+                <ul className="space-y-1">
+                  {introScreen.focused_intentions.map((item, i) => (
+                    <li key={i} className="flex items-start gap-2 text-s text-slate font-normal">
+                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sageGreen" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </AccordionItem>
       )}

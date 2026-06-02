@@ -220,7 +220,7 @@ export default function DynamicModal({
     <Modal isOpen={isOpen} onClose={onClose} title={modalTitle} footer={footer} zIndex="z-[60]">
       <div className="space-y-6">
         {config.tabs && (
-          <div className="-mx-8 mb-6">
+          <div className="-mx-2 mb-6">
             <Tabs
               items={config.tabs.map((tab) => tab.label)}
               activeTab={activeTabLabel}
