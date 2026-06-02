@@ -292,6 +292,16 @@ export default function WorkOnMeExercisesPage() {
         categoryId={managedCategory?.id ?? ""}
         categoryType={managedCategory?.type ?? "feeling"}
         itemType="exercise"
+        initialIntroScreen={(() => {
+          if (!managedCategory) return null;
+          const item =
+            managedCategory.type === "focus-area"
+              ? focusAreas.find((f) => f.id === managedCategory.id)
+              : feelings.find((f) => f.id === managedCategory.id);
+          return item
+            ? { greet: item.greet, sub_content: item.sub_content, description: item.description }
+            : null;
+        })()}
       />
     </PageLayout>
   );

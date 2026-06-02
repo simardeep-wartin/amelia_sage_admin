@@ -33,7 +33,7 @@ export default function Modal({
         className={`w-full ${maxWidth} rounded-[20px] bg-white shadow-lg flex flex-col max-h-[90vh]`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 pb-2">
+        <div className="flex items-center justify-between p-6 pb-0">
           <h2 className="text-[24px] font-medium text-charcoal">{title}</h2>
           <button
             onClick={onClose}

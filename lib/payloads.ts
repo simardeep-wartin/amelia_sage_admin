@@ -16,11 +16,22 @@ export const wealthPlans = {
 };
 
 export const introScreen = {
-  update: (subtitle: string, sageSays: string, description: string, isDraft = false) => ({
+  update: (
+    subtitle: string,
+    sageSays: string,
+    description: string,
+    isDraft = false,
+    introTitle = "",
+    introDescription = "",
+    focusedIntentions: string[] = [],
+  ) => ({
     subtitle,
     sage_says: sageSays,
     description,
     is_draft: isDraft,
+    intro_title: introTitle,
+    intro_description: introDescription,
+    focused_intentions: focusedIntentions,
   }),
 };
 

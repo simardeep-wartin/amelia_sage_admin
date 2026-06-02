@@ -12,6 +12,7 @@ import DynamicModal from "@/components/common/DynamicModal";
 import DynamicSidePanel from "@/components/common/DynamicSidePanel";
 import type { PanelItem } from "@/types";
 import { WELLTH_MODAL_CONFIG } from "@/lib/wellth-plans.config";
+
 import {
   wealthPlans as wealthPlanPayloads,
   exercises as exercisePayloads,
@@ -32,16 +33,30 @@ import {
   updateIntroScreen,
 } from "@/Services/api/wealthPlans";
 
+type IntroScreen = {
+  greet: string;
+  sub_content: string;
+  description: string;
+  intro_title: string;
+  intro_description: string;
+  focused_intentions: string[];
+};
+
+const s = (v: unknown) => String(v ?? "");
+
 export default function WellthPlansPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [wealthOverview, setWealthOverview] = useState<WealthPlansOverviewData | null>(null);
   const [plans, setPlans] = useState<WealthPlan[]>([]);
   const [plansLoading, setPlansLoading] = useState(false);
+  const [exercises, setExercises] = useState<PanelItem[]>([]);
+  const [exercisesLoading, setExercisesLoading] = useState(false);
+  const [planIntroScreen, setPlanIntroScreen] = useState<IntroScreen | null>(null);
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
   const [isAddPlanModalOpen, setIsAddPlanModalOpen] = useState(false);
   const [isDynamicModalOpen, setIsDynamicModalOpen] = useState(false);
-  const [modalConfigKey, setModalConfigKey] = useState<string>("addExercise");
+  const [modalConfigKey, setModalConfigKey] = useState("addExercise");
   const [editingItem, setEditingItem] = useState<Record<string, unknown> | null>(null);
   const [editingPlanId, setEditingPlanId] = useState<string | null>(null);
 
@@ -54,35 +69,36 @@ export default function WellthPlansPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const [exercises, setExercises] = useState<Record<string, PanelItem[]>>({});
-  const [exercisesLoading, setExercisesLoading] = useState(false);
-  const [planIntroScreen, setPlanIntroScreen] = useState<{
-    intro_title: string;
-    intro_description: string;
-  } | null>(null);
-
   useEffect(() => {
     if (!selectedPlanId) return;
+    setExercises([]);
     setExercisesLoading(true);
     getWealthPlanExercises(selectedPlanId)
-      .then((res) => {
-        setExercises((prev) => ({
-          ...prev,
-          [selectedPlanId]: res.data.exercises as unknown as PanelItem[],
-        }));
-        setPlanIntroScreen(
-          res.data.intro_title || res.data.intro_description
-            ? { intro_title: res.data.intro_title, intro_description: res.data.intro_description }
-            : null,
-        );
-      })
+      .then((res) => setExercises(res.data.exercises as unknown as PanelItem[]))
       .finally(() => setExercisesLoading(false));
   }, [selectedPlanId]);
 
+  useEffect(() => {
+    if (!selectedPlanId) return;
+    const plan = plans.find((p) => p.id === selectedPlanId);
+    setPlanIntroScreen(
+      plan?.intro_title || plan?.intro_description
+        ? {
+            greet: plan.greet ?? "",
+            sub_content: plan.sub_content ?? "",
+            description: plan.description ?? "",
+            intro_title: plan.intro_title ?? "",
+            intro_description: plan.intro_description ?? "",
+            focused_intentions: plan.focused_intentions ?? [],
+          }
+        : null,
+    );
+  }, [selectedPlanId, plans]);
+
   const handleAddPlan = async (data: Record<string, unknown>) => {
     const payload = wealthPlanPayloads.create(
-      String(data.name ?? ""),
-      String(data.sub_title ?? ""),
+      s(data.name),
+      s(data.sub_title),
       data.icon instanceof File ? URL.createObjectURL(data.icon) : undefined,
     );
     try {
@@ -99,97 +115,86 @@ export default function WellthPlansPage() {
 
   const handleSaveIntro = (data: Record<string, unknown>) => {
     if (!selectedPlanId) return;
+    const d = data as Record<string, string>;
+    const focusedIntentions = (d.subIntroFocusedIntension ?? "")
+      .split("\n")
+      .map((x) => x.trim())
+      .filter(Boolean);
     const payload = introScreenPayloads.update(
-      String(data.subtitle ?? ""),
-      String(data.sageSays ?? ""),
-      String(data.description ?? ""),
+      d.subtitle ?? "",
+      d.sageSays ?? "",
+      d.description ?? "",
+      data.is_draft === true,
+      d.subIntroTitle ?? "",
+      d.subIntroDescription ?? "",
+      focusedIntentions,
     );
-    updateIntroScreen(selectedPlanId, payload);
+    updateIntroScreen(selectedPlanId, payload).then(() =>
+      setPlanIntroScreen({
+        greet: payload.subtitle,
+        sub_content: payload.sage_says,
+        description: payload.description,
+        intro_title: payload.intro_title ?? "",
+        intro_description: payload.intro_description ?? "",
+        focused_intentions: payload.focused_intentions ?? [],
+      }),
+    );
   };
 
   const handleSavePlan = (data: Record<string, unknown>) => {
     if (!editingPlanId) return;
-    const payload = wealthPlanPayloads.update(
-      String(data.title ?? ""),
-      String(data.sub_title ?? ""),
+    const payload = wealthPlanPayloads.update(s(data.title), s(data.sub_title));
+    updateWealthPlan(editingPlanId, payload).then((res) =>
+      setPlans(plans.map((p) => (p.id === editingPlanId ? { ...p, ...res.data } : p))),
     );
-    updateWealthPlan(editingPlanId, payload).then((res) => {
-      setPlans((prev) =>
-        prev.map((plan) => (plan.id === editingPlanId ? { ...plan, ...res.data } : plan)),
-      );
-    });
     setEditingPlanId(null);
-  };
-
-  const handleAddExercise = (data: Record<string, unknown>) => {
-    if (!selectedPlanId) return;
-    const payload = exercisePayloads.create(
-      String(data.title ?? ""),
-      String(data.description ?? ""),
-    );
-    createWealthPlanExercise(selectedPlanId, payload).then((res) => {
-      setExercises((prev) => ({
-        ...prev,
-        [selectedPlanId]: [...(prev[selectedPlanId] || []), res.data as unknown as PanelItem],
-      }));
-      setPlans((prev) =>
-        prev.map((plan) =>
-          plan.id === selectedPlanId
-            ? { ...plan, exercise_count: (exercises[selectedPlanId]?.length || 0) + 1 }
-            : plan,
-        ),
-      );
-    });
   };
 
   const handleSaveExercise = (data: Record<string, unknown>) => {
     if (!selectedPlanId) return;
-
     if (editingItem) {
-      const payload = exercisePayloads.edit(
-        String(data.title ?? ""),
-        String(data.description ?? ""),
+      const payload = exercisePayloads.edit(s(data.title), s(data.description));
+      setExercises(
+        exercises.map((item) => (item.id === editingItem.id ? { ...item, ...payload } : item)),
       );
-
-      // Optimistic update
-      setExercises((prev) => ({
-        ...prev,
-        [selectedPlanId]: prev[selectedPlanId].map((item) =>
-          item.id === editingItem.id ? { ...item, ...payload } : item,
+      updateWealthPlanExercise(selectedPlanId, s(editingItem.id), payload).then((res) =>
+        setExercises(
+          exercises.map((item) => (item.id === editingItem.id ? { ...item, ...res.data } : item)),
         ),
-      }));
-
-      // Persist to API
-      updateWealthPlanExercise(selectedPlanId, String(editingItem.id), payload).then((res) => {
-        // Reconcile with server response
-        setExercises((prev) => ({
-          ...prev,
-          [selectedPlanId]: prev[selectedPlanId].map((item) =>
-            item.id === editingItem.id ? { ...item, ...res.data } : item,
-          ),
-        }));
-      });
+      );
     } else {
-      handleAddExercise(data);
+      const payload = exercisePayloads.create(s(data.title), s(data.description));
+      createWealthPlanExercise(selectedPlanId, payload).then((res) => {
+        setExercises([...exercises, res.data as unknown as PanelItem]);
+        setPlans(
+          plans.map((p) =>
+            p.id === selectedPlanId ? { ...p, exercise_count: exercises.length + 1 } : p,
+          ),
+        );
+      });
     }
     setEditingItem(null);
   };
 
-  const openModal = (configKey: string) => {
-    setEditingItem(null);
-    setModalConfigKey(configKey);
+  const openModal = (key: string, item: Record<string, unknown> | null = null) => {
+    setEditingItem(item);
+    setModalConfigKey(key);
     setIsDynamicModalOpen(true);
   };
 
-  const selectedPlan = plans.find((plan) => plan.id === selectedPlanId);
-  const currentExercises: PanelItem[] = selectedPlanId ? (exercises[selectedPlanId] ?? []) : [];
+  const onSaveMap: Record<string, (data: Record<string, unknown>) => void> = {
+    editPlan: handleSavePlan,
+    addIntro: handleSaveIntro,
+  };
+
+  const selectedPlan = plans.find((p) => p.id === selectedPlanId);
+  const currentExercises = selectedPlanId ? exercises : [];
 
   if (loading) return <WellthPlanLoader />;
 
   return (
     <PageLayout title="Wellth Plans">
       <div className="space-y-6">
-        {/* Header Section */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-col gap-1">
             <h1 className="text-[22px] sm:text-[28px] font-bold text-charcoal tracking-tight">
@@ -216,7 +221,6 @@ export default function WellthPlansPage() {
           </div>
         </div>
 
-        {/* Top Summary Cards */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
           <MetricCard
             title="Active Plans"
@@ -248,13 +252,11 @@ export default function WellthPlansPage() {
           />
         </div>
 
-        {/* Plans List */}
         <Card title="Your Wellth Plan" className="p-6 md:p-8">
           <p className="mb-8 text-[15px] text-grey -mt-3">
             Define and manage focus areas that help users work on specific aspects of their
             wellbeing.
           </p>
-
           <div className="flex flex-col gap-4">
             {plansLoading
               ? Array.from({ length: plans.length || 3 }).map((_, i) => (
@@ -269,6 +271,7 @@ export default function WellthPlansPage() {
                     key={plan.id}
                     title={plan.title}
                     subtitle={plan.sub_title}
+                    showSubtitle
                     mainValue={plan.exercise_count}
                     mainLabel="Exercises"
                     icon={
@@ -280,9 +283,7 @@ export default function WellthPlansPage() {
                     }
                     onSecondaryAction={() => {
                       setEditingPlanId(plan.id);
-                      setEditingItem({ title: plan.title, sub_title: plan.sub_title });
-                      setModalConfigKey("editPlan");
-                      setIsDynamicModalOpen(true);
+                      openModal("editPlan", { title: plan.title, sub_title: plan.sub_title });
                     }}
                     secondaryActionIcon={<PencilSquareIcon className="h-5 w-5 text-slate-500" />}
                     secondaryActionClassName="border border-cardBorder bg-white hover:bg-softstone"
@@ -295,7 +296,6 @@ export default function WellthPlansPage() {
         </Card>
       </div>
 
-      {/* Modals */}
       <DynamicModal
         isOpen={isAddPlanModalOpen}
         onClose={() => setIsAddPlanModalOpen(false)}
@@ -311,17 +311,23 @@ export default function WellthPlansPage() {
         }}
         config={WELLTH_MODAL_CONFIG[modalConfigKey]}
         initialData={editingItem ?? undefined}
-        onSave={
-          modalConfigKey === "editPlan"
-            ? handleSavePlan
-            : modalConfigKey === "addIntro"
-              ? handleSaveIntro
-              : handleSaveExercise
+        onSave={onSaveMap[modalConfigKey] ?? handleSaveExercise}
+        onSaveDraft={modalConfigKey === "addIntro" ? handleSaveIntro : undefined}
+        overrideTitle={
+          modalConfigKey === "addIntro"
+            ? `Create Intro Screen for ${selectedPlan?.title ?? ""}`
+            : undefined
         }
-        onSaveDraft={(data) => console.warn("Draft Saved:", data)}
+        tabTitles={
+          modalConfigKey === "addIntro"
+            ? {
+                "Intro Screen": `Create Intro Screen for ${selectedPlan?.title ?? ""}`,
+                "Sub-intro Screen": `Create Sub Intro for ${selectedPlan?.title ?? ""}`,
+              }
+            : undefined
+        }
       />
 
-      {/* Side Panel */}
       <DynamicSidePanel
         isOpen={!!selectedPlanId}
         onClose={() => setSelectedPlanId(null)}
@@ -333,39 +339,27 @@ export default function WellthPlansPage() {
         loading={exercisesLoading}
         onAction={(action) => {
           if (action === "addIntro" && planIntroScreen) {
-            setEditingItem({
-              subtitle: planIntroScreen.intro_title,
-              sageSays: "",
-              description: planIntroScreen.intro_description,
+            openModal("addIntro", {
+              subtitle: planIntroScreen.greet,
+              sageSays: planIntroScreen.sub_content,
+              description: planIntroScreen.description,
+              subIntroTitle: planIntroScreen.intro_title,
+              subIntroDescription: planIntroScreen.intro_description,
+              subIntroFocusedIntension: planIntroScreen.focused_intentions.join("\n"),
             });
-            setModalConfigKey("addIntro");
-            setIsDynamicModalOpen(true);
           } else {
             openModal(action);
           }
         }}
-        onEditItem={(item) => {
-          setEditingItem(item);
-          setModalConfigKey(item.sageSays ? "addIntro" : "addExercise");
-          setIsDynamicModalOpen(true);
-        }}
+        onEditItem={(item) => openModal(item.sageSays ? "addIntro" : "addExercise", item)}
         onDeleteItem={(id) => {
           if (!selectedPlanId) return;
-          // Optimistic remove
-          setExercises((prev) => ({
-            ...prev,
-            [selectedPlanId]: prev[selectedPlanId].filter((exercise) => exercise.id !== id),
-          }));
-          // Persist to API
-          deleteWealthPlanExercise(selectedPlanId, id).catch(() => {
-            // Rollback on failure — re-fetch exercises for this plan
-            getWealthPlanExercises(selectedPlanId).then((res) => {
-              setExercises((prev) => ({
-                ...prev,
-                [selectedPlanId]: res.data.exercises as unknown as PanelItem[],
-              }));
-            });
-          });
+          setExercises(exercises.filter((e) => e.id !== id));
+          deleteWealthPlanExercise(selectedPlanId, id).catch(() =>
+            getWealthPlanExercises(selectedPlanId).then((res) =>
+              setExercises(res.data.exercises as unknown as PanelItem[]),
+            ),
+          );
         }}
       />
     </PageLayout>

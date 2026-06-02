@@ -31,6 +31,7 @@ interface CategoryManagementPanelProps {
   categoryType?: "feeling" | "focus-area";
   itemType?: string;
   showIntroScreenAction?: boolean;
+  initialIntroScreen?: { greet?: string; sub_content?: string; description?: string } | null;
 }
 
 const isMongoId = (v: string) => /^[0-9a-f]{24}$/.test(v);
@@ -43,9 +44,19 @@ export default function CategoryManagementPanel({
   categoryType = "feeling",
   itemType = "item",
   showIntroScreenAction = true,
+  initialIntroScreen,
 }: CategoryManagementPanelProps) {
   const [items, setItems] = useState<FeelingExercise[]>([]);
-  const [introScreen, setIntroScreen] = useState<FeelingIntroScreen | null>(null);
+  // Map from feelings list fields to FeelingIntroScreen shape
+  const [introScreen, setIntroScreen] = useState<FeelingIntroScreen | null>(
+    initialIntroScreen
+      ? {
+          subtitle: initialIntroScreen.greet ?? "",
+          sage_says: initialIntroScreen.sub_content ?? "",
+          description: initialIntroScreen.description ?? "",
+        }
+      : null,
+  );
   const [loading, setLoading] = useState(false);
   const [exercisesLoading, setExercisesLoading] = useState(false);
 
@@ -68,31 +79,20 @@ export default function CategoryManagementPanel({
     if (showFullLoader) setLoading(true);
     else setExercisesLoading(true);
 
-    const fetcher =
-      categoryType === "focus-area"
-        ? getFocusAreaExercises(categoryId).then((res) => ({
-            exercises: (res.data.exercises ?? []).map((ex) => ({
+    (categoryType === "focus-area"
+      ? getFocusAreaExercises(categoryId).then(
+          (res) =>
+            (res.data.exercises ?? []).map((ex) => ({
               id: ex.id,
               title: ex.title,
               description: ex.description,
               feeling_id: ex.focus_on_category_id,
             })) as FeelingExercise[],
-            intro_screen: res.data.intro_screen,
-          }))
-        : getFeelingExercises(categoryId).then((res) => ({
-            exercises: res.data.exercises ?? [],
-            intro_screen: res.data.intro_screen,
-          }));
-
-    fetcher
-      .then(({ exercises, intro_screen }) => {
-        setItems(exercises);
-        setIntroScreen(intro_screen ?? null);
-      })
-      .catch(() => {
-        setItems([]);
-        setIntroScreen(null);
-      })
+        )
+      : getFeelingExercises(categoryId).then((res) => res.data.exercises ?? [])
+    )
+      .then(setItems)
+      .catch(() => setItems([]))
       .finally(() => {
         setLoading(false);
         setExercisesLoading(false);
@@ -102,6 +102,15 @@ export default function CategoryManagementPanel({
   useEffect(() => {
     if (!isOpen || !categoryId || !isMongoId(categoryId)) return;
     fetchExercises(true);
+
+    // Sync intro screen from the list data whenever the panel opens for a new category
+    if (initialIntroScreen) {
+      setIntroScreen({
+        subtitle: initialIntroScreen.greet ?? "",
+        sage_says: initialIntroScreen.sub_content ?? "",
+        description: initialIntroScreen.description ?? "",
+      });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, categoryId, categoryType]);
 

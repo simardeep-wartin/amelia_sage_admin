@@ -15,6 +15,9 @@ interface DynamicModalProps {
   onSave: (data: Record<string, unknown>) => void | Promise<void>;
   onSaveDraft?: (data: Record<string, unknown>) => void;
   initialData?: Record<string, unknown>;
+  overrideTitle?: string;
+  /** Per-tab title overrides — key is the tab label */
+  tabTitles?: Record<string, string>;
 }
 
 export default function DynamicModal({
@@ -24,6 +27,8 @@ export default function DynamicModal({
   onSave,
   onSaveDraft,
   initialData,
+  overrideTitle,
+  tabTitles,
 }: DynamicModalProps) {
   const [formData, setFormData] = useState<Record<string, unknown>>(initialData || {});
   const [activeTabLabel, setActiveTabLabel] = useState<string>(
@@ -48,7 +53,7 @@ export default function DynamicModal({
   };
 
   const handleSave = async () => {
-    const data = { ...formData, icon: selectedFile };
+    const data = { ...formData, icon: selectedFile, is_draft: false };
     const result = onSave(data);
     if (result instanceof Promise) {
       setSaving(true);
@@ -66,7 +71,7 @@ export default function DynamicModal({
   };
 
   const handleSaveDraft = () => {
-    onSaveDraft?.({ ...formData, icon: selectedFile });
+    onSaveDraft?.({ ...formData, icon: selectedFile, is_draft: true });
     onClose();
   };
 
@@ -142,9 +147,10 @@ export default function DynamicModal({
   };
 
   const isEdit = !!initialData;
+  const baseTitle = (tabTitles && tabTitles[activeTabLabel]) ?? overrideTitle ?? config.title;
   const modalTitle = isEdit
-    ? config.title.replace("Add New", "Edit").replace("Create", "Edit")
-    : config.title;
+    ? baseTitle.replace("Add New", "Edit").replace("Create", "Edit")
+    : baseTitle;
   const actionText = isEdit ? "Save Changes" : config.actionText;
 
   const hasChanges =
@@ -214,11 +220,13 @@ export default function DynamicModal({
     <Modal isOpen={isOpen} onClose={onClose} title={modalTitle} footer={footer} zIndex="z-[60]">
       <div className="space-y-6">
         {config.tabs && (
-          <div className="-mx-8 -mt-6 mb-6">
+          <div className="-mx-8 mb-6">
             <Tabs
               items={config.tabs.map((tab) => tab.label)}
               activeTab={activeTabLabel}
               onTabChange={setActiveTabLabel}
+              activeTabClassName="border-sageGreen font-semibold text-sageGreen bg-[#EDEDED]"
+              inactiveHoverClassName="hover:bg-[#EDEDED] hover:text-sageGreen hover:border-sageGreen"
             />
           </div>
         )}

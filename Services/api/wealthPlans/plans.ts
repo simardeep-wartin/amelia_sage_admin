@@ -4,14 +4,16 @@ import { ENDPOINTS } from "@/lib/endpoints";
 export type WealthPlan = {
   id: string;
   title: string;
-  description: string;
   sub_title: string;
   sub_content: string;
+  description: string;
+  greet: string;
   intro_title: string;
   intro_description: string;
   focused_intentions: string[];
   image_url: string;
   exercise_count: number;
+  intro_is_draft?: boolean;
 };
 
 export const getWealthPlans = () =>

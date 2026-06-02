@@ -15,7 +15,14 @@ interface DynamicSidePanelProps {
   onClose: () => void;
   title: string;
   items: PanelItem[];
-  introScreen?: { intro_title: string; intro_description: string } | null;
+  introScreen?: {
+    greet: string;
+    sub_content: string;
+    description: string;
+    intro_title: string;
+    intro_description: string;
+    focused_intentions: string[];
+  } | null;
   loading?: boolean;
   onAction: (action: string) => void;
   onEditItem: (item: PanelItem) => void;
@@ -104,15 +111,15 @@ export default function DynamicSidePanel({
           <div className="space-y-4 pt-2">
             <div>
               <p className="text-s tracking-wider text-sageGreen font-medium mb-1">Subtitle</p>
-              <p className="text-s text-slate font-normal">{introScreen.intro_title}</p>
+              <p className="text-s text-slate font-normal">{introScreen.greet || "—"}</p>
             </div>
             <div>
               <p className="text-s tracking-wider text-sageGreen font-medium mb-1">Sage Says</p>
-              <p className="text-s text-slate font-normal">—</p>
+              <p className="text-s text-slate font-normal">{introScreen.sub_content}</p>
             </div>
             <div>
               <p className="text-s tracking-wider text-sageGreen font-medium mb-1">Description</p>
-              <p className="text-s text-slate font-normal">{introScreen.intro_description}</p>
+              <p className="text-s text-slate font-normal">{introScreen.description}</p>
             </div>
           </div>
         </AccordionItem>

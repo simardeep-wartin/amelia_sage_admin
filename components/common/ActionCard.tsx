@@ -14,6 +14,7 @@ export interface ActionCardProps {
   actionClassName?: string;
   /** When true the primary action button is hidden — useful when the whole card div is clickable */
   hideActionButton?: boolean;
+  showSubtitle?: boolean;
   onSecondaryAction?: () => void;
   secondaryActionIcon?: React.ReactNode;
   secondaryActionClassName?: string;
@@ -29,6 +30,7 @@ export default function ActionCard({
   actionIcon = <PencilSquareIcon className="h-6 w-6" />,
   actionClassName = "border border-border bg-white text-grey hover:bg-softstone hover:text-charcoal",
   hideActionButton = false,
+  showSubtitle = false,
   onSecondaryAction,
   secondaryActionIcon = <PencilSquareIcon className="h-5 w-5" />,
   secondaryActionClassName = "border border-border bg-white text-grey hover:bg-softstone hover:text-charcoal",
@@ -46,7 +48,9 @@ export default function ActionCard({
           <span className="font-cormorant text-[16px] sm:text-[20px] font-bold text-charcoal">
             {title}
           </span>
-          {subtitle && <span className="text-s font-normal text-[#6D7280] mt-0.5">{subtitle}</span>}
+          {showSubtitle && subtitle && (
+            <span className="text-s font-normal text-[#6D7280] mt-0.5">{subtitle}</span>
+          )}
         </div>
       </div>
 

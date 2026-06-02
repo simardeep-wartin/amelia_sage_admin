@@ -125,9 +125,9 @@ export const WELLTH_MODAL_CONFIG: Record<string, ModalConfig> = {
         label: "Sub-intro Screen",
         fields: [
           {
-            name: "subIntroSubtitle",
-            label: "Add Subtitle",
-            placeholder: "Enter Subtitle",
+            name: "subIntroTitle",
+            label: "Add Title",
+            placeholder: "Enter Title",
             type: "text",
             validation: { required: true },
           },
@@ -137,6 +137,12 @@ export const WELLTH_MODAL_CONFIG: Record<string, ModalConfig> = {
             placeholder: "Add Description Here",
             type: "textarea",
             validation: { required: true },
+          },
+          {
+            name: "subIntroFocusedIntension",
+            label: "Add Focused Intension",
+            placeholder: "Add Focused Intension Here",
+            type: "textarea",
           },
         ],
       },
