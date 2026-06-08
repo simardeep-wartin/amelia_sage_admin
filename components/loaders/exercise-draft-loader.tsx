@@ -2,7 +2,7 @@
 
 import { Skeleton } from "./common/skeleton";
 
-export default function JournalLoader() {
+export default function ExerciseDraftLoader() {
   return (
     <div className="space-y-6">
       {/* Page Header Skeleton */}

@@ -34,7 +34,7 @@ const navigationSections: NavigationSection[] = [
     items: [
       { label: "Mindful Exercise Management", href: "/mindful-exercise-management" },
       { label: "Calm & Stillness Management", href: "/calm-stillness-management" },
-      { label: "Journal Management", href: "/journal-management" },
+      { label: "Exercises Draft Management", href: "/exercises-draft-management" },
     ],
   },
   {

@@ -13,7 +13,7 @@ interface DynamicModalProps {
   onClose: () => void;
   config: ModalConfig;
   onSave: (data: Record<string, unknown>) => void | Promise<void>;
-  onSaveDraft?: (data: Record<string, unknown>) => void;
+  onSaveDraft?: (data: Record<string, unknown>) => void | Promise<void>;
   initialData?: Record<string, unknown>;
   overrideTitle?: string;
   /** Per-tab title overrides — key is the tab label */
@@ -36,6 +36,7 @@ export default function DynamicModal({
   );
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
+  const [savingDraft, setSavingDraft] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -70,9 +71,21 @@ export default function DynamicModal({
     }
   };
 
-  const handleSaveDraft = () => {
-    onSaveDraft?.({ ...formData, icon: selectedFile, is_draft: true });
-    onClose();
+  const handleSaveDraft = async () => {
+    const result = onSaveDraft?.({ ...formData, icon: selectedFile, is_draft: true });
+    if (result instanceof Promise) {
+      setSavingDraft(true);
+      try {
+        await result;
+        onClose();
+      } catch {
+        // error handled by caller
+      } finally {
+        setSavingDraft(false);
+      }
+    } else {
+      onClose();
+    }
   };
 
   const currentFields = config.tabs
@@ -110,6 +123,26 @@ export default function DynamicModal({
               value={(formData[field.name] as string) || ""}
               onChange={(e) => handleInputChange(field.name, e.target.value)}
             />
+          </div>
+        );
+      case "select":
+        return (
+          <div key={field.name} className="space-y-1">
+            <label className="block text-s font-normal text-charcoal">{field.label}</label>
+            <select
+              className="w-full rounded-lg border border-[#ededed] bg-white px-5 py-4 font-normal text-m text-charcoal outline-none transition focus:border-sageGreen/55 focus:ring-2 focus:ring-sageGreen/20"
+              value={(formData[field.name] as string) || ""}
+              onChange={(e) => handleInputChange(field.name, e.target.value)}
+            >
+              <option value="" disabled>
+                Select…
+              </option>
+              {field.options?.map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt}
+                </option>
+              ))}
+            </select>
           </div>
         );
       case "upload":
@@ -155,13 +188,9 @@ export default function DynamicModal({
 
   const hasChanges =
     !isEdit ||
-    (() => {
-      if (!initialData) return true;
-      return (
-        Object.keys(formData).some((key) => formData[key] !== initialData[key]) ||
-        Object.keys(initialData).some((key) => formData[key] !== initialData[key])
-      );
-    })();
+    currentFields.some(
+      (field) => (formData[field.name] ?? "") !== (initialData?.[field.name] ?? ""),
+    );
 
   const footer = (
     <div className="flex flex-col sm:flex-row gap-3 w-full">
@@ -177,10 +206,33 @@ export default function DynamicModal({
         <Button
           variant="outline"
           onClick={handleSaveDraft}
-          disabled={!isFormValid() || !hasChanges}
+          disabled={!isFormValid() || !hasChanges || savingDraft}
           className="flex-1"
         >
-          Save as Draft
+          <span className="flex items-center gap-2">
+            {savingDraft && (
+              <svg
+                className="h-[1em] w-[1em] animate-spin shrink-0"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                />
+              </svg>
+            )}
+            Save as Draft
+          </span>
         </Button>
       )}
 

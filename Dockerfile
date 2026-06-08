@@ -14,7 +14,7 @@ RUN npm run build
 # Stage 3: Run the app
 FROM node:22-alpine AS runner
 WORKDIR /app
-
+ENV NODE_ENV=production
 
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./

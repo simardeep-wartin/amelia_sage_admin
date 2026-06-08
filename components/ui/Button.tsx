@@ -17,22 +17,33 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 }
 
 const variantStyles: Record<ButtonVariant, string> = {
-  solid:   "bg-sageGreen text-white shadow-sm hover:bg-sageGreenHover hover:shadow-md",
-  outline: "border border-sageGreen bg-paper text-sageGreen hover:bg-sageGreenHover hover:text-white hover:shadow-sm",
-  ghost:   "bg-transparent text-charcoal hover:bg-softstone",
+  solid: "bg-sageGreen text-white shadow-sm hover:bg-sageGreenHover hover:shadow-md",
+  outline:
+    "border border-sageGreen bg-paper text-sageGreen hover:bg-sageGreenHover hover:text-white hover:shadow-sm disabled:hover:bg-paper disabled:hover:text-sageGreen disabled:hover:shadow-none",
+  ghost: "bg-transparent text-charcoal hover:bg-softstone",
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
-  sm:   "h-8 px-3 text-xs rounded-lg",
-  md:   "h-11 px-4 text-sm rounded-lg",
-  lg:   "h-12 px-6 text-base rounded-lg",
+  sm: "h-8 px-3 text-xs rounded-lg",
+  md: "h-11 px-4 text-sm rounded-lg",
+  lg: "h-12 px-6 text-base rounded-lg",
   full: "h-12 w-full text-base rounded-[20px]",
 };
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
-    { variant = "solid", size = "md", isLoading, loadingText = "Loading...",
-      leftIcon, href, className, disabled, children, ...props },
+    {
+      variant = "solid",
+      size = "md",
+      isLoading,
+      loadingText = "Loading...",
+      leftIcon,
+      href,
+      className,
+      disabled,
+      children,
+      ...props
+    },
     ref,
   ) => {
     const isDisabled = disabled || isLoading;
@@ -46,11 +57,22 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     );
 
     if (href && !isDisabled) {
-      return <Link href={href} className={classes}>{leftIcon}{children}</Link>;
+      return (
+        <Link href={href} className={classes}>
+          {leftIcon}
+          {children}
+        </Link>
+      );
     }
 
     return (
-      <button ref={ref} disabled={isDisabled} className={classes} type={props.type ?? "button"} {...props}>
+      <button
+        ref={ref}
+        disabled={isDisabled}
+        className={classes}
+        type={props.type ?? "button"}
+        {...props}
+      >
         {leftIcon}
         {isLoading ? loadingText : children}
       </button>

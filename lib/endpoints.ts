@@ -35,6 +35,9 @@ export const ENDPOINTS = {
     wealthPlan: "/dashboard/stats/wealth-plan",
     planTypes: "/dashboard/stats/plan-types",
   },
+  journal: {
+    exercises: "/exercise-draft-management/exercises",
+  },
   demographics: {
     overview: "/demographics/overview",
     genderIdentity: "/demographics/gender-identity",

@@ -18,7 +18,6 @@ export interface ModalConfig {
   fields?: FormField[];
   actionText: string;
   showDraftAction?: boolean;
-  /** Also show Save as Draft when editing (not just creating) */
   showDraftOnEdit?: boolean;
   tabs?: {
     label: string;
@@ -84,8 +83,8 @@ export const WELLTH_MODAL_CONFIG: Record<string, ModalConfig> = {
       },
       {
         name: "description",
-        label: "Add Sub Title",
-        placeholder: "Add Sub Title Here",
+        label: "Add Description",
+        placeholder: "Add Description Here",
         type: "textarea",
         validation: { required: true },
       },
