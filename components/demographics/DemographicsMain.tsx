@@ -150,7 +150,7 @@ export default function DemographicsMain({
                             {
                               title: "Largest Group",
                               label: culturalIdentity.largest_group.identity,
-                              detail: `${culturalIdentity.largest_group.percentage}%`,
+                              detail: `${culturalIdentity.largest_group.count.toLocaleString()} users (${culturalIdentity.largest_group.percentage}%)`,
                               bgColor: "#EAF3E8",
                               textColor: "#5A8C54",
                             },
@@ -161,7 +161,7 @@ export default function DemographicsMain({
                             {
                               title: "Smallest Group",
                               label: culturalIdentity.least_group.identity,
-                              detail: `${culturalIdentity.least_group.percentage}%`,
+                              detail: `${culturalIdentity.least_group.count.toLocaleString()} users (${culturalIdentity.least_group.percentage}%)`,
                               bgColor: "#F5ECDA",
                               textColor: "#C47D2E",
                             },
@@ -239,6 +239,7 @@ export default function DemographicsMain({
                 series={ageSeries}
                 filterOptions={["All", "Today", "Week", "Month", "Year", "Custom"]}
                 onFilterChange={handleAgeDistributionFilter}
+                note="Key Insight: The 25-34 age range represents the largest segment (38%) across all gender identities, with a particularly strong representation among women users."
               />
               <ProgressCard
                 title="Core Conversion by Gender"
@@ -247,11 +248,13 @@ export default function DemographicsMain({
                 items={coreConversion.map((item) => ({
                   label: item.gender,
                   value: item.conversion_rate,
-                  detail: `${item.core_users} core / ${item.total_users} total users`,
+                  detail: `${item.core_users.toLocaleString()} of ${item.total_users.toLocaleString()} users`,
                 }))}
+                note="Women show the highest Core conversion rate at 33.4%, suggesting strong product-market fit with this segment."
               />
               <InsightGrid
-                title="Gender & Age Group Insights"
+                title="Feature Usage by Gender Identity"
+                subtitle="Top features used by each gender identity group"
                 groups={insightGroups}
                 groupColors={groupColors}
                 filterOptions={["All", "Today", "Week", "Month", "Year", "Custom"]}
@@ -313,7 +316,7 @@ export default function DemographicsMain({
                 items={culturalCoreConversion.map((item) => ({
                   label: item.identity,
                   value: item.conversion_rate,
-                  detail: `${item.core_users} core / ${item.total_users} total users`,
+                  detail: `${item.core_users.toLocaleString()} of ${item.total_users.toLocaleString()} users`,
                 }))}
               />
               {(() => {

@@ -44,14 +44,14 @@ export default function Navbar({ title }: NavbarProps) {
         >
           <Bars3Icon className="h-5 w-5" />
         </button>
-        <h2 className="text-l font-medium text-charcoal">{title}</h2>
+        <h2 className="text-l font-medium text-charcoal font-inter">{title}</h2>
       </div>
 
       <div className="flex items-center gap-2 sm:gap-3">
-        <div className="hidden h-[37px] items-center gap-2 rounded-lg border border-border bg-softstone px-3 sm:flex">
+        <div className="hidden h-[37px] md:min-w-[256px] sm:min-w-[200px] items-center gap-2 rounded-lg border border-border bg-softstone px-3 sm:flex">
           <MagnifyingGlassIcon className="h-4 w-4 text-slate" />
           <input
-            className="w-36 bg-transparent text-s text-charcoal outline-none placeholder:text-slate md:w-48"
+            className="bg-transparent text-s text-charcoal outline-none placeholder:text-slate font-arial"
             placeholder="Search..."
           />
         </div>

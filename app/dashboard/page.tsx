@@ -61,15 +61,17 @@ export default function DashboardPage() {
         <DashboardLeftPanel
           activeUsersFilter={activeUsersFilter}
           onActiveUsersFilterChange={setActiveUsersFilter}
-          progressFilter={progressFilter}
-          onProgressFilterChange={handleProgressFilterChange}
           distributionFilter={distributionFilter}
           onDistributionFilterChange={handleDistributionFilterChange}
-          wealthPlanItems={wealthPlan}
           planTypes={planTypes}
           overviewData={overviewData}
         />
-        <DashboardRightPanel overviewData={overviewData} />
+        <DashboardRightPanel
+          overviewData={overviewData}
+          wealthPlanItems={wealthPlan}
+          progressFilter={progressFilter}
+          onProgressFilterChange={handleProgressFilterChange}
+        />
       </div>
     </PageLayout>
   );

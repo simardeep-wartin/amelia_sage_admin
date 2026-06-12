@@ -79,8 +79,17 @@ export default function DistributionBarChart({
       actions={actions}
       footer={
         note ? (
-          <div className="mt-4 rounded-[10px] bg-[#F9FAFB] p-3">
-            <p className="text-[12px] text-slate">{note}</p>
+          <div className="mt-4 rounded-[8px] bg-[#f9f9f9] p-4">
+            <p className="font-inter text-[14px] leading-[1.3] text-[#6b6b6b]">
+              {note.includes(": ") ? (
+                <>
+                  <span className="font-semibold text-slate">{note.split(": ")[0]}</span>
+                  <span>: {note.split(": ").slice(1).join(": ")}</span>
+                </>
+              ) : (
+                note
+              )}
+            </p>
           </div>
         ) : null
       }
@@ -118,7 +127,21 @@ export default function DistributionBarChart({
               ))}
               <Legend
                 verticalAlign="bottom"
-                wrapperStyle={{ fontSize: "11px", paddingTop: "10px" }}
+                content={({ payload }) => (
+                  <div className="flex flex-wrap justify-center gap-x-5 gap-y-1.5 pt-3">
+                    {payload?.map((entry) => (
+                      <div key={entry.value} className="flex items-center gap-1.5">
+                        <span
+                          className="inline-block h-[10px] w-[10px] flex-shrink-0 rounded-full"
+                          style={{ backgroundColor: entry.color }}
+                        />
+                        <span className="font-arial text-[11px] text-[#6B6B6B]">
+                          {series.find((s) => s.key === entry.value)?.label ?? entry.value}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               />
             </BarChart>
           </ResponsiveContainer>

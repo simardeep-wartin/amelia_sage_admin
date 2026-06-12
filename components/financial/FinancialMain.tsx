@@ -63,7 +63,7 @@ export default function FinancialMain({ activeTab, setActiveTab }: Props) {
             actions={<FilterIcon />}
             footer={
               <div className="flex justify-center items-center gap-2 text-[10px] text-[#6B6B6B]">
-                <span className="inline-block h-3 w-3 rounded-full border-2 border-[#D4A574]" />
+                <span className="inline-block h-3 w-3 rounded-full bg-[#D4A574]" />
                 Total Revenue
               </div>
             }

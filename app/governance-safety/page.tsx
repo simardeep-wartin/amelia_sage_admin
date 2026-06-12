@@ -34,7 +34,7 @@ function RiskRow({ label, count, dotColor }: { label: string; count: number; dot
       >
         Review Cases
         <span className="flex h-6 w-6 items-center justify-center rounded-full bg-paper shadow-sm">
-          <ArrowUpRightIcon className="h-3.5 w-3.5 text-charcoal/70" />
+          <ArrowUpRightIcon className="h-3.5 w-3.5 text-sageGreen/70" />
         </span>
       </Link>
     </div>
@@ -80,9 +80,9 @@ export default function GovernanceSafetyPage() {
             <button
               type="button"
               aria-label="View all"
-              className="flex h-6 w-6 items-center justify-center rounded-full border border-sageGreen/30 bg-paper shadow-sm transition-opacity hover:opacity-70"
+              className="flex h-6 w-6 items-center justify-center rounded-full border border-sageGreen/30 bg-paper transition-opacity hover:opacity-70"
             >
-              <ArrowUpRightIcon className="h-3.5 w-3.5 text-charcoal/70" />
+              <ArrowUpRightIcon className="h-3.5 w-3.5 text-sageGreen/70" />
             </button>
           }
         >

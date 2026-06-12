@@ -10,7 +10,7 @@ interface ChartProps {
 
 export default function Chart({ data }: ChartProps) {
   return (
-    <div className="h-[190px] w-full cursor-pointer">
+    <div className="h-[202px] w-full cursor-pointer">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={data} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
           <defs>

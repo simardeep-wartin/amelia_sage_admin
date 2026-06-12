@@ -5,17 +5,28 @@ interface CardProps {
   actions?: ReactNode;
   children: ReactNode;
   className?: string;
+  headerClassName?: string;
+  titleClassName?: string;
 }
 
-export default function Card({ title, actions, children, className = "" }: CardProps) {
+export default function Card({
+  title,
+  actions,
+  children,
+  className = "",
+  headerClassName = "",
+  titleClassName = "",
+}: CardProps) {
   return (
     <section className={`rounded-xl border border-cardBorder bg-paper p-5 shadow-sm ${className}`}>
       {(title || actions) && (
-        <header className="mb-4 flex items-center justify-between gap-3">
+        <header className={`flex items-center justify-between gap-3 mb-4 ${headerClassName}`}>
           {title ? (
-            <h3 className="font-arial text-[15px] sm:text-[20px] font-medium leading-[1.5] text-charcoal">
+            <p
+              className={`font-arial text-[15px] sm:text-[20px] font-medium text-charcoal ${titleClassName}`}
+            >
               {title}
-            </h3>
+            </p>
           ) : (
             <span />
           )}

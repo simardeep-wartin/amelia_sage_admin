@@ -67,7 +67,7 @@ export default function FilterDropdown({
         <button
           onClick={() => setOpen((p) => !p)}
           className={cn(
-            "flex w-[148px] cursor-pointer items-center justify-between rounded-[8px] border border-[#E5E7EB] px-3 py-[7px] text-[12px] font-medium text-[#111827]",
+            "flex w-[148px] h-[38px] cursor-pointer items-center justify-between rounded-[8px] border border-[#E5E7EB] px-3 py-[7px] text-[12px] font-medium text-[#111827]",
             className,
           )}
         >

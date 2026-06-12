@@ -27,7 +27,7 @@ const ICON_MAP: Record<string, string> = {
 
 const AUTH_PATHS = ["/signin", "/signup"];
 const NAV_LINK_BASE =
-  "flex min-h-10 w-full items-center gap-3 rounded-lg px-3 py-2 text-softstone transition-colors";
+  "flex min-h-10 w-full items-center gap-3 rounded-lg px-3 py-2 text-softstone transition-colors font-inter";
 const NAV_LINK_ACTIVE = "bg-gold shadow-sm";
 const NAV_LINK_HOVER = "hover:bg-gold hover:shadow-sm";
 
@@ -72,9 +72,7 @@ export default function Sidebar() {
                 className="object-contain"
               />
             </div>
-            <span className="font-cormorant text-xl font-bold leading-none text-paper">
-              Amelia Sage
-            </span>
+            <span className="font-cormorant text-xxl font-bold leading-none">Amelia Sage</span>
           </div>
           <button
             className="rounded p-1 text-paper md:hidden"
@@ -89,7 +87,7 @@ export default function Sidebar() {
         <nav className="flex flex-col gap-6 px-4 pb-6 pt-4">
           {navSections.map((section) => (
             <div key={section.title} className="flex flex-col gap-2">
-              <p className="px-3 font-cormorant text-xs font-bold tracking-wide text-softstone">
+              <p className="px-3 font-cormorant text-xs font-bold tracking-wide text-white">
                 {section.title}
               </p>
               <ul className="flex flex-col gap-1">

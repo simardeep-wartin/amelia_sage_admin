@@ -28,9 +28,7 @@ export default function MetricCard({
     <div
       className={`flex min-h-[90px] flex-col justify-center rounded-[14px] border border-cardBorder bg-white px-3 sm:px-4 py-3 sm:py-4 shadow-sm ${className}`}
     >
-      <p className="font-sans text-xs sm:text-sm font-medium text-charcoal leading-tight truncate">
-        {title}
-      </p>
+      <p className="font-inter text-md font-medium text-charcoal leading-tight truncate">{title}</p>
       <div className="mt-2 sm:mt-3 flex items-center gap-2 sm:gap-3">
         <div
           className="flex h-9 w-9 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-full"
@@ -44,14 +42,14 @@ export default function MetricCard({
         </div>
         <div className="min-w-0">
           <p
-            className="text-base sm:text-lg lg:text-xl font-bold leading-tight text-charcoal"
+            className="text-[24px] font-semibold text-charcoal font-inter"
             style={valueColor ? { color: valueColor } : undefined}
           >
             {value}
           </p>
           {subtitle && (
             <p
-              className="mt-0.5 text-[10px] sm:text-xs leading-tight"
+              className="mt-0.5 text-[10px] sm:text-xs font-arial leading-tight"
               style={{ color: subtitleColor }}
             >
               {subtitle}

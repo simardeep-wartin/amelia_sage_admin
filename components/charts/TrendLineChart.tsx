@@ -100,6 +100,8 @@ export default function TrendLineChart({
               ))}
               <Legend
                 verticalAlign="bottom"
+                iconType="circle"
+                iconSize={10}
                 wrapperStyle={{ fontSize: "10px", color: "#6B6B6B", paddingTop: "8px" }}
                 formatter={(value) =>
                   series.find((seriesItem) => seriesItem.key === value)?.label ?? value

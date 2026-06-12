@@ -19,6 +19,7 @@ interface InsightGroup {
 
 interface InsightGridProps {
   title: string;
+  subtitle?: string;
   groups: InsightGroup[];
   groupColors?: Record<string, string>;
   filterOptions?: string[];
@@ -35,6 +36,7 @@ const DEFAULT_COLORS: Record<string, string> = {
 
 export default function InsightGrid({
   title,
+  subtitle,
   groups,
   groupColors = DEFAULT_COLORS,
   filterOptions,
@@ -58,7 +60,11 @@ export default function InsightGrid({
     <Card
       title={title}
       actions={<FilterDropdown options={activeOptions} value={filter} onChange={handleFilter} />}
+      headerClassName="!mb-0"
     >
+      {subtitle && (
+        <p className="mb-4 font-inter text-[14px] leading-[1.3] text-[#6b6b6b]">{subtitle}</p>
+      )}
       {filteredGroups.length === 0 ? (
         <EmptyState className="min-h-[160px]" />
       ) : (

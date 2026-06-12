@@ -76,7 +76,7 @@ export default function DistributionPieChart({
                 <p className="font-arial text-[14px] text-customBlack">
                   <span className="font-medium">{item.value.toLocaleString()}</span>{" "}
                   {item.percentage && (
-                    <span className="font-normal text-[#6B6B6B]">({item.percentage})</span>
+                    <span className="font-normal text-[#6B6B6B] ml-2">({item.percentage})</span>
                   )}
                 </p>
               </div>
