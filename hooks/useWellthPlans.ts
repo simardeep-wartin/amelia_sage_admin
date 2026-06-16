@@ -15,6 +15,7 @@ import {
   getWealthPlanExercises,
   createWealthPlan,
   updateWealthPlan,
+  deleteWealthPlan,
   createWealthPlanExercise,
   updateWealthPlanExercise,
   deleteWealthPlanExercise,
@@ -169,6 +170,11 @@ export function useWellthPlans() {
     setEditingItem(null);
   };
 
+  const handleDeletePlan = (id: string) => {
+    setPlans(plans.filter((p) => p.id !== id));
+    deleteWealthPlan(id).catch(() => getWealthPlans().then((res) => setPlans(res.data)));
+  };
+
   const handleDeleteExercise = (id: string) => {
     if (!selectedPlanId) return;
     setExercises(exercises.filter((e) => e.id !== id));
@@ -208,6 +214,7 @@ export function useWellthPlans() {
     handleSaveIntro,
     handleSavePlan,
     handleSaveExercise,
+    handleDeletePlan,
     handleDeleteExercise,
     openModal,
   };

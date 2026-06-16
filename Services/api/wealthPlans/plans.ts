@@ -39,3 +39,6 @@ export type UpdateWealthPlanPayload = {
 
 export const updateWealthPlan = (id: string, payload: UpdateWealthPlanPayload) =>
   clientApi.put<{ data: WealthPlan }>(ENDPOINTS.wealthPlans.update(id), payload);
+
+export const deleteWealthPlan = (id: string) =>
+  clientApi.delete<void>(ENDPOINTS.wealthPlans.delete(id));

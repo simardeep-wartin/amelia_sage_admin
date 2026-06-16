@@ -18,6 +18,9 @@ export interface ActionCardProps {
   onSecondaryAction?: () => void;
   secondaryActionIcon?: React.ReactNode;
   secondaryActionClassName?: string;
+  onDeleteAction?: () => void;
+  deleteActionIcon?: React.ReactNode;
+  deleteActionClassName?: string;
 }
 
 export default function ActionCard({
@@ -34,6 +37,9 @@ export default function ActionCard({
   onSecondaryAction,
   secondaryActionIcon = <PencilSquareIcon className="h-5 w-5" />,
   secondaryActionClassName = "border border-border bg-white text-grey hover:bg-softstone hover:text-charcoal",
+  onDeleteAction,
+  deleteActionIcon,
+  deleteActionClassName = "border border-cardBorder bg-white text-red-400 hover:bg-red-50 hover:text-red-600",
 }: ActionCardProps) {
   return (
     <div
@@ -75,6 +81,19 @@ export default function ActionCard({
             className={`flex px-2 py-1 items-center justify-center rounded-lg transition-colors cursor-pointer ${secondaryActionClassName}`}
           >
             {secondaryActionIcon}
+          </button>
+        )}
+
+        {/* Delete Action Button */}
+        {onDeleteAction && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onDeleteAction();
+            }}
+            className={`flex px-2 py-1 items-center justify-center rounded-lg transition-colors cursor-pointer ${deleteActionClassName}`}
+          >
+            {deleteActionIcon}
           </button>
         )}
 

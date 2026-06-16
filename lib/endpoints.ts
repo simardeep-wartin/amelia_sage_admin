@@ -12,6 +12,7 @@ export const ENDPOINTS = {
     feelingExercise: (categoryId: string, exerciseId: string) =>
       `/work-on-me/feelings/${categoryId}/exercises/${exerciseId}`,
     focusAreas: "/work-on-me/focus-areas",
+    focusArea: (id: string) => `/work-on-me/focus-areas/${id}`,
     focusAreaExercises: (id: string) => `/work-on-me/focus-areas/${id}/exercises`,
     focusAreaExercise: (focusId: string, exerciseId: string) =>
       `/work-on-me/focus-areas/${focusId}/exercises/${exerciseId}`,
@@ -29,6 +30,7 @@ export const ENDPOINTS = {
       `/wealth-plans/${planId}/exercises/${exerciseId}`,
     introScreen: (planId: string) => `/wealth-plans/${planId}/intro-screen`,
     update: (id: string) => `/wealth-plans/${id}`,
+    delete: (id: string) => `/wealth-plans/${id}`,
   },
   dashboard: {
     overview: "/dashboard/stats/overview",

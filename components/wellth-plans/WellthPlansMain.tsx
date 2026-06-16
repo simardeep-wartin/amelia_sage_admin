@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Card from "@/components/common/Card";
@@ -8,7 +9,13 @@ import ActionCard from "@/components/common/ActionCard";
 import MetricCard from "@/components/common/MetricCard";
 import DynamicModal from "@/components/common/DynamicModal";
 import DynamicSidePanel from "@/components/common/DynamicSidePanel";
-import { ArrowUpRightIcon, PencilSquareIcon, PlusIcon } from "@heroicons/react/24/outline";
+import DeleteConfirmationModal from "@/components/common/DeleteConfirmationModal";
+import {
+  ArrowUpRightIcon,
+  PencilSquareIcon,
+  PlusIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 import { WELLTH_MODAL_CONFIG } from "@/lib/wellth-plans.config";
 import type { WellthPlansState } from "@/hooks/useWellthPlans";
 
@@ -36,10 +43,14 @@ export default function WellthPlansMain({
   handleSaveIntro,
   handleSavePlan,
   handleSaveExercise,
+  handleDeletePlan,
   handleDeleteExercise,
   openModal,
 }: Props) {
   const router = useRouter();
+  const [pendingDeletePlan, setPendingDeletePlan] = useState<{ id: string; title: string } | null>(
+    null,
+  );
 
   const onSaveMap: Record<string, (data: Record<string, unknown>) => void> = {
     editPlan: handleSavePlan,
@@ -146,6 +157,8 @@ export default function WellthPlansMain({
                         className="h-8 w-8 rounded-full object-cover"
                       />
                     }
+                    onDeleteAction={() => setPendingDeletePlan({ id: plan.id, title: plan.title })}
+                    deleteActionIcon={<TrashIcon className="h-5 w-5" />}
                     onSecondaryAction={() => {
                       setEditingPlanId(plan.id);
                       openModal("editPlan", { title: plan.title, sub_title: plan.sub_title });
@@ -191,6 +204,17 @@ export default function WellthPlansMain({
               }
             : undefined
         }
+      />
+
+      <DeleteConfirmationModal
+        isOpen={!!pendingDeletePlan}
+        onClose={() => setPendingDeletePlan(null)}
+        onConfirm={() => {
+          if (pendingDeletePlan) handleDeletePlan(pendingDeletePlan.id);
+          setPendingDeletePlan(null);
+        }}
+        title={`Delete "${pendingDeletePlan?.title ?? ""}"`}
+        message={`Are you sure you want to delete "${pendingDeletePlan?.title ?? ""}"? This action cannot be undone.`}
       />
 
       <DynamicSidePanel

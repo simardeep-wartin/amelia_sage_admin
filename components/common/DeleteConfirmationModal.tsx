@@ -21,21 +21,14 @@ export default function DeleteConfirmationModal({
   message,
 }: DeleteConfirmationModalProps) {
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title="Delete Confirmation"
-      maxWidth="max-w-md"
-    >
+    <Modal isOpen={isOpen} onClose={onClose} title="Delete Confirmation" maxWidth="max-w-xl">
       <div className="flex flex-col items-center text-center space-y-4">
         <div className="h-16 w-16 bg-red-50 text-destructive flex items-center justify-center rounded-full">
           <TrashIcon className="h-8 w-8" />
         </div>
         <div className="space-y-2">
           <h3 className="text-xl font-bold text-charcoal">{title}</h3>
-          <p className="text-sm text-[#A1A1A1] leading-relaxed">
-            {message}
-          </p>
+          <p className="text-sm text-[#A1A1A1] leading-relaxed">{message}</p>
         </div>
       </div>
 

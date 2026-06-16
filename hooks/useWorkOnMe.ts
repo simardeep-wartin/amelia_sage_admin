@@ -7,7 +7,9 @@ import {
   getFocusAreas,
   createFeeling,
   updateFeeling,
+  deleteFeeling,
   createFocusArea,
+  deleteFocusArea,
   type WorkOnMeOverviewData,
   type FeelingItem,
   type FocusAreaItem,
@@ -72,6 +74,16 @@ export function useWorkOnMe() {
       .finally(() => setFocusAreasLoading(false));
   };
 
+  const handleDeleteFeeling = (id: string) => {
+    setFeelings((prev) => prev.filter((f) => f.id !== id));
+    deleteFeeling(id).catch(() => getFeelings().then((res) => setFeelings(res.data ?? [])));
+  };
+
+  const handleDeleteFocusArea = (id: string) => {
+    setFocusAreas((prev) => prev.filter((f) => f.id !== id));
+    deleteFocusArea(id).catch(() => getFocusAreas().then((res) => setFocusAreas(res.data ?? [])));
+  };
+
   const handleEditEmotion = (data: Record<string, unknown>) => {
     if (!editingFeeling) return;
     const payload = feelingPayloads.update(
@@ -111,6 +123,8 @@ export function useWorkOnMe() {
     handleAddEmotion,
     handleAddFocus,
     handleEditEmotion,
+    handleDeleteFeeling,
+    handleDeleteFocusArea,
   };
 }
 

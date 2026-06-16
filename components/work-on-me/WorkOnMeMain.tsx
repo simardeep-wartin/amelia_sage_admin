@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Card from "@/components/common/Card";
@@ -8,7 +9,8 @@ import ActionCard from "@/components/common/ActionCard";
 import MetricCard from "@/components/common/MetricCard";
 import ActionModal from "@/components/common/ActionModal";
 import CategoryManagementPanel from "@/components/common/CategoryManagementPanel";
-import { ArrowUpRightIcon, PlusIcon } from "@heroicons/react/24/outline";
+import DeleteConfirmationModal from "@/components/common/DeleteConfirmationModal";
+import { ArrowUpRightIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import type { WorkOnMeState } from "@/hooks/useWorkOnMe";
 
 type Props = Omit<WorkOnMeState, "loading">;
@@ -30,8 +32,15 @@ export default function WorkOnMeMain({
   handleAddEmotion,
   handleAddFocus,
   handleEditEmotion,
+  handleDeleteFeeling,
+  handleDeleteFocusArea,
 }: Props) {
   const router = useRouter();
+  const [pendingDelete, setPendingDelete] = useState<{
+    id: string;
+    title: string;
+    type: "feeling" | "focus-area";
+  } | null>(null);
 
   return (
     <>
@@ -131,6 +140,10 @@ export default function WorkOnMeMain({
                     }
                     hideActionButton
                     onSecondaryAction={() => setEditingFeeling(feeling)}
+                    onDeleteAction={() =>
+                      setPendingDelete({ id: feeling.id, title: feeling.title, type: "feeling" })
+                    }
+                    deleteActionIcon={<TrashIcon className="h-5 w-5" />}
                   />
                 ))}
           </div>
@@ -186,11 +199,28 @@ export default function WorkOnMeMain({
                       setManagedCategory({ id: focus.id, title: focus.title, type: "focus-area" })
                     }
                     hideActionButton
+                    onDeleteAction={() =>
+                      setPendingDelete({ id: focus.id, title: focus.title, type: "focus-area" })
+                    }
+                    deleteActionIcon={<TrashIcon className="h-5 w-5" />}
                   />
                 ))}
           </div>
         </Card>
       </div>
+
+      <DeleteConfirmationModal
+        isOpen={!!pendingDelete}
+        onClose={() => setPendingDelete(null)}
+        onConfirm={() => {
+          if (!pendingDelete) return;
+          if (pendingDelete.type === "feeling") handleDeleteFeeling(pendingDelete.id);
+          else handleDeleteFocusArea(pendingDelete.id);
+          setPendingDelete(null);
+        }}
+        title={`Delete "${pendingDelete?.title ?? ""}"`}
+        message={`Are you sure you want to delete "${pendingDelete?.title ?? ""}"? This action cannot be undone.`}
+      />
 
       <ActionModal
         isOpen={isEmotionModalOpen}
