@@ -21,6 +21,7 @@ interface ProgressCardProps {
   onFilter?: (filter: string) => void;
   lastUpdated?: string;
   note?: string;
+  loading?: boolean;
 }
 
 export default function ProgressCard({
@@ -32,6 +33,7 @@ export default function ProgressCard({
   onFilter,
   lastUpdated = "Real-time",
   note,
+  loading = false,
 }: ProgressCardProps) {
   const [filter, setFilter] = useState(filterOptions[0]);
 
@@ -60,7 +62,17 @@ export default function ProgressCard({
       }
     >
       {subtitle && <p className="mt-1 text-s text-slate">{subtitle}</p>}
-      {filteredItems.length === 0 ? (
+      {loading ? (
+        <div className="mt-4 flex h-[200px] w-full items-end justify-around gap-2 px-4">
+          {[60, 85, 45, 95, 55, 70, 40, 80].map((h, i) => (
+            <div
+              key={i}
+              className="flex-1 animate-pulse rounded-t-md bg-[#E5E7EB]"
+              style={{ height: `${h}%`, animationDelay: `${i * 80}ms` }}
+            />
+          ))}
+        </div>
+      ) : filteredItems.length === 0 ? (
         <EmptyState className="min-h-[160px]" />
       ) : (
         <div className="mt-4 space-y-4">
@@ -84,13 +96,14 @@ export default function ProgressCard({
           ))}
         </div>
       )}
-      {note ? (
-        <div className="mt-4 rounded-[8px] bg-[#f9f9f9] p-4">
-          <p className="font-inter text-[14px] leading-[1.3] text-[#6b6b6b]">{note}</p>
-        </div>
-      ) : (
-        <p className="mt-4 text-xs text-slate">Last updated: {lastUpdated}</p>
-      )}
+      {!loading &&
+        (note ? (
+          <div className="mt-4 rounded-[8px] bg-[#f9f9f9] p-4">
+            <p className="font-inter text-[14px] leading-[1.3] text-[#6b6b6b]">{note}</p>
+          </div>
+        ) : (
+          <p className="mt-4 text-xs text-slate">Last updated: {lastUpdated}</p>
+        ))}
     </Card>
   );
 }

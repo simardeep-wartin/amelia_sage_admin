@@ -26,6 +26,7 @@ interface HorizontalBarChartProps {
   xDomain?: [number, number];
   barColor?: string;
   onFilterChange?: (value: string, range?: { from: Date | null; to: Date | null }) => void;
+  loading?: boolean;
 }
 
 export default function HorizontalBarChart({
@@ -40,6 +41,7 @@ export default function HorizontalBarChart({
   xDomain,
   barColor = "#8B7EC8",
   onFilterChange,
+  loading = false,
 }: HorizontalBarChartProps) {
   const [filter, setFilter] = useState("All");
 
@@ -53,32 +55,44 @@ export default function HorizontalBarChart({
       title={title}
       actions={<FilterDropdown value={filter} onChange={handleFilter} />}
       footer={
-        <div className="space-y-4">
-          {highlights.length > 0 && (
-            <div className="grid grid-cols-1 gap-3 s:grid-cols-2">
-              {highlights.map((item) => (
-                <div
-                  key={item.title}
-                  className="rounded-[10px] px-4 py-3 text-center"
-                  style={{ backgroundColor: item.bgColor }}
-                >
-                  <p className="text-[12px] text-[#6B6B6B]">{item.title}</p>
-                  <p className="mt-1 text-[18px] font-bold" style={{ color: item.textColor }}>
-                    {item.label}
-                  </p>
-                  <p className="text-[12px] text-[#6B6B6B]">{item.detail}</p>
-                </div>
-              ))}
-            </div>
-          )}
-          <p className="text-[12px] text-[#6B6B6B]">Last updated: {lastUpdated}</p>
-        </div>
+        loading ? null : (
+          <div className="space-y-4">
+            {highlights.length > 0 && (
+              <div className="grid grid-cols-1 gap-3 s:grid-cols-2">
+                {highlights.map((item) => (
+                  <div
+                    key={item.title}
+                    className="rounded-[10px] px-4 py-3 text-center"
+                    style={{ backgroundColor: item.bgColor }}
+                  >
+                    <p className="text-[12px] text-[#6B6B6B]">{item.title}</p>
+                    <p className="mt-1 text-[18px] font-bold" style={{ color: item.textColor }}>
+                      {item.label}
+                    </p>
+                    <p className="text-[12px] text-[#6B6B6B]">{item.detail}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+            <p className="text-[12px] text-[#6B6B6B]">Last updated: {lastUpdated}</p>
+          </div>
+        )
       }
     >
       {subtitle && <p className="text-[14px] text-slate">{subtitle}</p>}
 
       <div className="mt-4 h-[280px] w-full">
-        {data.length === 0 ? (
+        {loading ? (
+          <div className="flex h-full w-full items-end justify-around gap-2 px-4">
+            {[60, 85, 45, 95, 55, 70, 40, 80].map((h, i) => (
+              <div
+                key={i}
+                className="flex-1 animate-pulse rounded-t-md bg-[#E5E7EB]"
+                style={{ height: `${h}%`, animationDelay: `${i * 80}ms` }}
+              />
+            ))}
+          </div>
+        ) : data.length === 0 ? (
           <EmptyState />
         ) : (
           <ResponsiveContainer width="100%" height="100%">

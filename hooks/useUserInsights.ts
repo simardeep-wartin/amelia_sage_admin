@@ -13,6 +13,7 @@ export function useUserInsights() {
   const [overview, setOverview] = useState<UserInsightsOverviewData | null>(null);
   const [featureUsage, setFeatureUsage] = useState<FeatureUsageItem[] | null>(null);
   const [featureFilter, setFeatureFilter] = useState("All");
+  const [featureUsageLoading, setFeatureUsageLoading] = useState(false);
 
   useEffect(() => {
     Promise.all([getUserInsightsOverview(), getFeatureUsage({ filter: "all" })])
@@ -25,10 +26,20 @@ export function useUserInsights() {
 
   const handleFeatureFilter = (val: string, range?: { from: Date | null; to: Date | null }) => {
     setFeatureFilter(val);
-    getFeatureUsage({ filter: val, range }).then((res) => setFeatureUsage(res.data));
+    setFeatureUsageLoading(true);
+    getFeatureUsage({ filter: val, range })
+      .then((res) => setFeatureUsage(res.data))
+      .finally(() => setFeatureUsageLoading(false));
   };
 
-  return { loading, overview, featureUsage, featureFilter, handleFeatureFilter };
+  return {
+    loading,
+    overview,
+    featureUsage,
+    featureFilter,
+    featureUsageLoading,
+    handleFeatureFilter,
+  };
 }
 
 export type UserInsightsState = ReturnType<typeof useUserInsights>;

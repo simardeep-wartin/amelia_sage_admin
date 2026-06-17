@@ -25,6 +25,7 @@ interface DistributionBarChartProps {
   note?: string;
   filterOptions?: string[];
   onFilterChange?: (value: string, range?: { from: Date | null; to: Date | null }) => void;
+  loading?: boolean;
 }
 
 export default function DistributionBarChart({
@@ -36,6 +37,7 @@ export default function DistributionBarChart({
   note,
   filterOptions,
   onFilterChange,
+  loading = false,
 }: DistributionBarChartProps) {
   const [selected, setSelected] = useState("All");
   const [timeFilter, setTimeFilter] = useState(filterOptions ? filterOptions[0] : "All");
@@ -78,7 +80,7 @@ export default function DistributionBarChart({
       title={title}
       actions={actions}
       footer={
-        note ? (
+        loading || !note ? null : (
           <div className="mt-4 rounded-[8px] bg-[#f9f9f9] p-4">
             <p className="font-inter text-[14px] leading-[1.3] text-[#6b6b6b]">
               {note.includes(": ") ? (
@@ -91,13 +93,23 @@ export default function DistributionBarChart({
               )}
             </p>
           </div>
-        ) : null
+        )
       }
     >
       {subtitle && <p className="mt-1 text-[14px] text-slate">{subtitle}</p>}
 
       <div className="mt-4 h-[300px] w-full">
-        {data.length === 0 ? (
+        {loading ? (
+          <div className="flex h-full w-full items-end justify-around gap-2 px-4">
+            {[60, 85, 45, 95, 55, 70, 40, 80].map((h, i) => (
+              <div
+                key={i}
+                className="flex-1 animate-pulse rounded-t-md bg-[#E5E7EB]"
+                style={{ height: `${h}%`, animationDelay: `${i * 80}ms` }}
+              />
+            ))}
+          </div>
+        ) : data.length === 0 ? (
           <EmptyState />
         ) : (
           <ResponsiveContainer width="100%" height="100%">

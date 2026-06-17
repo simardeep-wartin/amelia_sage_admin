@@ -28,6 +28,7 @@ interface DistributionPieChartProps {
   cardClassName?: string;
   /** When true the chart fills available card height and uses percentage-based radii */
   fillHeight?: boolean;
+  loading?: boolean;
 }
 
 export default function DistributionPieChart({
@@ -43,6 +44,7 @@ export default function DistributionPieChart({
   onFilterChange,
   cardClassName,
   fillHeight = false,
+  loading = false,
 }: DistributionPieChartProps) {
   const chartData = data.map((item) => ({ ...item, chartValue: item.chartValue ?? item.value }));
 
@@ -65,24 +67,31 @@ export default function DistributionPieChart({
         )
       }
       footer={
-        <div className="space-y-2">
-          {showList &&
-            data.map((item) => (
-              <div key={item.label} className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2">
-                  <span className="h-3 w-3 rounded-full" style={{ backgroundColor: item.color }} />
-                  <span className="font-arial text-[14px] text-[#6B6B6B]">{item.label}</span>
+        loading ? null : (
+          <div className="space-y-2">
+            {showList &&
+              data.map((item) => (
+                <div key={item.label} className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="h-3 w-3 rounded-full"
+                      style={{ backgroundColor: item.color }}
+                    />
+                    <span className="font-arial text-[14px] text-[#6B6B6B]">{item.label}</span>
+                  </div>
+                  <p className="font-arial text-[14px] text-customBlack">
+                    <span className="font-medium">{item.value.toLocaleString()}</span>{" "}
+                    {item.percentage && (
+                      <span className="font-normal text-[#6B6B6B] ml-2">({item.percentage})</span>
+                    )}
+                  </p>
                 </div>
-                <p className="font-arial text-[14px] text-customBlack">
-                  <span className="font-medium">{item.value.toLocaleString()}</span>{" "}
-                  {item.percentage && (
-                    <span className="font-normal text-[#6B6B6B] ml-2">({item.percentage})</span>
-                  )}
-                </p>
-              </div>
-            ))}
-          <p className="mt-3 font-arial text-[12px] text-[#6B6B6B]">Last updated: {lastUpdated}</p>
-        </div>
+              ))}
+            <p className="mt-3 font-arial text-[12px] text-[#6B6B6B]">
+              Last updated: {lastUpdated}
+            </p>
+          </div>
+        )
       }
     >
       <div
@@ -90,7 +99,17 @@ export default function DistributionPieChart({
           fillHeight ? "w-full flex-1 min-h-[260px]" : "mx-auto h-[260px] w-full max-w-[300px]"
         }
       >
-        {chartData.length === 0 ? (
+        {loading ? (
+          <div className="flex h-full w-full items-end justify-around gap-2 px-4">
+            {[60, 85, 45, 95, 55, 70, 40, 80].map((h, i) => (
+              <div
+                key={i}
+                className="flex-1 animate-pulse rounded-t-md bg-[#E5E7EB]"
+                style={{ height: `${h}%`, animationDelay: `${i * 80}ms` }}
+              />
+            ))}
+          </div>
+        ) : chartData.length === 0 ? (
           <EmptyState />
         ) : (
           <ResponsiveContainer width="100%" height="100%">

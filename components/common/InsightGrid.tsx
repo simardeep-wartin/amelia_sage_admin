@@ -24,6 +24,7 @@ interface InsightGridProps {
   groupColors?: Record<string, string>;
   filterOptions?: string[];
   onFilterChange?: (value: string, range?: { from: Date | null; to: Date | null }) => void;
+  loading?: boolean;
 }
 
 const DEFAULT_COLORS: Record<string, string> = {
@@ -41,6 +42,7 @@ export default function InsightGrid({
   groupColors = DEFAULT_COLORS,
   filterOptions,
   onFilterChange,
+  loading = false,
 }: InsightGridProps) {
   const [filter, setFilter] = useState(filterOptions ? filterOptions[0] : "All");
   const internalOptions = ["All", ...groups.map((group) => group.title)];
@@ -65,7 +67,17 @@ export default function InsightGrid({
       {subtitle && (
         <p className="mb-4 font-inter text-[14px] leading-[1.3] text-[#6b6b6b]">{subtitle}</p>
       )}
-      {filteredGroups.length === 0 ? (
+      {loading ? (
+        <div className="mt-4 flex h-[220px] w-full items-end justify-around gap-2 px-4">
+          {[60, 85, 45, 95, 55, 70, 40, 80].map((h, i) => (
+            <div
+              key={i}
+              className="flex-1 animate-pulse rounded-t-md bg-[#E5E7EB]"
+              style={{ height: `${h}%`, animationDelay: `${i * 80}ms` }}
+            />
+          ))}
+        </div>
+      ) : filteredGroups.length === 0 ? (
         <EmptyState className="min-h-[160px]" />
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">

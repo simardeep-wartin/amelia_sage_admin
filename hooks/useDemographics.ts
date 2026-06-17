@@ -115,36 +115,102 @@ export function useDemographics() {
       .finally(() => setTabLoading(false));
   }, [activeTab]);
 
-  const handleGenderFilter = (val: string, range?: FilterRange) =>
-    getGenderIdentity({ filter: val, range }).then((res) =>
-      setGenderDistribution(res.data.distribution),
-    );
+  const [genderLoading, setGenderLoading] = useState(false);
+  const [culturalIdentityLoading, setCulturalIdentityLoading] = useState(false);
+  const [growthTrendLoading, setGrowthTrendLoading] = useState(false);
+  const [ageDistributionLoading, setAgeDistributionLoading] = useState(false);
+  const [insightGridLoading, setInsightGridLoading] = useState(false);
+  const [coreConversionLoading, setCoreConversionLoading] = useState(false);
+  const [culturalCoreConversionLoading, setCulturalCoreConversionLoading] = useState(false);
+  const [culturalAgeDistributionLoading, setCulturalAgeDistributionLoading] = useState(false);
+  const [ethnicityDistributionLoading, setEthnicityDistributionLoading] = useState(false);
+  const [ethnicityResponseLoading, setEthnicityResponseLoading] = useState(false);
+  const [wellnessSupportLoading, setWellnessSupportLoading] = useState(false);
+  const [wellnessJourneyLoading, setWellnessJourneyLoading] = useState(false);
 
-  const handleCulturalIdentityFilter = (val: string, range?: FilterRange) =>
-    getCulturalIdentity({ filter: val, range }).then((res) => setCulturalIdentity(res.data));
+  const handleGenderFilter = (val: string, range?: FilterRange) => {
+    setGenderLoading(true);
+    getGenderIdentity({ filter: val, range })
+      .then((res) => setGenderDistribution(res.data.distribution))
+      .finally(() => setGenderLoading(false));
+  };
 
-  const handleGrowthTrendFilter = ([groupBy, filter]: string[]) =>
-    getGrowthTrend(groupBy, filter).then((res) => setTrendGroups(res.data.trend));
+  const handleCulturalIdentityFilter = (val: string, range?: FilterRange) => {
+    setCulturalIdentityLoading(true);
+    getCulturalIdentity({ filter: val, range })
+      .then((res) => setCulturalIdentity(res.data))
+      .finally(() => setCulturalIdentityLoading(false));
+  };
 
-  const handleAgeDistributionFilter = (val: string, range?: FilterRange) =>
-    getAgeDistribution({ filter: val, range }).then((res) => setAgeDistribution(res.data));
+  const handleGrowthTrendFilter = ([groupBy, filter]: string[]) => {
+    setGrowthTrendLoading(true);
+    getGrowthTrend(groupBy, filter)
+      .then((res) => setTrendGroups(res.data.trend))
+      .finally(() => setGrowthTrendLoading(false));
+  };
 
-  const handleCoreConversionFilter = (filter: string) =>
-    getCoreConversion({ filter }).then((res) => setCoreConversion(res.data));
+  const handleAgeDistributionFilter = (val: string, range?: FilterRange) => {
+    setAgeDistributionLoading(true);
+    getAgeDistribution({ filter: val, range })
+      .then((res) => setAgeDistribution(res.data))
+      .finally(() => setAgeDistributionLoading(false));
+  };
 
-  const handleCulturalCoreConversionFilter = (filter: string) =>
-    getCulturalCoreConversion({ filter }).then((res) => setCulturalCoreConversion(res.data));
+  const handleInsightGridFilter = (val: string, range?: FilterRange) => {
+    setInsightGridLoading(true);
+    getAgeDistribution({ filter: val, range })
+      .then((res) => setAgeDistribution(res.data))
+      .finally(() => setInsightGridLoading(false));
+  };
 
-  const handleCulturalAgeDistributionFilter = (val: string, range?: FilterRange) =>
-    getCulturalAgeDistribution({ filter: val, range }).then((res) =>
-      setCulturalAgeDistribution(res.data),
-    );
+  const handleCoreConversionFilter = (filter: string) => {
+    setCoreConversionLoading(true);
+    getCoreConversion({ filter })
+      .then((res) => setCoreConversion(res.data))
+      .finally(() => setCoreConversionLoading(false));
+  };
 
-  const handleEthnicityFilter = (val: string, range?: FilterRange) =>
-    getEthnicity({ filter: val, range }).then((res) => setEthnicity(res.data));
+  const handleCulturalCoreConversionFilter = (filter: string) => {
+    setCulturalCoreConversionLoading(true);
+    getCulturalCoreConversion({ filter })
+      .then((res) => setCulturalCoreConversion(res.data))
+      .finally(() => setCulturalCoreConversionLoading(false));
+  };
 
-  const handleWellnessNeedsFilter = (val: string, range?: FilterRange) =>
-    getWellnessNeeds({ filter: val, range }).then((res) => setWellnessNeeds(res.data));
+  const handleCulturalAgeDistributionFilter = (val: string, range?: FilterRange) => {
+    setCulturalAgeDistributionLoading(true);
+    getCulturalAgeDistribution({ filter: val, range })
+      .then((res) => setCulturalAgeDistribution(res.data))
+      .finally(() => setCulturalAgeDistributionLoading(false));
+  };
+
+  const handleEthnicityDistributionFilter = (val: string, range?: FilterRange) => {
+    setEthnicityDistributionLoading(true);
+    getEthnicity({ filter: val, range })
+      .then((res) => setEthnicity(res.data))
+      .finally(() => setEthnicityDistributionLoading(false));
+  };
+
+  const handleEthnicityResponseFilter = (val: string, range?: FilterRange) => {
+    setEthnicityResponseLoading(true);
+    getEthnicity({ filter: val, range })
+      .then((res) => setEthnicity(res.data))
+      .finally(() => setEthnicityResponseLoading(false));
+  };
+
+  const handleWellnessSupportFilter = (val: string, range?: FilterRange) => {
+    setWellnessSupportLoading(true);
+    getWellnessNeeds({ filter: val, range })
+      .then((res) => setWellnessNeeds(res.data))
+      .finally(() => setWellnessSupportLoading(false));
+  };
+
+  const handleWellnessJourneyFilter = (val: string, range?: FilterRange) => {
+    setWellnessJourneyLoading(true);
+    getWellnessNeeds({ filter: val, range })
+      .then((res) => setWellnessNeeds(res.data))
+      .finally(() => setWellnessJourneyLoading(false));
+  };
 
   return {
     loading,
@@ -161,15 +227,30 @@ export function useDemographics() {
     culturalAgeDistribution,
     ethnicity,
     wellnessNeeds,
+    genderLoading,
+    culturalIdentityLoading,
+    growthTrendLoading,
+    ageDistributionLoading,
+    insightGridLoading,
+    coreConversionLoading,
+    culturalCoreConversionLoading,
+    culturalAgeDistributionLoading,
+    ethnicityDistributionLoading,
+    ethnicityResponseLoading,
+    wellnessSupportLoading,
+    wellnessJourneyLoading,
     handleGenderFilter,
     handleCulturalIdentityFilter,
     handleGrowthTrendFilter,
     handleAgeDistributionFilter,
+    handleInsightGridFilter,
     handleCoreConversionFilter,
     handleCulturalCoreConversionFilter,
     handleCulturalAgeDistributionFilter,
-    handleEthnicityFilter,
-    handleWellnessNeedsFilter,
+    handleEthnicityDistributionFilter,
+    handleEthnicityResponseFilter,
+    handleWellnessSupportFilter,
+    handleWellnessJourneyFilter,
   };
 }
 

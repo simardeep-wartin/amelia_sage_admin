@@ -57,15 +57,30 @@ export default function DemographicsMain({
   culturalAgeDistribution,
   ethnicity,
   wellnessNeeds,
+  genderLoading,
+  culturalIdentityLoading,
+  growthTrendLoading,
+  ageDistributionLoading,
+  insightGridLoading,
+  coreConversionLoading,
+  culturalCoreConversionLoading,
+  culturalAgeDistributionLoading,
+  ethnicityDistributionLoading,
+  ethnicityResponseLoading,
+  wellnessSupportLoading,
+  wellnessJourneyLoading,
   handleGenderFilter,
   handleCulturalIdentityFilter,
   handleGrowthTrendFilter,
   handleAgeDistributionFilter,
+  handleInsightGridFilter,
   handleCoreConversionFilter,
   handleCulturalCoreConversionFilter,
   handleCulturalAgeDistributionFilter,
-  handleEthnicityFilter,
-  handleWellnessNeedsFilter,
+  handleEthnicityDistributionFilter,
+  handleEthnicityResponseFilter,
+  handleWellnessSupportFilter,
+  handleWellnessJourneyFilter,
 }: Props) {
   return (
     <div className="space-y-6">
@@ -118,6 +133,7 @@ export default function DemographicsMain({
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <DistributionPieChart
               title={demographicsData.genderDistribution.title}
+              loading={genderLoading}
               data={genderDistribution.map((item, i) => ({
                 label: item.gender,
                 value: item.count,
@@ -135,6 +151,7 @@ export default function DemographicsMain({
             />
             <HorizontalBarChart
               title="Cultural Identity Distribution"
+              loading={culturalIdentityLoading}
               data={(culturalIdentity?.distribution ?? []).map((item) => ({
                 group: item.identity,
                 users: item.count,
@@ -179,6 +196,7 @@ export default function DemographicsMain({
             return (
               <TrendLineChart
                 title="Demographics Growth Trend"
+                loading={growthTrendLoading}
                 data={trendData}
                 series={trendSeries}
                 filters={[
@@ -235,6 +253,7 @@ export default function DemographicsMain({
             <>
               <DistributionBarChart
                 title="Age Distribution by Gender Identity"
+                loading={ageDistributionLoading}
                 data={ageChartData}
                 series={ageSeries}
                 filterOptions={["All", "Today", "Week", "Month", "Year", "Custom"]}
@@ -243,6 +262,7 @@ export default function DemographicsMain({
               />
               <ProgressCard
                 title="Core Conversion by Gender"
+                loading={coreConversionLoading}
                 filterOptions={["All", "Today", "Week", "Month", "Year", "Custom"]}
                 onFilter={handleCoreConversionFilter}
                 items={coreConversion.map((item) => ({
@@ -254,11 +274,12 @@ export default function DemographicsMain({
               />
               <InsightGrid
                 title="Feature Usage by Gender Identity"
+                loading={insightGridLoading}
                 subtitle="Top features used by each gender identity group"
                 groups={insightGroups}
                 groupColors={groupColors}
                 filterOptions={["All", "Today", "Week", "Month", "Year", "Custom"]}
-                onFilterChange={handleAgeDistributionFilter}
+                onFilterChange={handleInsightGridFilter}
               />
             </>
           );
@@ -286,31 +307,44 @@ export default function DemographicsMain({
           const cd = demographicsTabsData.cultural_identity;
           return (
             <>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-                {(
-                  culturalIdentity?.distribution ??
-                  cd.stats.map((s: StatItem) => ({
-                    identity: s.title,
-                    count: 0,
-                    percentage: Number(String(s.value).replace(/[^0-9.]/g, "")) || 0,
-                  }))
-                ).map((item) => (
-                  <div
-                    key={item.identity}
-                    className="rounded-[4px] bg-[#F9FAFB] p-3 text-center flex flex-col gap-1"
-                  >
-                    <p className="font-sans text-[11px] text-[#6B6B6B] line-clamp-2 leading-[1.3]">
-                      {item.identity}
-                    </p>
-                    <p className="font-sans text-[22px] font-bold leading-[1.2] text-[#8B7EC8]">
-                      {item.percentage}%
-                    </p>
-                    <p className="font-sans text-[11px] text-[#6B6B6B]">{item.count} users</p>
-                  </div>
-                ))}
-              </div>
+              {culturalIdentityLoading ? (
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="h-24 animate-pulse rounded-[4px] bg-[#E5E7EB]"
+                      style={{ animationDelay: `${i * 80}ms` }}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+                  {(
+                    culturalIdentity?.distribution ??
+                    cd.stats.map((s: StatItem) => ({
+                      identity: s.title,
+                      count: 0,
+                      percentage: Number(String(s.value).replace(/[^0-9.]/g, "")) || 0,
+                    }))
+                  ).map((item) => (
+                    <div
+                      key={item.identity}
+                      className="rounded-[4px] bg-[#F9FAFB] p-3 text-center flex flex-col gap-1"
+                    >
+                      <p className="font-sans text-[11px] text-[#6B6B6B] line-clamp-2 leading-[1.3]">
+                        {item.identity}
+                      </p>
+                      <p className="font-sans text-[22px] font-bold leading-[1.2] text-[#8B7EC8]">
+                        {item.percentage}%
+                      </p>
+                      <p className="font-sans text-[11px] text-[#6B6B6B]">{item.count} users</p>
+                    </div>
+                  ))}
+                </div>
+              )}
               <ProgressCard
                 title="Core Conversion by Cultural Identity"
+                loading={culturalCoreConversionLoading}
                 filterOptions={["All", "Today", "Week", "Month", "Year", "Custom"]}
                 onFilter={handleCulturalCoreConversionFilter}
                 items={culturalCoreConversion.map((item) => ({
@@ -338,6 +372,7 @@ export default function DemographicsMain({
                 return (
                   <DistributionBarChart
                     title={cd.groupedBar.title}
+                    loading={culturalAgeDistributionLoading}
                     subtitle={cd.groupedBar.subtitle}
                     note={cd.groupedBar.note}
                     data={culturalAgeDistribution.length > 0 ? chartData : cd.groupedBar.categories}
@@ -402,6 +437,7 @@ export default function DemographicsMain({
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <DistributionPieChart
               title="Ethnicity Distribution"
+              loading={ethnicityDistributionLoading}
               cardClassName="h-full"
               fillHeight
               data={ethnicity.distribution.map((item, i) => ({
@@ -413,13 +449,14 @@ export default function DemographicsMain({
               }))}
               lastUpdated=""
               showList={false}
-              onFilterChange={handleEthnicityFilter}
+              onFilterChange={handleEthnicityDistributionFilter}
             />
             <ProgressCard
               title="Response Breakdown"
+              loading={ethnicityResponseLoading}
               filterOptions={["All", "Today", "Week", "Month", "Year", "Custom"]}
               filterVariant="icon"
-              onFilter={handleEthnicityFilter}
+              onFilter={handleEthnicityResponseFilter}
               items={ethnicity.response_breakdown.map((item) => ({
                 label: item.label,
                 value: item.percentage,
@@ -441,6 +478,7 @@ export default function DemographicsMain({
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <DistributionPieChart
             title="Wellness Support Needs"
+            loading={wellnessSupportLoading}
             data={wellnessNeeds.wellness_support_needs.distribution.map((item, i) => ({
               label: item.area,
               value: item.count,
@@ -450,12 +488,13 @@ export default function DemographicsMain({
             }))}
             lastUpdated=""
             showList={false}
-            onFilterChange={handleWellnessNeedsFilter}
+            onFilterChange={handleWellnessSupportFilter}
           />
           <SummaryGrid
             title="Wellness Journey Progress"
+            loading={wellnessJourneyLoading}
             subtitle={`${wellnessNeeds.wellness_support_needs.total_users_tracked} users tracked`}
-            onFilter={handleWellnessNeedsFilter}
+            onFilter={handleWellnessJourneyFilter}
             items={[
               {
                 label: "Active Progress",

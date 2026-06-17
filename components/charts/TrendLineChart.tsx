@@ -25,6 +25,7 @@ interface TrendLineChartProps {
   yTicks?: number[];
   yDomain?: [number | string, number | string];
   onFilterChange?: (values: string[]) => void;
+  loading?: boolean;
 }
 
 export default function TrendLineChart({
@@ -36,6 +37,7 @@ export default function TrendLineChart({
   yTicks,
   yDomain,
   onFilterChange,
+  loading = false,
 }: TrendLineChartProps) {
   const [filterValues, setFilterValues] = useState<string[]>(
     filters.map((filter) => filter.options[0]),
@@ -67,7 +69,17 @@ export default function TrendLineChart({
       )}
 
       <div className="mt-4 h-[300px] w-full">
-        {data.length === 0 ? (
+        {loading ? (
+          <div className="flex h-full w-full items-end justify-around gap-2 px-4">
+            {[60, 85, 45, 95, 55, 70, 40, 80].map((h, i) => (
+              <div
+                key={i}
+                className="flex-1 animate-pulse rounded-t-md bg-[#E5E7EB]"
+                style={{ height: `${h}%`, animationDelay: `${i * 80}ms` }}
+              />
+            ))}
+          </div>
+        ) : data.length === 0 ? (
           <EmptyState />
         ) : (
           <ResponsiveContainer width="100%" height="100%">

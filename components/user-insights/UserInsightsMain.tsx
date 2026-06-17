@@ -4,6 +4,7 @@ import Card from "@/components/common/Card";
 import MetricCard from "@/components/common/MetricCard";
 import FeatureBarChart from "@/components/charts/FeatureBarChart";
 import FilterDropdown from "@/components/ui/FilterDropdown";
+import { SkeletonChart } from "@/components/loaders/common/skeleton-chart";
 import appData from "@/data/app-data.json";
 import type { UserInsightsState } from "@/hooks/useUserInsights";
 
@@ -20,6 +21,7 @@ export default function UserInsightsMain({
   overview,
   featureUsage,
   featureFilter,
+  featureUsageLoading,
   handleFeatureFilter,
 }: Props) {
   const metrics = overview
@@ -80,13 +82,19 @@ export default function UserInsightsMain({
           <FilterDropdown variant="icon" value={featureFilter} onChange={handleFeatureFilter} />
         }
       >
-        <FeatureBarChart
-          data={
-            featureUsage
-              ? featureUsage.map((item) => ({ feature: item.feature, sessions: item.count }))
-              : insightsData.featureUsage
-          }
-        />
+        {featureUsageLoading ? (
+          <div className="h-[260px]">
+            <SkeletonChart type="bar" className="h-full" />
+          </div>
+        ) : (
+          <FeatureBarChart
+            data={
+              featureUsage
+                ? featureUsage.map((item) => ({ feature: item.feature, sessions: item.count }))
+                : insightsData.featureUsage
+            }
+          />
+        )}
       </Card>
 
       <Card title="User Demographics & Behavior">
