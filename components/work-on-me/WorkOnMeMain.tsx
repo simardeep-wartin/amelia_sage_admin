@@ -218,8 +218,7 @@ export default function WorkOnMeMain({
           else handleDeleteFocusArea(pendingDelete.id);
           setPendingDelete(null);
         }}
-        title={`Delete "${pendingDelete?.title ?? ""}"`}
-        message={`Are you sure you want to delete "${pendingDelete?.title ?? ""}"? This action cannot be undone.`}
+        itemName={pendingDelete?.title ?? ""}
       />
 
       <ActionModal

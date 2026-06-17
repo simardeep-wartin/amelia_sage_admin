@@ -213,8 +213,7 @@ export default function WellthPlansMain({
           if (pendingDeletePlan) handleDeletePlan(pendingDeletePlan.id);
           setPendingDeletePlan(null);
         }}
-        title={`Delete "${pendingDeletePlan?.title ?? ""}"`}
-        message={`Are you sure you want to delete "${pendingDeletePlan?.title ?? ""}"? This action cannot be undone.`}
+        itemName={pendingDeletePlan?.title ?? ""}
       />
 
       <DynamicSidePanel

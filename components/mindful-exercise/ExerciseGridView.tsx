@@ -169,8 +169,7 @@ export default function ExerciseGridView({
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleConfirmDelete}
-        title="Delete Exercise"
-        message="Are you sure you want to delete this exercise? This action cannot be undone."
+        itemName={exerciseToDelete ?? "this exercise"}
       />
     </div>
   );

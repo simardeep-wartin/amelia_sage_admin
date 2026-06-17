@@ -111,8 +111,7 @@ export default function CalmAndStillnessMain() {
         isOpen={modal.isDeleteModalOpen}
         onClose={modal.closeDelete}
         onConfirm={handleConfirmDelete}
-        title="Delete Category"
-        message="Are you sure you want to delete this category? This action cannot be undone and all associated exercises will be removed."
+        itemName={modal.itemToDelete ?? "this category"}
       />
     </div>
   );

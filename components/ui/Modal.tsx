@@ -6,7 +6,7 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  title: string;
+  title?: string;
   children: ReactNode;
   footer?: ReactNode;
   maxWidth?: string; // e.g., "max-w-2xl", "max-w-3xl"
