@@ -9,7 +9,7 @@ import ExerciseCard from "./ExerciseCard";
 import AddEditModal from "@/components/common/AddEditModal";
 import DeleteConfirmationModal from "@/components/common/DeleteConfirmationModal";
 import EmptyState from "@/components/common/EmptyState";
-import { type ExerciseSubCategory, type Exercise } from "@/types/mindful-exercise";
+import type { ExerciseSubCategory, Exercise } from "@/types";
 
 interface ExerciseGridViewProps {
   subCategory: ExerciseSubCategory;
@@ -169,8 +169,7 @@ export default function ExerciseGridView({
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleConfirmDelete}
-        title="Delete Exercise"
-        message="Are you sure you want to delete this exercise? This action cannot be undone."
+        itemName={exerciseToDelete ?? "this exercise"}
       />
     </div>
   );

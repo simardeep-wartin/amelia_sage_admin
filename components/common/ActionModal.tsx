@@ -55,13 +55,13 @@ export default function ActionModal({
     }
   }, [initialData, isOpen, type, resetForm]);
 
-  const handleSave = () => {
+  const handleSave = (isDraft = false) => {
     if (type === "category") {
-      onSave({ name: field1, description: field2, icon: selectedFile });
+      onSave({ name: field1, description: field2, icon: selectedFile, is_draft: isDraft });
     } else if (type === "exercise") {
-      onSave({ title: field1, description: field2 });
+      onSave({ title: field1, description: field2, is_draft: isDraft });
     } else if (type === "intro-screen") {
-      onSave({ subtitle: field1, sageSays: field2, description: field3 });
+      onSave({ subtitle: field1, sageSays: field2, description: field3, is_draft: isDraft });
     }
     resetForm();
     onClose();
@@ -70,6 +70,22 @@ export default function ActionModal({
   const isFormValid = field1.trim() !== "" && field2.trim() !== "";
   const isEdit = !!initialData;
   const modalTitle = isEdit ? title.replace("Add New", "Edit").replace("Create", "Edit") : title;
+
+  const hasChanges =
+    !isEdit ||
+    (() => {
+      if (type === "intro-screen") {
+        return (
+          field1 !== ((initialData?.subtitle as string) || "") ||
+          field2 !== ((initialData?.sageSays as string) || "") ||
+          field3 !== ((initialData?.description as string) || "")
+        );
+      }
+      return (
+        field1 !== ((initialData?.title as string) || (initialData?.name as string) || "") ||
+        field2 !== ((initialData?.description as string) || "")
+      );
+    })();
 
   const footer = (
     <>
@@ -81,18 +97,16 @@ export default function ActionModal({
       </button>
       {type === "exercise" || type === "intro-screen" ? (
         <>
-          {!isEdit && (
-            <button
-              onClick={handleSave}
-              disabled={!isFormValid}
-              className="w-full sm:flex-1 h-12 rounded-lg border border-sageGreen text-base font-semibold text-sageGreen transition-colors hover:bg-green-50 disabled:border-sageGreen/40 disabled:text-[#C1D2A4] disabled:cursor-not-allowed disabled:hover:bg-white"
-            >
-              Save as Draft
-            </button>
-          )}
           <button
-            onClick={handleSave}
-            disabled={!isFormValid}
+            onClick={() => handleSave(true)}
+            disabled={!isFormValid || !hasChanges}
+            className="w-full sm:flex-1 h-12 rounded-lg border border-sageGreen text-base font-semibold text-sageGreen transition-colors hover:bg-green-50 disabled:border-sageGreen/40 disabled:text-[#C1D2A4] disabled:cursor-not-allowed disabled:hover:bg-white"
+          >
+            Save as Draft
+          </button>
+          <button
+            onClick={() => handleSave(false)}
+            disabled={!isFormValid || !hasChanges}
             className={`w-full sm:flex-1 h-12 rounded-lg bg-sageGreen text-base font-semibold text-white transition-colors hover:bg-[#7fa18c] disabled:bg-[#C1D2A4] disabled:cursor-not-allowed disabled:bg-sageGreen/40 ${isEdit ? "sm:flex-[2]" : ""}`}
           >
             {isEdit
@@ -102,7 +116,7 @@ export default function ActionModal({
         </>
       ) : (
         <button
-          onClick={handleSave}
+          onClick={() => handleSave(false)}
           className="flex-1 h-10 sm:h-12 rounded-lg bg-[#8EB19D] text-sm sm:text-base font-semibold text-white transition-colors hover:bg-[#7fa18c]"
         >
           {isEdit ? "Save Changes" : actionText}
@@ -123,7 +137,13 @@ export default function ActionModal({
         <Input
           label={
             nameLabel ||
-            (type === "exercise" ? "Add Title" : type === "intro-screen" ? "Add Subtitle" : "Name")
+            (type === "exercise"
+              ? isEdit
+                ? "Title"
+                : "Add Title"
+              : type === "intro-screen"
+                ? "Add Subtitle"
+                : "Name")
           }
           placeholder={
             type === "exercise"
@@ -146,7 +166,9 @@ export default function ActionModal({
         )}
 
         <div className="space-y-1">
-          <label className="block text-s font-normal text-charcoal">Add Description</label>
+          <label className="block text-s font-normal text-charcoal">
+            {isEdit ? "Description" : "Add Description"}
+          </label>
           <textarea
             className="w-full rounded-lg border border-[#ededed] bg-white px-5 py-4 font-normal text-m text-charcoal placeholder:text-[#e1e1e1] outline-none transition focus:border-sageGreen/55 focus:ring-2 focus:ring-sageGreen/20 min-h-[140px] resize-none"
             placeholder="Add Description Here"

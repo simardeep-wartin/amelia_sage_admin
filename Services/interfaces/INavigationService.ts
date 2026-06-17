@@ -1,4 +1,4 @@
-import type { NavigationItem, NavigationSection } from "@/Services/navigationService";
+import type { NavigationItem, NavigationSection } from "@/types";
 
 export interface INavigationService {
   getNavigationSections(): NavigationSection[];

@@ -164,10 +164,10 @@ export default function AddEditModal({
             />
 
             <div className="space-y-1">
-              <label className="block text-s font-medium text-charcoal">Add Description</label>
+              <label className="block text-s font-medium text-charcoal">Add Sub Title</label>
               <textarea
                 className="w-full rounded-lg border border-[#ededed] bg-white px-5 py-4 font-normal text-m text-charcoal placeholder:text-[#e1e1e1] outline-none transition focus:border-sageGreen/55 focus:ring-2 focus:ring-sageGreen/20 min-h-[100px] resize-none"
-                placeholder="Add Description Here"
+                placeholder="Add Sub Title Here"
                 {...register("description")}
               />
               {errors.description && (

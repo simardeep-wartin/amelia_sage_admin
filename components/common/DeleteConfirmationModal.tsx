@@ -9,32 +9,26 @@ interface DeleteConfirmationModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
-  title: string;
-  message: string;
+  itemName: string;
 }
 
 export default function DeleteConfirmationModal({
   isOpen,
   onClose,
   onConfirm,
-  title,
-  message,
+  itemName,
 }: DeleteConfirmationModalProps) {
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title="Delete Confirmation"
-      maxWidth="max-w-md"
-    >
+    <Modal isOpen={isOpen} onClose={onClose} maxWidth="max-w-xl">
       <div className="flex flex-col items-center text-center space-y-4">
         <div className="h-16 w-16 bg-red-50 text-destructive flex items-center justify-center rounded-full">
           <TrashIcon className="h-8 w-8" />
         </div>
         <div className="space-y-2">
-          <h3 className="text-xl font-bold text-charcoal">{title}</h3>
-          <p className="text-sm text-[#A1A1A1] leading-relaxed">
-            {message}
+          <p className="text-[20px] font-sm text-slate leading-relaxed">
+            Are you sure you want to delete{" "}
+            <span className="text-charcoal font-semibold">&ldquo;{itemName}&rdquo;</span>? This
+            action cannot be undone.
           </p>
         </div>
       </div>

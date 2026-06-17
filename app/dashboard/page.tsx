@@ -5,19 +5,55 @@ import PageLayout from "@/components/layout/PageLayout";
 import DashboardLoader from "@/components/loaders/dashboard-loader";
 import DashboardLeftPanel from "@/components/dashboard/DashboardLeftPanel";
 import DashboardRightPanel from "@/components/dashboard/DashboardRightPanel";
+import {
+  getDashboardOverview,
+  type DashboardOverviewData,
+  getWealthPlan,
+  type WealthPlanItem,
+  getPlanTypes,
+  type PlanTypesData,
+} from "@/Services/api/dashboard";
 
 export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
-  const [activeUsersFilter, setActiveUsersFilter] = useState("This Week");
-  const [progressFilter, setProgressFilter] = useState("This Week");
-  const [distributionFilter, setDistributionFilter] = useState("This Week");
+  const [activeUsersFilter, setActiveUsersFilter] = useState("All");
+  const [progressFilter, setProgressFilter] = useState("All");
+  const [distributionFilter, setDistributionFilter] = useState("All");
+  const [wealthPlan, setWealthPlan] = useState<WealthPlanItem[]>([]);
+  const [planTypes, setPlanTypes] = useState<PlanTypesData | undefined>(undefined);
+  const [overviewData, setOverviewData] = useState<DashboardOverviewData | undefined>(undefined);
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1500);
-    return () => clearTimeout(timer);
+    Promise.all([
+      getWealthPlan({ filter: "all" }),
+      getPlanTypes({ filter: "all" }),
+      getDashboardOverview(),
+    ])
+      .then(([wp, pt, ov]) => {
+        setWealthPlan(wp.data);
+        setPlanTypes(pt.data);
+        setOverviewData(ov.data);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   if (loading) return <DashboardLoader />;
+
+  const handleProgressFilterChange = (
+    val: string,
+    range?: { from: Date | null; to: Date | null },
+  ) => {
+    setProgressFilter(val);
+    getWealthPlan({ filter: val, range }).then((res) => setWealthPlan(res.data));
+  };
+
+  const handleDistributionFilterChange = (
+    val: string,
+    range?: { from: Date | null; to: Date | null },
+  ) => {
+    setDistributionFilter(val);
+    getPlanTypes({ filter: val, range }).then((res) => setPlanTypes(res.data));
+  };
 
   return (
     <PageLayout title="Dashboard Overview">
@@ -25,12 +61,17 @@ export default function DashboardPage() {
         <DashboardLeftPanel
           activeUsersFilter={activeUsersFilter}
           onActiveUsersFilterChange={setActiveUsersFilter}
-          progressFilter={progressFilter}
-          onProgressFilterChange={setProgressFilter}
           distributionFilter={distributionFilter}
-          onDistributionFilterChange={setDistributionFilter}
+          onDistributionFilterChange={handleDistributionFilterChange}
+          planTypes={planTypes}
+          overviewData={overviewData}
         />
-        <DashboardRightPanel />
+        <DashboardRightPanel
+          overviewData={overviewData}
+          wealthPlanItems={wealthPlan}
+          progressFilter={progressFilter}
+          onProgressFilterChange={handleProgressFilterChange}
+        />
       </div>
     </PageLayout>
   );

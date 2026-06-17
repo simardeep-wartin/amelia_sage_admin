@@ -12,6 +12,15 @@ export interface ActionCardProps {
   onAction?: () => void;
   actionIcon?: React.ReactNode;
   actionClassName?: string;
+  /** When true the primary action button is hidden — useful when the whole card div is clickable */
+  hideActionButton?: boolean;
+  showSubtitle?: boolean;
+  onSecondaryAction?: () => void;
+  secondaryActionIcon?: React.ReactNode;
+  secondaryActionClassName?: string;
+  onDeleteAction?: () => void;
+  deleteActionIcon?: React.ReactNode;
+  deleteActionClassName?: string;
 }
 
 export default function ActionCard({
@@ -23,9 +32,20 @@ export default function ActionCard({
   onAction,
   actionIcon = <PencilSquareIcon className="h-6 w-6" />,
   actionClassName = "border border-border bg-white text-grey hover:bg-softstone hover:text-charcoal",
+  hideActionButton = false,
+  showSubtitle = false,
+  onSecondaryAction,
+  secondaryActionIcon = <PencilSquareIcon className="h-5 w-5" />,
+  secondaryActionClassName = "border border-border bg-white text-grey hover:bg-softstone hover:text-charcoal",
+  onDeleteAction,
+  deleteActionIcon,
+  deleteActionClassName = "border border-cardBorder bg-white text-red-400 hover:bg-red-50 hover:text-red-600",
 }: ActionCardProps) {
   return (
-    <div className="flex items-center justify-between rounded-xl border border-cardBorder bg-white p-4 sm:p-5 shadow-sm transition-all hover:shadow-md">
+    <div
+      className={`flex items-center justify-between rounded-xl border border-cardBorder bg-white p-4 sm:p-5 shadow-sm transition-all hover:shadow-md ${onAction ? "cursor-pointer" : ""}`}
+      onClick={onAction}
+    >
       <div className="flex items-center gap-3 sm:gap-4">
         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-cardBorder bg-transparent">
           {icon}
@@ -34,7 +54,9 @@ export default function ActionCard({
           <span className="font-cormorant text-[16px] sm:text-[20px] font-bold text-charcoal">
             {title}
           </span>
-          {subtitle && <span className="text-s font-normal text-[#6D7280] mt-0.5">{subtitle}</span>}
+          {showSubtitle && subtitle && (
+            <span className="text-s font-normal text-[#6D7280] mt-0.5">{subtitle}</span>
+          )}
         </div>
       </div>
 
@@ -49,10 +71,39 @@ export default function ActionCard({
           </div>
         )}
 
-        {/* Action Button */}
-        {onAction && (
+        {/* Secondary Action Button (e.g. Edit) */}
+        {onSecondaryAction && (
           <button
-            onClick={onAction}
+            onClick={(e) => {
+              e.stopPropagation();
+              onSecondaryAction();
+            }}
+            className={`flex px-2 py-1 items-center justify-center rounded-lg transition-colors cursor-pointer ${secondaryActionClassName}`}
+          >
+            {secondaryActionIcon}
+          </button>
+        )}
+
+        {/* Delete Action Button */}
+        {onDeleteAction && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onDeleteAction();
+            }}
+            className={`flex px-2 py-1 items-center justify-center rounded-lg transition-colors cursor-pointer ${deleteActionClassName}`}
+          >
+            {deleteActionIcon}
+          </button>
+        )}
+
+        {/* Primary Action Button — hidden when hideActionButton=true (div click handles it) */}
+        {onAction && !hideActionButton && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onAction();
+            }}
             className={`flex px-2 py-1 items-center justify-center rounded-lg transition-colors cursor-pointer ${actionClassName}`}
           >
             {actionIcon}

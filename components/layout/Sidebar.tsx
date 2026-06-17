@@ -4,48 +4,30 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import {
-  HomeIcon,
-  ArrowTrendingUpIcon,
-  ShieldCheckIcon,
-  UsersIcon,
-  BanknotesIcon,
-  StarIcon,
-  HeartIcon,
-  SparklesIcon,
-  SignalIcon,
-  SunIcon,
-  BookOpenIcon,
-  CpuChipIcon,
-  BellIcon,
-  Cog6ToothIcon,
-  ClipboardDocumentListIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
-import type { ComponentType, SVGProps } from "react";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 import { getNavigationSections } from "@/Services/navigationService";
 
-const ICON_MAP: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
-  "/dashboard": HomeIcon,
-  "/user-insights": ArrowTrendingUpIcon,
-  "/governance-safety": ShieldCheckIcon,
-  "/demographics": UsersIcon,
-  "/financial-management": BanknotesIcon,
-  "/access-tiers": StarIcon,
-  "/wellth-plans": HeartIcon,
-  "/work-on-me-exercises": SparklesIcon,
-  "/mindful-exercise-management": SignalIcon,
-  "/calm-stillness-management": SunIcon,
-  "/journal-management": BookOpenIcon,
-  "/sage-ai-settings": CpuChipIcon,
-  "/notifications": BellIcon,
-  "/settings": Cog6ToothIcon,
-  "/phase-2-roadmap": ClipboardDocumentListIcon,
+const ICON_MAP: Record<string, string> = {
+  "/dashboard": "/auth/dashboard.svg",
+  "/user-insights": "/auth/user-insights.svg",
+  "/governance-safety": "/auth/governance.svg",
+  "/demographics": "/auth/demographics.svg",
+  "/financial-management": "/auth/financial.svg",
+  "/access-tiers": "/auth/access-tiers.svg",
+  "/wellth-plans": "/auth/wealth-plans.svg",
+  "/work-on-me-exercises": "/auth/work-on-me.svg",
+  "/mindful-exercise-management": "/auth/mindful-excercise.svg",
+  "/calm-stillness-management": "/auth/calm-stillness.svg",
+  "/exercises-draft-management": "/auth/fluent_drafts-24-regular.svg",
+  "/sage-ai-settings": "/auth/sage-AI.svg",
+  "/notifications": "/auth/notifications.svg",
+  "/settings": "/auth/settings.svg",
+  "/phase-2-roadmap": "/auth/phase-2.svg",
 };
 
 const AUTH_PATHS = ["/signin", "/signup"];
 const NAV_LINK_BASE =
-  "flex min-h-10 w-full items-center gap-3 rounded-lg px-3 py-2 text-softstone transition-colors";
+  "flex min-h-10 w-full items-center gap-3 rounded-lg px-3 py-2 text-softstone transition-colors font-inter";
 const NAV_LINK_ACTIVE = "bg-gold shadow-sm";
 const NAV_LINK_HOVER = "hover:bg-gold hover:shadow-sm";
 
@@ -90,9 +72,7 @@ export default function Sidebar() {
                 className="object-contain"
               />
             </div>
-            <span className="font-cormorant text-xl font-bold leading-none text-paper">
-              Amelia Sage
-            </span>
+            <span className="font-cormorant text-xxl font-bold leading-none">Amelia Sage</span>
           </div>
           <button
             className="rounded p-1 text-paper md:hidden"
@@ -107,13 +87,13 @@ export default function Sidebar() {
         <nav className="flex flex-col gap-6 px-4 pb-6 pt-4">
           {navSections.map((section) => (
             <div key={section.title} className="flex flex-col gap-2">
-              <p className="px-3 font-cormorant text-xs font-bold uppercase tracking-wide text-softstone">
+              <p className="px-3 font-cormorant text-xs font-bold tracking-wide text-white">
                 {section.title}
               </p>
               <ul className="flex flex-col gap-1">
                 {section.items.map((item) => {
                   const isActive = pathname === item.href;
-                  const Icon = ICON_MAP[item.href];
+                  const iconSrc = ICON_MAP[item.href];
                   return (
                     <li key={item.href}>
                       <Link
@@ -125,7 +105,16 @@ export default function Sidebar() {
                           isActive ? NAV_LINK_ACTIVE : NAV_LINK_HOVER,
                         ].join(" ")}
                       >
-                        {Icon && <Icon className="h-5 w-5 shrink-0" aria-hidden="true" />}
+                        {iconSrc && (
+                          <Image
+                            src={iconSrc}
+                            alt=""
+                            width={20}
+                            height={20}
+                            className="shrink-0"
+                            aria-hidden="true"
+                          />
+                        )}
                         <span className="text-s font-medium">{item.label}</span>
                       </Link>
                     </li>

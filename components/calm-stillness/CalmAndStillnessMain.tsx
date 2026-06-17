@@ -12,7 +12,7 @@ import CategoryTabs from "@/components/common/CategoryTabs";
 import ListFilters from "@/components/common/ListFilters";
 import { useCalmAndStillness } from "@/hooks/useCalmAndStillness";
 import { useModalState } from "@/hooks/useModalState";
-import { type ExerciseSubCategory } from "@/types/mindful-exercise";
+import type { ExerciseSubCategory } from "@/types";
 
 const BREADCRUMBS = [
   { label: "Dashboard" },
@@ -32,8 +32,8 @@ export default function CalmAndStillnessMain() {
 
   const currentCategory = categories.find((cat) => cat.name === activeTab);
   const sections = currentCategory?.subCategories ?? [];
-  const filteredSections = sections.filter((s) =>
-    s.name.toLowerCase().includes(searchQuery.toLowerCase()),
+  const filteredSections = sections.filter((section) =>
+    section.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const handleConfirmDelete = () => {
@@ -111,8 +111,7 @@ export default function CalmAndStillnessMain() {
         isOpen={modal.isDeleteModalOpen}
         onClose={modal.closeDelete}
         onConfirm={handleConfirmDelete}
-        title="Delete Category"
-        message="Are you sure you want to delete this category? This action cannot be undone and all associated exercises will be removed."
+        itemName={modal.itemToDelete ?? "this category"}
       />
     </div>
   );

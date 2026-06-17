@@ -92,7 +92,7 @@ export default function SignInForm({ onSuccessRedirectTo = "/dashboard" }: SignI
           </Link>
         </div>
 
-        {error ? <p className="text-sm text-red-200">{error}</p> : null}
+        {error ? <p className="text-sm text-red-500">{error}</p> : null}
 
         <div className="pt-3">
           <Button type="submit" isLoading={isLoading}>

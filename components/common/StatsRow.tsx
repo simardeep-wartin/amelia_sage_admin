@@ -4,16 +4,18 @@ type StatsRowProps = {
   label: string;
   value: ReactNode;
   valueClassName?: string;
+  labelClassName?: string;
 };
 
 export default function StatsRow({
   label,
   value,
-  valueClassName = "font-cormorant text-lg font-semibold text-charcoal",
+  valueClassName = "font-cormorant text-base font-semibold text-charcoal",
+  labelClassName = "text-grey text-xs font-inter font-normal",
 }: StatsRowProps) {
   return (
     <div className="flex justify-between">
-      <span className="text-[#6b6b6b]">{label}:</span>
+      <span className={labelClassName}>{label}:</span>
       <span className={valueClassName}>{value}</span>
     </div>
   );

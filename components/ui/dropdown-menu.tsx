@@ -1,28 +1,36 @@
 "use client";
 
 import * as React from "react";
+import * as ReactDOM from "react-dom";
 import { cn } from "@/lib/utils";
 
 interface DropdownMenuContextValue {
   open: boolean;
   setOpen: (v: boolean) => void;
+  triggerRect: DOMRect | null;
+  setTriggerRect: (rect: DOMRect | null) => void;
 }
 
 const DropdownMenuContext = React.createContext<DropdownMenuContextValue>({
   open: false,
   setOpen: () => {},
+  triggerRect: null,
+  setTriggerRect: () => {},
 });
 
 export function DropdownMenu({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = React.useState(false);
+  const [triggerRect, setTriggerRect] = React.useState<DOMRect | null>(null);
+
   React.useEffect(() => {
     if (!open) return;
     const close = () => setOpen(false);
     document.addEventListener("click", close);
     return () => document.removeEventListener("click", close);
   }, [open]);
+
   return (
-    <DropdownMenuContext.Provider value={{ open, setOpen }}>
+    <DropdownMenuContext.Provider value={{ open, setOpen, triggerRect, setTriggerRect }}>
       <div className="relative inline-block">{children}</div>
     </DropdownMenuContext.Provider>
   );
@@ -34,14 +42,18 @@ export function DropdownMenuTrigger({
   onClick: onClickProp,
   ...props
 }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
-  const { open, setOpen } = React.useContext(DropdownMenuContext);
+  const { open, setOpen, setTriggerRect } = React.useContext(DropdownMenuContext);
+  const ref = React.useRef<HTMLButtonElement>(null);
+
   return (
     <button
+      ref={ref}
       type="button"
       {...props}
       className={className}
       onClick={(e) => {
         e.stopPropagation();
+        if (ref.current) setTriggerRect(ref.current.getBoundingClientRect());
         setOpen(!open);
         onClickProp?.(e);
       }}
@@ -60,18 +72,33 @@ export function DropdownMenuContent({
   align?: "start" | "end";
   className?: string;
 }) {
-  const { open } = React.useContext(DropdownMenuContext);
-  if (!open) return null;
-  return (
+  const { open, triggerRect } = React.useContext(DropdownMenuContext);
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => setMounted(true), []);
+
+  if (!open || !triggerRect || !mounted) return null;
+
+  const style: React.CSSProperties = {
+    position: "fixed",
+    top: triggerRect.bottom + 4,
+    zIndex: 9999,
+    ...(align === "end"
+      ? { right: window.innerWidth - triggerRect.right }
+      : { left: triggerRect.left }),
+  };
+
+  return ReactDOM.createPortal(
     <div
+      style={style}
       className={cn(
-        "absolute z-50 mt-1 min-w-[8rem] overflow-hidden rounded-lg border border-border bg-paper py-1 shadow-md",
-        align === "end" ? "right-0" : "left-0",
+        "min-w-[8rem] overflow-hidden rounded-lg border border-border bg-paper py-1 shadow-md",
         className,
       )}
     >
       {children}
-    </div>
+    </div>,
+    document.body,
   );
 }
 

@@ -42,13 +42,7 @@ function FigurePlaceholder() {
   );
 }
 
-function CardBase({
-  children,
-  className = "",
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
+function CardBase({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
     <section
       aria-busy="true"
@@ -65,12 +59,10 @@ export default function DashboardLoader() {
   return (
     <PageLayout title="Dashboard Overview">
       <div aria-busy="true" className="flex flex-col gap-4">
-
         {/* ── Row 1: Active Users + Wellth Plan ── */}
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-[2fr_1fr]">
-
           {/* Active Users */}
-          <CardBase className="min-h-[340px]">
+          <CardBase className="min-h-[357px]">
             <CardHeader noAction />
             <DescLines />
             <div className="mt-4 h-[140px] flex justify-center items-center">
@@ -88,10 +80,8 @@ export default function DashboardLoader() {
 
         {/* ── Rows 2+: two-column split ── */}
         <div className="flex flex-col gap-4 lg:flex-row">
-
           {/* ── Left column (2fr) ── */}
           <div className="flex flex-[2] flex-col gap-4">
-
             {/* Core vs Free Distribution */}
             <CardBase className="min-h-[220px]">
               <CardHeader />
@@ -138,7 +128,6 @@ export default function DashboardLoader() {
 
           {/* ── Right column (1fr) ── */}
           <div className="flex flex-1 flex-col gap-4">
-
             {/* Sage AI Interactions */}
             <CardBase className="min-h-[340px]">
               <CardHeader noAction />

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import ChartCard from "@/components/common/ChartCard";
 import FilterDropdown from "@/components/ui/FilterDropdown";
+import EmptyState from "@/components/common/EmptyState";
 
 interface HighlightItem {
   title: string;
@@ -24,6 +25,7 @@ interface HorizontalBarChartProps {
   xTicks?: number[];
   xDomain?: [number, number];
   barColor?: string;
+  onFilterChange?: (value: string, range?: { from: Date | null; to: Date | null }) => void;
 }
 
 export default function HorizontalBarChart({
@@ -34,16 +36,22 @@ export default function HorizontalBarChart({
   labelKey,
   highlights = [],
   lastUpdated,
-  xTicks = [0, 750, 1500, 2250, 3000],
-  xDomain = [0, 3000],
+  xTicks,
+  xDomain,
   barColor = "#8B7EC8",
+  onFilterChange,
 }: HorizontalBarChartProps) {
-  const [filter, setFilter] = useState("This Week");
+  const [filter, setFilter] = useState("All");
+
+  const handleFilter = (val: string, range?: { from: Date | null; to: Date | null }) => {
+    setFilter(val);
+    onFilterChange?.(val, range);
+  };
 
   return (
     <ChartCard
       title={title}
-      actions={<FilterDropdown variant="icon" value={filter} onChange={setFilter} />}
+      actions={<FilterDropdown value={filter} onChange={handleFilter} />}
       footer={
         <div className="space-y-4">
           {highlights.length > 0 && (
@@ -70,40 +78,53 @@ export default function HorizontalBarChart({
       {subtitle && <p className="text-[14px] text-slate">{subtitle}</p>}
 
       <div className="mt-4 h-[280px] w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart
-            layout="vertical"
-            data={data}
-            margin={{ top: 6, right: 8, left: 2, bottom: 18 }}
-            barCategoryGap={14}
-          >
-            <CartesianGrid strokeDasharray="4 4" stroke="#E5E7EB" horizontal vertical />
-            <XAxis
-              type="number"
-              tick={{ fontSize: 12, fill: "#6B6B6B" }}
-              domain={xDomain}
-              ticks={xTicks}
-            />
-            <YAxis
-              type="category"
-              dataKey={labelKey}
-              width={128}
-              tick={{ fontSize: 11, fill: "#6B6B6B" }}
-              axisLine={false}
-              tickLine={false}
-            />
-            <Tooltip
-              contentStyle={{ borderRadius: 10, border: "1px solid #F3F4F6", fontSize: 13 }}
-            />
-            <Bar
-              dataKey={dataKey}
-              fill={barColor}
-              radius={[3, 3, 3, 3]}
-              barSize={28}
-              isAnimationActive={false}
-            />
-          </BarChart>
-        </ResponsiveContainer>
+        {data.length === 0 ? (
+          <EmptyState />
+        ) : (
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              layout="vertical"
+              data={data}
+              margin={{ top: 6, right: 8, left: 2, bottom: 18 }}
+              barCategoryGap={14}
+            >
+              <CartesianGrid strokeDasharray="4 4" stroke="#E5E7EB" horizontal vertical />
+              <XAxis
+                type="number"
+                tick={{ fontSize: 12, fill: "#6B6B6B" }}
+                {...(xDomain && { domain: xDomain })}
+                {...(xTicks && { ticks: xTicks })}
+              />
+              <YAxis
+                type="category"
+                dataKey={labelKey}
+                width={128}
+                tick={{ fontSize: 11, fill: "#6B6B6B" }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <Tooltip
+                contentStyle={{
+                  borderRadius: 10,
+                  border: "1px solid #F3F4F6",
+                  fontSize: 13,
+                  color: "#1F2937",
+                }}
+                formatter={(value, name, props) => {
+                  const pct = (props.payload as Record<string, unknown>)?.percentage;
+                  return pct !== undefined ? [`${value} (${pct}%)`, name] : [value, name];
+                }}
+              />
+              <Bar
+                dataKey={dataKey}
+                fill={barColor}
+                radius={[3, 3, 3, 3]}
+                barSize={28}
+                isAnimationActive={false}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        )}
       </div>
     </ChartCard>
   );

@@ -1,19 +1,7 @@
 "use client";
 
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
-
-export interface FeaturePoint {
-  feature: string;
-  sessions: number;
-}
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import type { FeaturePoint } from "@/types";
 
 interface FeatureBarChartProps {
   data: FeaturePoint[];
@@ -24,6 +12,11 @@ export default function FeatureBarChart({ data }: FeatureBarChartProps) {
     ...point,
     sessions: Number(point.sessions) || 0,
   }));
+
+  const maxVal = Math.max(...normalizedData.map((point) => point.sessions), 1);
+  const domainMax = Math.ceil(maxVal * 1.2);
+  const step = Math.ceil(domainMax / 4);
+  const yTicks = [0, step, step * 2, step * 3, domainMax];
 
   return (
     <div className="h-[300px] w-full">
@@ -39,12 +32,7 @@ export default function FeatureBarChart({ data }: FeatureBarChartProps) {
               <stop offset="100%" stopColor="#D6B26A" />
             </linearGradient>
           </defs>
-          <CartesianGrid
-            strokeDasharray="4 4"
-            stroke="#E5E7EB"
-            vertical={true}
-            horizontal={true}
-          />
+          <CartesianGrid strokeDasharray="4 4" stroke="#E5E7EB" vertical={true} horizontal={true} />
 
           <XAxis
             dataKey="feature"
@@ -58,20 +46,22 @@ export default function FeatureBarChart({ data }: FeatureBarChartProps) {
             axisLine={{ stroke: "#E5E7EB", strokeWidth: 1 }}
             tickLine={{ stroke: "#E5E7EB", strokeWidth: 1 }}
             tick={{ fontSize: 12, fill: "#6B6B6B" }}
-            ticks={[0, 2500, 5000, 7500, 10000]}
-            domain={[0, 10000]}
+            ticks={yTicks}
+            domain={[0, domainMax]}
             width={45}
           />
 
           <Tooltip
             cursor={{ fill: "rgba(139,170,135,0.08)" }}
             contentStyle={{
-              border: "1px solid #F3F4F6",
-              borderRadius: "10px",
-              boxShadow: "0 4px 10px rgba(0,0,0,0.08)",
+              border: "1px solid #E5E7EB",
+              borderRadius: "8px",
+              boxShadow: "0 4px 16px rgba(0,0,0,0.15)",
               fontSize: "13px",
+              padding: "8px 12px",
             }}
-            labelStyle={{ color: "#2B2B2B", fontWeight: 500 }}
+            labelStyle={{ color: "#1F2937", fontWeight: 600, marginBottom: 4 }}
+            itemStyle={{ color: "#4B5563" }}
             formatter={(value) => [
               typeof value === "number" ? value.toLocaleString() : value,
               "Sessions",

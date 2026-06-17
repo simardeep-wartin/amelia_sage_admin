@@ -17,22 +17,11 @@ const ICON_MAP: Record<string, string> = {
 };
 
 // ─── Risk row ─────────────────────────────────────────────────────────────────
-function RiskRow({
-  label,
-  count,
-  dotColor,
-}: {
-  label: string;
-  count: number;
-  dotColor: string;
-}) {
+function RiskRow({ label, count, dotColor }: { label: string; count: number; dotColor: string }) {
   return (
     <div className="flex min-h-[68px] items-center justify-between rounded-[10px] bg-softstone px-4">
       <div className="flex items-center gap-3">
-        <span
-          className="h-3 w-3 shrink-0 rounded-full"
-          style={{ backgroundColor: dotColor }}
-        />
+        <span className="h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: dotColor }} />
         <span className="text-m font-medium text-charcoal">{label}</span>
         <span className="text-m font-medium text-charcoal/60">|</span>
         <span className="inline-flex h-[23px] min-w-[115px] items-center justify-center rounded-full bg-paper px-3">
@@ -45,7 +34,7 @@ function RiskRow({
       >
         Review Cases
         <span className="flex h-6 w-6 items-center justify-center rounded-full bg-paper shadow-sm">
-          <ArrowUpRightIcon className="h-3.5 w-3.5 text-charcoal/70" />
+          <ArrowUpRightIcon className="h-3.5 w-3.5 text-sageGreen/70" />
         </span>
       </Link>
     </div>
@@ -56,13 +45,12 @@ function RiskRow({
 export default function GovernanceSafetyPage() {
   const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
+  useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
     }, 1500);
     return () => clearTimeout(timer);
   }, []);
-
 
   if (loading) return <GovernanceSafetyLoader />;
 
@@ -75,13 +63,13 @@ export default function GovernanceSafetyPage() {
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {data.metrics.map((m) => (
+          {data.metrics.map((metric) => (
             <MetricCard
-              key={m.title}
-              title={m.title}
-              value={m.value}
-              subtitle={m.subtitle}
-              iconSrc={ICON_MAP[m.iconType] ?? "/auth/circleTick.svg"}
+              key={metric.title}
+              title={metric.title}
+              value={metric.value}
+              subtitle={metric.subtitle}
+              iconSrc={ICON_MAP[metric.iconType] ?? "/auth/circleTick.svg"}
             />
           ))}
         </div>
@@ -92,22 +80,20 @@ export default function GovernanceSafetyPage() {
             <button
               type="button"
               aria-label="View all"
-              className="flex h-6 w-6 items-center justify-center rounded-full border border-sageGreen/30 bg-paper shadow-sm transition-opacity hover:opacity-70"
+              className="flex h-6 w-6 items-center justify-center rounded-full border border-sageGreen/30 bg-paper transition-opacity hover:opacity-70"
             >
-              <ArrowUpRightIcon className="h-3.5 w-3.5 text-charcoal/70" />
+              <ArrowUpRightIcon className="h-3.5 w-3.5 text-sageGreen/70" />
             </button>
           }
         >
-          <p className="mb-4 text-s text-grey">
-            {data.overwhelmDetection.description}
-          </p>
+          <p className="mb-4 text-s text-grey">{data.overwhelmDetection.description}</p>
           <div className="space-y-3">
-            {data.overwhelmDetection.riskLevels.map((r) => (
+            {data.overwhelmDetection.riskLevels.map((riskLevel) => (
               <RiskRow
-                key={r.id}
-                label={r.label}
-                count={r.count}
-                dotColor={r.dotColor}
+                key={riskLevel.id}
+                label={riskLevel.label}
+                count={riskLevel.count}
+                dotColor={riskLevel.dotColor}
               />
             ))}
           </div>

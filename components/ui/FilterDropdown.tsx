@@ -1,10 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import {
-  ChevronDownIcon,
-  CalendarDaysIcon,
-} from "@heroicons/react/24/outline";
+import { ChevronDownIcon, CalendarDaysIcon } from "@heroicons/react/24/outline";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { cn } from "@/lib/utils";
@@ -18,7 +15,7 @@ type FilterDropdownProps = {
 };
 
 export default function FilterDropdown({
-  options = ["Today", "This Week", "This month", "This Year", "Custom"],
+  options = ["All", "Today", "Week", "Month", "Year", "Custom"],
   value,
   onChange,
   variant = "default",
@@ -33,18 +30,12 @@ export default function FilterDropdown({
     if (value) setSelected(value);
   }, [value]);
 
-  const isCustom = selected === "Custom";
+  const isCustom = selected.toLowerCase() === "custom";
 
-  const isSaveDisabled =
-    isCustom && (!from || !to || (from && to && from > to));
+  const isSaveDisabled = isCustom && (!from || !to || (from && to && from > to));
 
   const handleSelect = (opt: string) => {
     setSelected(opt);
-    if (opt !== "Custom") {
-      // If not custom, we might want to close and change immediately, 
-      // but the design shows a Save button even for simple selections?
-      // Actually, looking at Frame 1707480722, it's selected and Save is active.
-    }
   };
 
   const handleSave = () => {
@@ -57,7 +48,7 @@ export default function FilterDropdown({
     setSelected(options[0]);
     setFrom(null);
     setTo(null);
-    // Not closing the dropdown on clear as per common UI patterns, 
+    // Not closing the dropdown on clear as per common UI patterns,
     // but the user can then hit Save or Cancel.
   };
 
@@ -76,16 +67,13 @@ export default function FilterDropdown({
         <button
           onClick={() => setOpen((p) => !p)}
           className={cn(
-            "flex w-[148px] cursor-pointer items-center justify-between rounded-[8px] border border-[#E5E7EB] px-3 py-[7px] text-[12px] font-medium text-[#111827]",
-            className
+            "flex w-[148px] h-[38px] cursor-pointer items-center justify-between rounded-[8px] border border-[#E5E7EB] px-3 py-[7px] text-[12px] font-medium text-[#111827]",
+            className,
           )}
         >
           <span className="truncate">{selected}</span>
           <ChevronDownIcon
-            className={cn(
-              "h-4 w-4 text-[#6B7280] transition-transform ml-2",
-              open && "rotate-180"
-            )}
+            className={cn("h-4 w-4 text-[#6B7280] transition-transform ml-2", open && "rotate-180")}
           />
         </button>
       ) : (
@@ -100,7 +88,6 @@ export default function FilterDropdown({
       {/* Dropdown */}
       {open && (
         <div className="absolute right-0 top-[calc(100%+8px)] z-50 w-[249px] rounded-[10px] border border-[#E5E7EB] bg-white shadow-[0px_4px_12px_rgba(0,0,0,0.08)] overflow-hidden">
-
           {/* Options */}
           <div className="flex flex-col">
             {options.map((opt, idx) => (
@@ -117,27 +104,29 @@ export default function FilterDropdown({
                       onChange={() => handleSelect(opt)}
                       className="peer sr-only"
                     />
-                    <div className={cn(
-                      "h-[15px] w-[15px] rounded-full border transition-all flex items-center justify-center",
-                      selected === opt
-                        ? "border-[#94B694] bg-white"
-                        : "border-[#D1D5DB] bg-white"
-                    )}>
+                    <div
+                      className={cn(
+                        "h-[15px] w-[15px] rounded-full border transition-all flex items-center justify-center",
+                        selected === opt
+                          ? "border-[#94B694] bg-white"
+                          : "border-[#D1D5DB] bg-white",
+                      )}
+                    >
                       {selected === opt && (
                         <div className="h-[7px] w-[7px] rounded-full bg-[#94B694]" />
                       )}
                     </div>
                   </div>
-                  <span className={cn(
-                    "font-medium",
-                    selected === opt ? "text-[#111827]" : "text-[#111827]"
-                  )}>
+                  <span
+                    className={cn(
+                      "font-medium",
+                      selected === opt ? "text-[#111827]" : "text-[#111827]",
+                    )}
+                  >
                     {opt}
                   </span>
                 </label>
-                {idx < options.length - 1 && (
-                  <div className="h-[1px] bg-[#F3F4F6] mx-0" />
-                )}
+                {idx < options.length - 1 && <div className="h-[1px] bg-[#F3F4F6] mx-0" />}
               </div>
             ))}
           </div>
@@ -208,7 +197,7 @@ export default function FilterDropdown({
                   "h-[34px] rounded-[8px] px-4 text-[13px] font-medium transition-all",
                   isSaveDisabled
                     ? "cursor-not-allowed bg-[#E5E7EB] text-[#9CA3AF]"
-                    : "cursor-pointer bg-[#94B694] text-white hover:bg-[#83a383]"
+                    : "cursor-pointer bg-[#94B694] text-white hover:bg-[#83a383]",
                 )}
               >
                 Save

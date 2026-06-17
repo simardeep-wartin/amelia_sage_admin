@@ -66,9 +66,9 @@ function PromptContent() {
       {PROMPT_SECTIONS.map((section) => (
         <div key={section.title} className="space-y-[3px]">
           <p className="text-[14px] font-medium leading-[1.3]">{section.title}</p>
-          {section.bullets.map((b) => (
-            <p key={b} className="text-[12px] font-normal leading-[1.3]">
-              • {b}
+          {section.bullets.map((bullet) => (
+            <p key={bullet} className="text-[12px] font-normal leading-[1.3]">
+              • {bullet}
             </p>
           ))}
           {section.extra?.map((line) => (
@@ -106,9 +106,9 @@ export default function SageAiMain() {
   const handleEdit = () => {
     setEditText(
       PROMPT_SECTIONS.map(
-        (s) =>
-          `${s.title}\n${s.bullets.map((b) => `• ${b}`).join("\n")}${
-            s.extra ? "\n" + s.extra.join("\n") : ""
+        (section) =>
+          `${section.title}\n${section.bullets.map((bullet) => `• ${bullet}`).join("\n")}${
+            section.extra ? "\n" + section.extra.join("\n") : ""
           }`,
       ).join("\n\n"),
     );

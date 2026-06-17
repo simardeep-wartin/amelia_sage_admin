@@ -2,7 +2,7 @@ export type FieldType = "text" | "textarea" | "upload" | "select";
 
 export interface FormField {
   name: string;
-  label: string;
+  label?: string;
   placeholder?: string;
   type: FieldType;
   options?: string[]; // For select
@@ -18,6 +18,7 @@ export interface ModalConfig {
   fields?: FormField[];
   actionText: string;
   showDraftAction?: boolean;
+  showDraftOnEdit?: boolean;
   tabs?: {
     label: string;
     fields: FormField[];
@@ -36,9 +37,9 @@ export const WELLTH_MODAL_CONFIG: Record<string, ModalConfig> = {
         validation: { required: true },
       },
       {
-        name: "description",
-        label: "Add Description",
-        placeholder: "Add Description Here",
+        name: "sub_title",
+        label: "Add Sub Title",
+        placeholder: "Enter Sub Title",
         type: "textarea",
         validation: { required: true },
       },
@@ -49,6 +50,26 @@ export const WELLTH_MODAL_CONFIG: Record<string, ModalConfig> = {
       },
     ],
     actionText: "+ Add New Wellth Plan",
+  },
+  editPlan: {
+    title: "Edit Wellth Plan",
+    fields: [
+      {
+        name: "title",
+        label: "Plan Title",
+        placeholder: "Enter title",
+        type: "text",
+        validation: { required: true },
+      },
+      {
+        name: "sub_title",
+        label: "Sub Title",
+        placeholder: "Enter subtitle",
+        type: "textarea",
+        validation: { required: true },
+      },
+    ],
+    actionText: "Save Changes",
   },
   addExercise: {
     title: "Add New Exercise",
@@ -75,7 +96,7 @@ export const WELLTH_MODAL_CONFIG: Record<string, ModalConfig> = {
     title: "Create Intro Screen",
     tabs: [
       {
-        label: "Intro Screens",
+        label: "Intro Screen",
         fields: [
           {
             name: "subtitle",
@@ -89,7 +110,6 @@ export const WELLTH_MODAL_CONFIG: Record<string, ModalConfig> = {
             label: "Sage Says",
             placeholder: "Enter Sage Says",
             type: "text",
-            validation: { required: true },
           },
           {
             name: "description",
@@ -104,31 +124,39 @@ export const WELLTH_MODAL_CONFIG: Record<string, ModalConfig> = {
         label: "Sub-intro Screen",
         fields: [
           {
-            name: "subtitle",
-            label: "Add Subtitle",
-            placeholder: "Enter Subtitle",
+            name: "subIntroTitle",
+            label: "Add Title",
+            placeholder: "Enter Title",
             type: "text",
             validation: { required: true },
           },
           {
-            name: "description",
+            name: "subIntroDescription",
             label: "Add Description",
             placeholder: "Add Description Here",
             type: "textarea",
             validation: { required: true },
+          },
+          {
+            name: "subIntroFocusedIntension",
+            label: "Add Focused Intension",
+            placeholder: "Add Focused Intension Here",
+            type: "textarea",
           },
         ],
       },
     ],
     actionText: "+ Add Intro Screen",
     showDraftAction: true,
+    showDraftOnEdit: true,
   },
 };
 
 export const WELLTH_PANEL_CONFIG = {
   emptyState: {
     title: "No Exercises Yet",
-    description: "You have not added any exercises yet. Start building your routine by adding exercises tailored to your goals.",
+    description:
+      "You have not added any exercises yet. Start building your routine by adding exercises tailored to your goals.",
     actions: [
       { label: "+ Create Intro Screen", variant: "outline" as const, action: "addIntro" },
       { label: "+ Create New Exercise", variant: "solid" as const, action: "addExercise" },

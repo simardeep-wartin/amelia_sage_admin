@@ -2,6 +2,8 @@
 
 > **One document. Read this before creating any new file.**
 > ARCHITECTURE.md covers the stack. DEVELOPMENT_GUIDE.md covers process. This file covers **where code lives, what it looks like, and what already exists**.
+>
+> **Last updated:** 2026-05-27
 
 ---
 
@@ -9,13 +11,15 @@
 
 1. [Folder Tree](#1-folder-tree)
 2. [Layer Responsibilities](#2-layer-responsibilities)
-3. [Where Does X Go?](#3-where-does-x-go)
-4. [Naming Conventions](#4-naming-conventions)
-5. [Code Templates](#5-code-templates)
-6. [Common Components Catalog](#6-common-components-catalog)
-7. [Hooks Catalog](#7-hooks-catalog)
-8. [Import Path Rules](#8-import-path-rules)
-9. [New Feature Checklist](#9-new-feature-checklist)
+3. [API Layer — BFF Proxy Pattern](#3-api-layer--bff-proxy-pattern)
+4. [Service Layer — SOLID Structure](#4-service-layer--solid-structure)
+5. [Where Does X Go?](#5-where-does-x-go)
+6. [Naming Conventions](#6-naming-conventions)
+7. [Code Templates](#7-code-templates)
+8. [Common Components Catalog](#8-common-components-catalog)
+9. [Hooks Catalog](#9-hooks-catalog)
+10. [Import Path Rules](#10-import-path-rules)
+11. [New Feature Checklist](#11-new-feature-checklist)
 
 ---
 
@@ -25,14 +29,25 @@
 amelia_sage_admin/
 │
 ├── app/                                  # MVC: View (pages) + Controller (API routes)
-│   ├── api/
-│   │   ├── auth/signin/route.ts          # POST /api/auth/signin  [mock — replace with real backend]
-│   │   └── navigation/route.ts           # GET /api/navigation    [TODO: DEAD CODE — unused by frontend]
+│   ├── api/                              # ★ Server-only BFF proxies — secrets live here
+│   │   ├── auth/
+│   │   │   └── login/route.ts            # POST /api/auth/login
+│   │   ├── demographics/
+│   │   │   ├── overview/route.ts
+│   │   │   ├── gender-identity/route.ts
+│   │   │   ├── gender-identity/age-distribution/route.ts
+│   │   │   ├── gender-identity/core-conversion/route.ts
+│   │   │   ├── growth-trend/route.ts
+│   │   │   ├── ethnicity/route.ts
+│   │   │   ├── cultural-identity/route.ts
+│   │   │   └── cultural-identity/core-conversation/route.ts
+│   │   └── navigation/route.ts           # GET /api/navigation
 │   ├── auth/
 │   │   ├── forgot-password/page.tsx
 │   │   ├── reset-password/page.tsx
-│   │   └── signin/page.tsx               # Redirect alias → /signin
+│   │   └── signin/page.tsx
 │   ├── dashboard/page.tsx
+│   ├── demographics/page.tsx
 │   ├── calm-stillness-management/
 │   │   ├── [categoryId]/page.tsx
 │   │   └── page.tsx
@@ -41,11 +56,36 @@ amelia_sage_admin/
 │   │   ├── [categoryId]/page.tsx
 │   │   └── page.tsx
 │   ├── financial-management/page.tsx
-│   ├── [other-features]/page.tsx         # One page per feature — keep under 80 lines
+│   ├── governance-safety/
+│   │   ├── content-review/page.tsx
+│   │   ├── review/pending/page.tsx
+│   │   └── page.tsx
+│   ├── access-tiers/page.tsx
+│   ├── journey-orchestration/page.tsx
+│   ├── notifications/page.tsx
+│   ├── phase-2-roadmap/page.tsx
+│   ├── sage-ai-settings/page.tsx
+│   ├── settings/page.tsx
+│   ├── user-insights/page.tsx
+│   ├── wellth-plans/page.tsx
+│   ├── work-on-me-exercises/page.tsx
 │   ├── layout.tsx                        # Root layout (Sidebar + fonts)
 │   └── page.tsx                          # / → redirect to /dashboard
 │
 ├── Services/                             # MVC: Model (data access + business logic)
+│   ├── api/                              # ★ Client-side service layer — one file per endpoint
+│   │   ├── auth.ts                       # Auth API calls
+│   │   └── demographics/                 # Demographics domain — SOLID / one responsibility per file
+│   │       ├── index.ts                  # Barrel — import everything from here
+│   │       ├── utils.ts                  # FilterParams type + buildFilterQuery helper
+│   │       ├── overview.ts               # GET /demographics/overview
+│   │       ├── genderIdentity.ts         # GET /demographics/gender-identity
+│   │       ├── ageDistribution.ts        # GET /demographics/gender-identity/age-distribution
+│   │       ├── coreConversion.ts         # GET /demographics/gender-identity/core-conversion
+│   │       ├── growthTrend.ts            # GET /demographics/growth-trend + buildTrendChartData
+│   │       ├── ethnicity.ts              # GET /demographics/ethnicity
+│   │       ├── culturalIdentity.ts       # GET /demographics/cultural-identity
+│   │       └── culturalCoreConversion.ts # GET /demographics/cultural-identity/core-conversation
 │   ├── interfaces/                       # SOLID: Service contracts (DIP / ISP)
 │   │   ├── IAuthService.ts
 │   │   ├── ICalmAndStillnessService.ts
@@ -53,7 +93,6 @@ amelia_sage_admin/
 │   │   ├── IMindfulExerciseService.ts
 │   │   ├── INavigationService.ts
 │   │   └── index.ts                      # Barrel — import interfaces from here
-│   ├── authService.ts                    # Implements IAuthService
 │   ├── authApi.ts                        # TODO: DEAD CODE — real backend client, unwired
 │   ├── calmAndStillnessService.ts        # Implements ICalmAndStillnessService
 │   ├── journalService.ts                 # Implements IJournalService
@@ -127,6 +166,8 @@ amelia_sage_admin/
 │   ├── loaders/                          # Skeleton screens — one per page
 │   │   ├── common/                       # Primitive skeleton shapes
 │   │   │   ├── skeleton.tsx
+│   │   │   ├── skeleton-action-card.tsx
+│   │   │   ├── skeleton-avatar.tsx
 │   │   │   ├── skeleton-card.tsx
 │   │   │   ├── skeleton-chart.tsx
 │   │   │   ├── skeleton-metric-card.tsx
@@ -135,7 +176,13 @@ amelia_sage_admin/
 │   │   ├── dashboard-loader.tsx
 │   │   ├── demographics-loader.tsx
 │   │   ├── finance-loader.tsx
+│   │   ├── governance-safety-loader.tsx
+│   │   ├── journal-loader.tsx
 │   │   ├── mindful-exercise-loader.tsx
+│   │   ├── sage-ai-loader.tsx
+│   │   ├── user-insight-loader.tsx
+│   │   ├── wellth-plan-loader.tsx
+│   │   ├── work-on-me-loader.tsx
 │   │   └── [feature]-loader.tsx          # Add one per new page
 │   │
 │   ├── mindful-exercise/
@@ -176,6 +223,10 @@ amelia_sage_admin/
 │   └── useModalState.ts                  # Add/Edit/Delete modal state  ← NEW
 │
 ├── lib/                                  # Pure utilities (canonical location)
+│   ├── apiClient.ts                      # ★ Server-side HTTP client — attaches ADMIN_API_KEY + Bearer token
+│   ├── clientApi.ts                      # ★ Browser-side HTTP client — calls /api/... (no secrets)
+│   ├── endpoints.ts                      # ★ Single source of truth for all API URL paths
+│   ├── payloads.ts                       # Shared request/response payload types
 │   ├── utils.ts                          # cn() — Tailwind class merging helper
 │   ├── validators.ts                     # Barrel re-export of lib/validators/*
 │   ├── validators/
@@ -220,12 +271,13 @@ The codebase follows **MVC + SOLID**. Each layer has one job.
 │              • Max ~80 lines per page file                │
 ├─────────────────────────────────────────────────────────┤
 │  CONTROLLER  hooks/use[Feature].ts                        │
-│              app/api/[route]/route.ts                     │
+│              app/api/[route]/route.ts  ← BFF proxy        │
 │              • Bridges data and UI                        │
 │              • Owns loading / error / data state          │
 │              • Calls service methods only                 │
 ├─────────────────────────────────────────────────────────┤
-│  MODEL       Services/[feature]Service.ts                 │
+│  MODEL       Services/api/[domain]/   ← client services   │
+│              Services/[feature]Service.ts                 │
 │              types/[feature].ts                           │
 │              lib/validators/[feature].ts                  │
 │              • All fetch / IO lives here                  │
@@ -236,81 +288,229 @@ The codebase follows **MVC + SOLID**. Each layer has one job.
 
 ### SOLID mapping
 
-| Principle | How it is enforced |
-|---|---|
-| **S** — Single Responsibility | Each service = one domain. Each component = one UI concern. Each hook = one data concern. |
-| **O** — Open / Closed | Services implement interfaces. Add behaviour by creating a new service that satisfies the same interface. |
-| **L** — Liskov Substitution | Any object satisfying `IAuthService` (mock or real) is a valid drop-in. |
-| **I** — Interface Segregation | Five focused interfaces in `Services/interfaces/`. No single interface mixes unrelated methods. |
-| **D** — Dependency Inversion | Services are typed against their interface (`const authService: IAuthService`). Hooks depend on the abstraction. |
+| Principle                     | How it is enforced                                                                                               |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| **S** — Single Responsibility | Each service file owns exactly one endpoint. Each component = one UI concern. Each hook = one data concern.      |
+| **O** — Open / Closed         | Services implement interfaces. Add behaviour by creating a new service that satisfies the same interface.        |
+| **L** — Liskov Substitution   | Any object satisfying `IAuthService` (mock or real) is a valid drop-in.                                          |
+| **I** — Interface Segregation | Five focused interfaces in `Services/interfaces/`. No single interface mixes unrelated methods.                  |
+| **D** — Dependency Inversion  | Services are typed against their interface (`const authService: IAuthService`). Hooks depend on the abstraction. |
 
 ---
 
-## 3. Where Does X Go?
+## 3. API Layer — BFF Proxy Pattern
 
-| What you're adding | Where it lives |
-|---|---|
-| New page | `app/[feature]/page.tsx` |
-| Page UI components | `components/[feature]/[ComponentName].tsx` |
-| Reusable atomic element (button, input, badge variant) | `components/ui/` |
-| Reusable composed block (card, modal, filter bar) | `components/common/` |
-| Data fetching / API call | `Services/[feature]Service.ts` |
-| Service interface | `Services/interfaces/I[Feature]Service.ts` |
-| Client state hook | `hooks/use[Feature].ts` |
-| Shared modal state | Use `hooks/useModalState.ts` (already exists) |
-| Zod validation schema | `lib/validators/[domain].ts`, re-export from `lib/validators/index.ts` |
-| TypeScript type / interface | `types/[feature].ts` |
-| Global client state | `store/[feature]Store.ts` (Zustand) |
-| Nav item | `Services/navigationService.ts` only |
-| Pure utility function | `lib/utils.ts` or a new `lib/[name].ts` |
-| Skeleton loader | `components/loaders/[feature]-loader.tsx` |
-| Static config (not types) | `lib/[feature].config.ts` |
+Every route handler under `app/api/` is a **Backend-for-Frontend proxy**. Its job is:
+
+1. Read the `auth-token` httpOnly cookie ← **only readable server-side**
+2. Forward the request to FastAPI at `BACKEND_URL` with both security headers
+3. Stream the JSON response back to the browser
+
+```
+Browser  →  clientApi.get("/demographics/overview")
+                └── fetch("/api/demographics/overview")         ← no secrets
+                      └── app/api/demographics/overview/route.ts  ← server-only
+                            └── apiClient.get(BACKEND_URL/demographics/overview, {
+                                  token: cookie("auth-token"),
+                                  apiKey: process.env.ADMIN_API_KEY,
+                                })
+```
+
+### Security invariants — **never break these**
+
+| Rule                                                            | Why                                           |
+| --------------------------------------------------------------- | --------------------------------------------- |
+| `ADMIN_API_KEY` is never in browser code                        | Exposed API key = unrestricted backend access |
+| `auth-token` cookie has `httpOnly: true`                        | JS cannot read it → XSS-proof                 |
+| `BACKEND_URL` has **no** `NEXT_PUBLIC_` prefix                  | Server-only — never sent to the client bundle |
+| Every route handler reads the cookie and returns 401 if missing | Prevents unauthenticated backend calls        |
+
+### `lib/apiClient.ts` vs `lib/clientApi.ts`
+
+|               | `apiClient`                   | `clientApi`                           |
+| ------------- | ----------------------------- | ------------------------------------- |
+| Used in       | `app/api/*/route.ts` (server) | `Services/api/*/` (browser)           |
+| Calls         | `BACKEND_URL` (FastAPI)       | `/api/...` (Next.js routes)           |
+| Carries       | `x-api-key` + `Authorization` | Nothing — cookies handled server-side |
+| Secret access | Yes (`process.env`)           | No                                    |
+
+### `lib/endpoints.ts` — single source of truth
+
+All URL path strings live here. **Never hardcode a URL anywhere else.**
+
+```ts
+export const ENDPOINTS = {
+  auth: { login: "/auth/login" },
+  demographics: {
+    overview: "/demographics/overview",
+    genderIdentity: "/demographics/gender-identity",
+    ageDistribution: "/demographics/gender-identity/age-distribution",
+    coreConversion: "/demographics/gender-identity/core-conversion",
+    growthTrend: "/demographics/growth-trend",
+    ethnicity: "/demographics/ethnicity",
+    culturalIdentity: "/demographics/cultural-identity",
+    culturalCoreConversion: "/demographics/cultural-identity/core-conversation",
+    culturalAgeDistribution: "/demographics/cultural-identity/age-distribution",
+  },
+} as const;
+```
 
 ---
 
-## 4. Naming Conventions
+## 4. Service Layer — SOLID Structure
 
-| Target | Convention | Example |
-|---|---|---|
-| Page files | kebab-case folder + `page.tsx` | `app/journal-management/page.tsx` |
-| Component files | PascalCase | `JournalMain.tsx`, `PageHeader.tsx` |
-| Hook files | camelCase, `use` prefix | `useJournal.ts`, `useModalState.ts` |
-| Service files | camelCase, `Service` suffix | `journalService.ts` |
-| Interface files | PascalCase, `I` prefix | `IJournalService.ts` |
-| Type files | kebab-case | `mindful-exercise.ts` |
-| Validator files | kebab-case by domain | `lib/validators/auth.ts` |
-| Loader files | kebab-case, `-loader` suffix | `mindful-exercise-loader.tsx` |
-| Zustand store | camelCase, `Store` suffix | `authStore.ts` |
-| Export in types file | named exports only (no default) | `export interface JournalEntry` |
+### `Services/api/demographics/` — one file per endpoint
+
+| File                        | Endpoint                              | Exports                                                     |
+| --------------------------- | ------------------------------------- | ----------------------------------------------------------- |
+| `utils.ts`                  | —                                     | `FilterParams`, `buildFilterQuery`                          |
+| `overview.ts`               | `GET /demographics/overview`          | `OverviewData`, `getOverview`                               |
+| `genderIdentity.ts`         | `GET /demographics/gender-identity`   | `GenderItem`, `GenderIdentityResponse`, `getGenderIdentity` |
+| `ageDistribution.ts`        | `GET /…/age-distribution`             | `AgeItem`, `getAgeDistribution`                             |
+| `coreConversion.ts`         | `GET /…/core-conversion`              | `CoreConversionItem`, `getCoreConversion`                   |
+| `growthTrend.ts`            | `GET /demographics/growth-trend`      | `TrendGroup`, `buildTrendChartData`, `getGrowthTrend`       |
+| `ethnicity.ts`              | `GET /demographics/ethnicity`         | `EthnicityData`, `getEthnicity`                             |
+| `culturalIdentity.ts`       | `GET /demographics/cultural-identity` | `CulturalIdentityData`, `getCulturalIdentity`               |
+| `culturalCoreConversion.ts` | `GET /…/core-conversation`            | `CulturalCoreItem`, `getCulturalCoreConversion`             |
+| `index.ts`                  | —                                     | barrel re-export of all above                               |
+
+**Always import from the barrel:**
+
+```ts
+import { getOverview, getEthnicity, type FilterParams } from "@/Services/api/demographics";
+```
+
+### Filter pattern
+
+All time-range filters use a consistent shape defined in `utils.ts`:
+
+```ts
+type FilterParams = {
+  filter?: string; // "all" | "today" | "week" | "month" | "year" | "custom"
+  range?: { from: Date | null; to: Date | null }; // only for "custom"
+};
+
+buildFilterQuery({ filter: "week" });
+// → "?filter=week"
+
+buildFilterQuery({
+  filter: "custom",
+  range: { from: new Date("2026-01-01"), to: new Date("2026-01-31") },
+});
+// → "?filter=custom&start_date=01/01/2026&end_date=31/01/2026"
+```
+
+UI label values (`"This Week"`, `"This Month"`) are auto-mapped to API values (`"week"`, `"month"`) inside `buildFilterQuery` — no mapping needed in page components.
+
+### Adding a new domain service
+
+```
+1. lib/endpoints.ts                    → add the URL path
+2. app/api/[domain]/route.ts           → BFF proxy route handler
+3. Services/api/[domain]/feature.ts    → service function + co-located types
+4. Services/api/[domain]/index.ts      → add export * from "./feature"
+```
+
+---
+
+## 5. Where Does X Go?
+
+| What you're adding                                     | Where it lives                                                         |
+| ------------------------------------------------------ | ---------------------------------------------------------------------- |
+| New page                                               | `app/[feature]/page.tsx`                                               |
+| Page UI components                                     | `components/[feature]/[ComponentName].tsx`                             |
+| Reusable atomic element (button, input, badge variant) | `components/ui/`                                                       |
+| Reusable composed block (card, modal, filter bar)      | `components/common/`                                                   |
+| **New API endpoint (client-side call)**                | `Services/api/[domain]/featureName.ts` + barrel export                 |
+| **New BFF proxy route**                                | `app/api/[domain]/route.ts` + URL in `lib/endpoints.ts`                |
+| Legacy full-domain service                             | `Services/[feature]Service.ts`                                         |
+| Service interface                                      | `Services/interfaces/I[Feature]Service.ts`                             |
+| Client state hook                                      | `hooks/use[Feature].ts`                                                |
+| Shared modal state                                     | Use `hooks/useModalState.ts` (already exists)                          |
+| Zod validation schema                                  | `lib/validators/[domain].ts`, re-export from `lib/validators/index.ts` |
+| TypeScript type / interface                            | `types/[feature].ts`                                                   |
+| Global client state                                    | `store/[feature]Store.ts` (Zustand)                                    |
+| Nav item                                               | `Services/navigationService.ts` only                                   |
+| Pure utility function                                  | `lib/utils.ts` or a new `lib/[name].ts`                                |
+| **API URL path string**                                | `lib/endpoints.ts` — never hardcode inline                             |
+| Skeleton loader                                        | `components/loaders/[feature]-loader.tsx`                              |
+| Static config (not types)                              | `lib/[feature].config.ts`                                              |
+
+---
+
+## 6. Naming Conventions
+
+| Target                 | Convention                              | Example                                        |
+| ---------------------- | --------------------------------------- | ---------------------------------------------- |
+| Page files             | kebab-case folder + `page.tsx`          | `app/journal-management/page.tsx`              |
+| Component files        | PascalCase                              | `JournalMain.tsx`, `PageHeader.tsx`            |
+| Hook files             | camelCase, `use` prefix                 | `useJournal.ts`, `useModalState.ts`            |
+| Service files          | camelCase, `Service` suffix             | `journalService.ts`                            |
+| Interface files        | PascalCase, `I` prefix                  | `IJournalService.ts`                           |
+| Type files             | kebab-case                              | `mindful-exercise.ts`                          |
+| Validator files        | kebab-case by domain                    | `lib/validators/auth.ts`                       |
+| Loader files           | kebab-case, `-loader` suffix            | `mindful-exercise-loader.tsx`                  |
+| Zustand store          | camelCase, `Store` suffix               | `authStore.ts`                                 |
+| Export in types file   | named exports only (no default)         | `export interface JournalEntry`                |
 | Export in service file | named `const` + typed against interface | `export const journalService: IJournalService` |
 
 ---
 
-## 5. Code Templates
+## 7. Code Templates
 
-### 5.1 — Service
+### 7.1 — API Service File (new pattern)
 
 ```ts
-// Services/[feature]Service.ts
-import type { I[Feature]Service } from "@/Services/interfaces";
-import type { [Feature]Type } from "@/types/[feature]";
+// Services/api/[domain]/featureName.ts
+import { clientApi } from "@/lib/clientApi";
+import { ENDPOINTS } from "@/lib/endpoints";
+import { buildFilterQuery, type FilterParams } from "./utils";
 
-export const [feature]Service: I[Feature]Service = {
-  async get[Items](): Promise<[Feature]Type[]> {
-    const response = await fetch("/api/[feature]", {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    });
-    if (!response.ok) {
-      const data = (await response.json().catch(() => null)) as { message?: string } | null;
-      throw new Error(data?.message ?? "Request failed.");
-    }
-    return (await response.json()) as [Feature]Type[];
-  },
+// Co-locate response types with the service function that uses them
+export type FeatureResponseData = {
+  data: {
+    total: number;
+    items: { id: string; label: string; count: number; percentage: number }[];
+  };
 };
+
+export const getFeatureName = (params?: FilterParams) =>
+  clientApi.get<FeatureResponseData>(`${ENDPOINTS.domain.featureName}${buildFilterQuery(params)}`);
 ```
 
-### 5.2 — Service Interface
+Then add to `Services/api/[domain]/index.ts`:
+
+```ts
+export * from "./featureName";
+```
+
+### 7.2 — BFF Route Handler
+
+```ts
+// app/api/[domain]/feature/route.ts
+import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import { apiClient } from "@/lib/apiClient";
+import { ENDPOINTS } from "@/lib/endpoints";
+
+export async function GET(request: Request) {
+  const token = (await cookies()).get("auth-token")?.value;
+  if (!token) return NextResponse.json({ message: "Unauthorized." }, { status: 401 });
+
+  const params = new URL(request.url).searchParams.toString();
+  const path = params ? `${ENDPOINTS.domain.featureName}?${params}` : ENDPOINTS.domain.featureName;
+
+  try {
+    const raw = await apiClient.get(path, { token, apiKey: process.env.ADMIN_API_KEY });
+    return NextResponse.json(raw);
+  } catch (e) {
+    const message = e instanceof Error ? e.message : "Unexpected error.";
+    return NextResponse.json({ message }, { status: 500 });
+  }
+}
+```
+
+### 7.4 — Service Interface
 
 ```ts
 // Services/interfaces/I[Feature]Service.ts
@@ -322,11 +522,12 @@ export interface I[Feature]Service {
 ```
 
 Remember to add the export to `Services/interfaces/index.ts`:
+
 ```ts
 export type { I[Feature]Service } from "./I[Feature]Service";
 ```
 
-### 5.3 — Hook
+### 7.5 — Hook
 
 ```ts
 // hooks/use[Feature].ts
@@ -353,7 +554,7 @@ export function use[Feature]() {
 }
 ```
 
-### 5.4 — Page (thin)
+### 7.6 — Page (thin)
 
 ```tsx
 // app/[feature]/page.tsx
@@ -377,7 +578,7 @@ export default function [Feature]Page() {
 }
 ```
 
-### 5.5 — Feature Main Component
+### 7.7 — Feature Main Component
 
 ```tsx
 // components/[feature]/[Feature]Main.tsx
@@ -439,7 +640,7 @@ export default function [Feature]Main({ [items] }: Props) {
 }
 ```
 
-### 5.6 — API Route Handler
+### 7.8 — POST Route Handler (with Zod validation)
 
 ```ts
 // app/api/[feature]/route.ts
@@ -462,7 +663,7 @@ export async function POST(request: Request) {
 }
 ```
 
-### 5.7 — Zod Validator
+### 7.9 — Zod Validator
 
 ```ts
 // lib/validators/[feature].ts
@@ -477,11 +678,12 @@ export type [Feature]FormData = z.infer<typeof [feature]Schema>;
 ```
 
 Then add to `lib/validators/index.ts`:
+
 ```ts
 export * from "./[feature]";
 ```
 
-### 5.8 — Types File
+### 7.10 — Types File
 
 ```ts
 // types/[feature].ts
@@ -497,74 +699,74 @@ export interface [Feature]Item {
 
 ---
 
-## 6. Common Components Catalog
+## 8. Common Components Catalog
 
 **Check this list before building anything new. If it exists — use it.**
 
 ### `components/ui/` — Atomic (no feature logic)
 
-| Component | Props summary | Use for |
-|---|---|---|
-| `Button` | `variant` solid/outline/ghost, `size`, `leftIcon`, `href` | All buttons |
-| `Input` | `label`, `error: string`, `placeholder` | All text inputs |
-| `Modal` | `isOpen`, `onClose`, `title`, `footer`, `maxWidth`, `zIndex` | All dialogs |
-| `SidePanel` | `isOpen`, `onClose`, `title`, `footer`, `width` | Slide-in panels |
-| `FilterDropdown` | `options`, `value`, `onChange`, `variant` icon/text | Filter selects |
-| `ProgressBar` | `progress: number`, `gradient` | Progress bars |
-| `FileUploadZone` | `label`, `accept`, `selectedFile`, `onFileSelect`, `placeholder`, `hint` | Any file upload box |
-| `ActionsDropdownMenu` | `onEdit`, `onDelete`, `trigger` vertical/horizontal, `stopPropagation` | Any Edit/Delete menu |
+| Component             | Props summary                                                            | Use for              |
+| --------------------- | ------------------------------------------------------------------------ | -------------------- |
+| `Button`              | `variant` solid/outline/ghost, `size`, `leftIcon`, `href`                | All buttons          |
+| `Input`               | `label`, `error: string`, `placeholder`                                  | All text inputs      |
+| `Modal`               | `isOpen`, `onClose`, `title`, `footer`, `maxWidth`, `zIndex`             | All dialogs          |
+| `SidePanel`           | `isOpen`, `onClose`, `title`, `footer`, `width`                          | Slide-in panels      |
+| `FilterDropdown`      | `options`, `value`, `onChange`, `variant` icon/text                      | Filter selects       |
+| `ProgressBar`         | `progress: number`, `gradient`                                           | Progress bars        |
+| `FileUploadZone`      | `label`, `accept`, `selectedFile`, `onFileSelect`, `placeholder`, `hint` | Any file upload box  |
+| `ActionsDropdownMenu` | `onEdit`, `onDelete`, `trigger` vertical/horizontal, `stopPropagation`   | Any Edit/Delete menu |
 
 ### `components/common/` — Composed blocks
 
-| Component | Props summary | Use for |
-|---|---|---|
-| `PageHeader` | `title`, `breadcrumbs[]`, `action?`, `description?` | Every feature page header |
-| `Card` | `title?`, `actions?`, `children`, `className?` | Any white card container |
-| `CategoryTabs` | `tabs[]` `{id,name}`, `activeTab`, `onTabChange` | Category tab rows |
-| `ListFilters` | `searchQuery`, `onSearchChange`, `statusOptions?`, `sortOptions?` | Search + filter bar |
-| `Table` | `columns[]`, `rows[]`, `headerTextColor?`, `emptyMessage?` | Data tables |
-| `Tabs` | `items[]`, `activeTab`, `onTabChange` | Horizontal tab navigation |
-| `Pagination` | `currentPage`, `totalPages`, `totalItems`, `itemsPerPage`, `onPageChange`, `itemLabel` | Paginated lists |
-| `Badge` | `variant` active/trial/cancelled, `label`, `className?` | Status pills |
-| `EmptyState` | `title?`, `description?`, `action?` | Zero-data placeholders |
-| `ErrorBoundary` | `children`, `fallback?` | Wrapping any async feature |
-| `AvatarCircle` | `src`, `alt`, `innerWidth?`, `innerHeight?`, `objectFit?`, `rounded?` | Image inside gradient circle |
-| `StatsRow` | `label`, `value`, `valueClassName?` | Label : Value stat lines |
-| `AddEditModal` | `isOpen`, `onClose`, `onSave`, `layout` thumbnail/media, `title`, `showDraft?`, `initialData?` | Add or edit items |
-| `ActionModal` | `isOpen`, `onClose`, `type`, `title`, `onSave`, `initialData?` | category / exercise / intro-screen modal |
-| `DeleteConfirmationModal` | `isOpen`, `onClose`, `onConfirm`, `title`, `message` | Delete confirmation dialogs |
-| `AccordionItem` | `title`, `children`, `defaultOpen?` | Expandable sections |
+| Component                 | Props summary                                                                                  | Use for                                  |
+| ------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| `PageHeader`              | `title`, `breadcrumbs[]`, `action?`, `description?`                                            | Every feature page header                |
+| `Card`                    | `title?`, `actions?`, `children`, `className?`                                                 | Any white card container                 |
+| `CategoryTabs`            | `tabs[]` `{id,name}`, `activeTab`, `onTabChange`                                               | Category tab rows                        |
+| `ListFilters`             | `searchQuery`, `onSearchChange`, `statusOptions?`, `sortOptions?`                              | Search + filter bar                      |
+| `Table`                   | `columns[]`, `rows[]`, `headerTextColor?`, `emptyMessage?`                                     | Data tables                              |
+| `Tabs`                    | `items[]`, `activeTab`, `onTabChange`                                                          | Horizontal tab navigation                |
+| `Pagination`              | `currentPage`, `totalPages`, `totalItems`, `itemsPerPage`, `onPageChange`, `itemLabel`         | Paginated lists                          |
+| `Badge`                   | `variant` active/trial/cancelled, `label`, `className?`                                        | Status pills                             |
+| `EmptyState`              | `title?`, `description?`, `action?`                                                            | Zero-data placeholders                   |
+| `ErrorBoundary`           | `children`, `fallback?`                                                                        | Wrapping any async feature               |
+| `AvatarCircle`            | `src`, `alt`, `innerWidth?`, `innerHeight?`, `objectFit?`, `rounded?`                          | Image inside gradient circle             |
+| `StatsRow`                | `label`, `value`, `valueClassName?`                                                            | Label : Value stat lines                 |
+| `AddEditModal`            | `isOpen`, `onClose`, `onSave`, `layout` thumbnail/media, `title`, `showDraft?`, `initialData?` | Add or edit items                        |
+| `ActionModal`             | `isOpen`, `onClose`, `type`, `title`, `onSave`, `initialData?`                                 | category / exercise / intro-screen modal |
+| `DeleteConfirmationModal` | `isOpen`, `onClose`, `onConfirm`, `title`, `message`                                           | Delete confirmation dialogs              |
+| `AccordionItem`           | `title`, `children`, `defaultOpen?`                                                            | Expandable sections                      |
 
 ### `components/charts/` — Chart wrappers
 
-| Component | Use for |
-|---|---|
-| `Chart` | Default line/area chart (dashboard active users) |
-| `TrendLineChart` | Trend data over time |
-| `DistributionDonutChart` | Percentage breakdown |
-| `DistributionPieChart` | Segment proportions |
-| `DistributionBarChart` | Category distribution |
-| `HorizontalBarChart` | Ranked comparison |
-| `FeatureBarChart` | Feature usage stats |
+| Component                | Use for                                          |
+| ------------------------ | ------------------------------------------------ |
+| `Chart`                  | Default line/area chart (dashboard active users) |
+| `TrendLineChart`         | Trend data over time                             |
+| `DistributionDonutChart` | Percentage breakdown                             |
+| `DistributionPieChart`   | Segment proportions                              |
+| `DistributionBarChart`   | Category distribution                            |
+| `HorizontalBarChart`     | Ranked comparison                                |
+| `FeatureBarChart`        | Feature usage stats                              |
 
 ---
 
-## 7. Hooks Catalog
+## 9. Hooks Catalog
 
 **Check before writing a new hook.**
 
-| Hook | Returns | Purpose |
-|---|---|---|
-| `useAuth` | `{ signIn, signOut, isAuthenticated, user, token, isLoading, error }` | Auth actions and state |
-| `useMindfulExercise` | `{ categories, loading, error }` | Mindful exercise categories |
-| `useCalmAndStillness` | `{ categories, loading, error }` | Calm & stillness categories |
-| `useJournal` | `{ entries, loading, error, refetch }` | Journal entry list |
-| `useMobile` | `boolean` | Is viewport < md breakpoint |
-| `useModalState<T>` | `{ isModalOpen, editingItem, isDeleteModalOpen, itemToDelete, openAdd, openEdit, openDelete, closeModal, closeDelete }` | Add / Edit / Delete modal state |
+| Hook                  | Returns                                                                                                                 | Purpose                         |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------- |
+| `useAuth`             | `{ signIn, signOut, isAuthenticated, user, token, isLoading, error }`                                                   | Auth actions and state          |
+| `useMindfulExercise`  | `{ categories, loading, error }`                                                                                        | Mindful exercise categories     |
+| `useCalmAndStillness` | `{ categories, loading, error }`                                                                                        | Calm & stillness categories     |
+| `useJournal`          | `{ entries, loading, error, refetch }`                                                                                  | Journal entry list              |
+| `useMobile`           | `boolean`                                                                                                               | Is viewport < md breakpoint     |
+| `useModalState<T>`    | `{ isModalOpen, editingItem, isDeleteModalOpen, itemToDelete, openAdd, openEdit, openDelete, closeModal, closeDelete }` | Add / Edit / Delete modal state |
 
 ---
 
-## 8. Import Path Rules
+## 10. Import Path Rules
 
 Always use the `@/` alias. The correct casing **must** match the folder name exactly.
 
@@ -581,6 +783,9 @@ import ... from "@/data/..."            // lowercase d
 ### Common import patterns
 
 ```ts
+// API service (new pattern — demographics style)
+import { getOverview, getEthnicity, type FilterParams } from "@/Services/api/demographics";
+
 // Types
 import type { JournalEntry } from "@/types/journal";
 
@@ -592,6 +797,13 @@ import { journalService } from "@/Services/journalService";
 import { signInSchema } from "@/lib/validators/auth";
 // or use the barrel for mixed usage
 import { signInSchema, categorySchema } from "@/lib/validators";
+
+// Endpoints (always use constant, never a string literal)
+import { ENDPOINTS } from "@/lib/endpoints";
+
+// HTTP clients
+import { clientApi } from "@/lib/clientApi"; // browser-side only
+import { apiClient } from "@/lib/apiClient"; // route handlers only
 
 // Common components
 import PageHeader from "@/components/common/PageHeader";
@@ -611,30 +823,33 @@ import { cn } from "@/lib/utils";
 
 ---
 
-## 9. New Feature Checklist
+## 11. New Feature Checklist
 
 Follow this sequence every time you build a new section of the admin.
 
 ### Before writing code
 
 - [ ] Ticket has clear acceptance criteria and a linked design mockup
-- [ ] Routes / API endpoints are identified
+- [ ] Routes / API endpoints are identified and added to `lib/endpoints.ts`
 - [ ] Backend dependency is documented (mock or real)
-- [ ] Check [Common Components Catalog](#6-common-components-catalog) — do not duplicate existing components
-- [ ] Check [Hooks Catalog](#7-hooks-catalog) — do not duplicate existing hooks
+- [ ] Check [Common Components Catalog](#8-common-components-catalog) — do not duplicate existing components
+- [ ] Check [Hooks Catalog](#9-hooks-catalog) — do not duplicate existing hooks
 
 ### Files to create (in order)
 
 ```
-1. types/[feature].ts                       Add domain types
-2. lib/validators/[feature].ts              Add Zod schema + export from index.ts
-3. Services/interfaces/I[Feature]Service.ts Add service interface + export from index.ts
-4. Services/[feature]Service.ts             Implement the interface
-5. hooks/use[Feature].ts                    Wire service → component state
-6. components/[feature]/[Feature]Main.tsx   Main feature component (uses common components)
-7. components/loaders/[feature]-loader.tsx  Skeleton loader
-8. app/[feature]/page.tsx                   Thin page (delegates to [Feature]Main)
-9. Services/navigationService.ts            Add nav entry if this is a top-level page
+1. lib/endpoints.ts                         Add the URL path constants
+2. types/[feature].ts                       Add domain types
+3. lib/validators/[feature].ts              Add Zod schema + export from index.ts
+4. Services/api/[domain]/featureName.ts     Service function + co-located response type
+5. Services/api/[domain]/index.ts           Add export * from "./featureName"
+6. app/api/[domain]/route.ts                BFF proxy route handler
+7. Services/interfaces/I[Feature]Service.ts Add service interface + export from index.ts  (if full-domain service)
+8. hooks/use[Feature].ts                    Wire service → component state (optional)
+9. components/[feature]/[Feature]Main.tsx   Main feature component (uses common components)
+10. components/loaders/[feature]-loader.tsx Skeleton loader
+11. app/[feature]/page.tsx                  Thin page (delegates to [Feature]Main)
+12. Services/navigationService.ts           Add nav entry if this is a top-level page
 ```
 
 ### Before raising a PR
@@ -652,10 +867,20 @@ Follow this sequence every time you build a new section of the admin.
 
 ### Dead code to clean up before going to production
 
-| File | Reason |
-|---|---|
-| `Services/authApi.ts` | Real backend client — unused until `NEXT_PUBLIC_API_BASE_URL` is configured |
-| `controllers/authController.ts` | Thin DI wrapper — never instantiated |
-| `app/api/navigation/route.ts` | Nav consumed directly from `navigationService.ts`; route is never called |
-| `app/signup/page.tsx` | Calls `authApi` (unwired); not in admin navigation |
-| `features/financial/financial.types.ts` | Moved to `types/financial.ts` |
+| File                                    | Reason                                                                      |
+| --------------------------------------- | --------------------------------------------------------------------------- |
+| `Services/authApi.ts`                   | Real backend client — unused until `NEXT_PUBLIC_API_BASE_URL` is configured |
+| `controllers/authController.ts`         | Imports deleted `Services/authService` — broken reference, TS error         |
+| `app/api/navigation/route.ts`           | Nav consumed directly from `navigationService.ts`; route is never called    |
+| `app/signup/page.tsx`                   | Calls `authApi` (unwired); not in admin navigation                          |
+| `features/financial/financial.types.ts` | Moved to `types/financial.ts`                                               |
+
+### Known TypeScript issues (pre-existing, not demographics-related)
+
+| Severity | File                                                | Issue                                          |
+| -------- | --------------------------------------------------- | ---------------------------------------------- |
+| 🔴 Error | `controllers/authController.ts:4`                   | Cannot find `@/Services/authService` (deleted) |
+| 🟠 Error | `app/wellth-plans/page.tsx:76`                      | `unknown` type in state setter                 |
+| 🟡 Error | `components/common/DynamicModal.tsx:80`             | `{}` not assignable to input value type        |
+| 🟡 Error | `components/common/DynamicSidePanel.tsx:85`         | `unknown` props                                |
+| 🟡 Error | `components/common/CategoryManagementPanel.tsx:186` | Narrow callback vs wide param type             |

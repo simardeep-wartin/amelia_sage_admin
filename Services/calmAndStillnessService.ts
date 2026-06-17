@@ -1,5 +1,5 @@
 import type { ICalmAndStillnessService } from "@/Services/interfaces";
-import { type ExerciseCategory, type ExerciseSubCategory } from "@/types/mindful-exercise";
+import type { ExerciseCategory, ExerciseSubCategory } from "@/types";
 
 const MOCK_CATEGORIES: ExerciseCategory[] = [
   {
@@ -440,7 +440,7 @@ export const calmAndStillnessService: ICalmAndStillnessService = {
   getSubCategoryById: async (id: string): Promise<ExerciseSubCategory | null> => {
     await new Promise((resolve) => setTimeout(resolve, 300));
     for (const cat of MOCK_CATEGORIES) {
-      const sub = cat.subCategories.find((s) => s.id === id);
+      const sub = cat.subCategories.find((subCategory) => subCategory.id === id);
       if (sub) return sub;
     }
     return null;
