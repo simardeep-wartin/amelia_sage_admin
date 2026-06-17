@@ -63,17 +63,17 @@ export default function Navbar({ title }: NavbarProps) {
         <div ref={dropdownRef} className="relative">
           <button
             onClick={() => setDropdownOpen((prev) => !prev)}
-            className="rounded-full bg-gradient-to-b from-sage to-[#9caf88] text-white w-8 h-8 flex justify-center items-center"
+            className="rounded-full bg-gradient-to-b from-sage to-[#9caf88] cursor-pointer text-white w-8 h-8 flex justify-center items-center"
             aria-label="Profile"
           >
             <img src="/auth/user.svg" alt="icon" className="h-4 w-4" />
           </button>
 
           {dropdownOpen && (
-            <div className="absolute right-0 mt-2 w-40 rounded-xl border border-border bg-white shadow-lg py-1 z-50">
+            <div className="absolute right-0 mt-2 w-40 rounded-xl border border-border bg-white shadow-lg p-1 z-50">
               <button
                 onClick={handleLogout}
-                className="flex w-full items-center gap-2 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
+                className="flex w-full items-center rounded-xl gap-2 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
               >
                 <ArrowRightStartOnRectangleIcon className="h-4 w-4" />
                 Logout
