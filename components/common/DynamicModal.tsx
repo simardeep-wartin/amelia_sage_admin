@@ -116,7 +116,7 @@ export default function DynamicModal({
       case "textarea":
         return (
           <div key={field.name} className="space-y-1">
-            <label className="block text-s font-normal text-charcoal">{field.label}</label>
+            <label className="block text-[18px] font-medium text-[#171717]">{field.label}</label>
             <textarea
               className="w-full rounded-lg border border-[#ededed] bg-white px-5 py-4 font-normal text-m text-charcoal placeholder:text-[#e1e1e1] outline-none transition focus:border-sageGreen/55 focus:ring-2 focus:ring-sageGreen/20 min-h-[140px] resize-none"
               placeholder={field.placeholder}
@@ -128,7 +128,7 @@ export default function DynamicModal({
       case "select":
         return (
           <div key={field.name} className="space-y-1">
-            <label className="block text-s font-normal text-charcoal">{field.label}</label>
+            <label className="block text-[18px] font-medium text-[#171717]">{field.label}</label>
             <select
               className="w-full rounded-lg border border-[#ededed] bg-white px-5 py-4 font-normal text-m text-charcoal outline-none transition focus:border-sageGreen/55 focus:ring-2 focus:ring-sageGreen/20"
               value={(formData[field.name] as string) || ""}
@@ -148,7 +148,7 @@ export default function DynamicModal({
       case "upload":
         return (
           <div key={field.name} className="space-y-1">
-            <label className="block text-s font-normal text-charcoal">{field.label}</label>
+            <label className="block text-[18px] font-medium text-[#171717]">{field.label}</label>
             <div
               onClick={() => fileInputRef.current?.click()}
               className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-[#E5E5E5] bg-[#FDFDFD] py-10 transition-colors hover:bg-gray-50 cursor-pointer"

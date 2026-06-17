@@ -30,11 +30,11 @@ export default function Modal({
     >
       {/* Modal Container */}
       <div
-        className={`w-full ${maxWidth} rounded-[20px] bg-white shadow-lg flex flex-col max-h-[90vh]`}
+        className={`w-full ${maxWidth} rounded-[20px] shadow-lg flex flex-col max-h-[90vh] bg-white gap-[30px]`}
       >
         {/* Header */}
         <div className="flex items-center justify-between p-6 pb-0">
-          <h2 className="text-[24px] font-medium text-charcoal">{title}</h2>
+          <h2 className="text-[24px] font-semibold text-charcoal">{title}</h2>
           <button
             onClick={onClose}
             className="text-grey hover:text-charcoal transition-colors p-2 rounded-md hover:bg-black/5 cursor-pointer"
@@ -44,9 +44,7 @@ export default function Modal({
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto overflow-x-hidden pl-6 py-6 pr-2 space-y-6 pt-2">
-          {children}
-        </div>
+        <div className="flex-1 overflow-y-auto overflow-x-hidden px-8 space-y-6">{children}</div>
 
         {/* Footer */}
         {footer && (

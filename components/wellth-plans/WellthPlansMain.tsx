@@ -70,15 +70,17 @@ export default function WellthPlansMain({
       <div className="space-y-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-col gap-1">
-            <h1 className="text-[22px] sm:text-[28px] font-bold text-charcoal tracking-tight">
+            <h1 className="text-[22px] sm:text-[28px] font-bold text-charcoal tracking-tight font-arial">
               Wellth Plans
             </h1>
-            <p className="text-sm font-bold text-grey">Dashboard / Content / Wellth Plans</p>
+            <p className="text-sm font-bold text-grey font-arial">
+              Dashboard / Content / Wellth Plans
+            </p>
           </div>
           <div className="flex items-center gap-3">
             <Button
               variant="ghost"
-              className="text-sageGreen hover:bg-transparent hover:border cursor-pointer hover:text-sageGreen font-semibold px-0 sm:px-4"
+              className="text-sageGreen hover:bg-transparent hover:border cursor-pointer hover:text-sageGreen !font-bold px-0 sm:px-4 text-[16px]"
               onClick={() => router.push("/journal-management")}
             >
               <ArrowUpRightIcon className="h-4 w-4" /> Go to Drafts
@@ -126,7 +128,7 @@ export default function WellthPlansMain({
         </div>
 
         <Card title="Your Wellth Plan" className="p-6 md:p-8">
-          <p className="mb-8 text-[15px] text-grey -mt-3">
+          <p className="mb-8 text-s text-grey -mt-3">
             Define and manage focus areas that help users work on specific aspects of their
             wellbeing.
           </p>

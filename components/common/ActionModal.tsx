@@ -166,7 +166,7 @@ export default function ActionModal({
         )}
 
         <div className="space-y-1">
-          <label className="block text-s font-normal text-charcoal">
+          <label className="block text-[18px] font-medium text-[#171717]">
             {isEdit ? "Description" : "Add Description"}
           </label>
           <textarea

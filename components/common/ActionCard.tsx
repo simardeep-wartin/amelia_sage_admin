@@ -21,6 +21,11 @@ export interface ActionCardProps {
   onDeleteAction?: () => void;
   deleteActionIcon?: React.ReactNode;
   deleteActionClassName?: string;
+  className?: string;
+  titleClassName?: string;
+  subtitleClassName?: string;
+  mainValueClassName?: string;
+  mainLabelClassName?: string;
 }
 
 export default function ActionCard({
@@ -40,34 +45,49 @@ export default function ActionCard({
   onDeleteAction,
   deleteActionIcon,
   deleteActionClassName = "border border-cardBorder bg-white text-red-400 hover:bg-red-50 hover:text-red-600",
+  className = "",
+  titleClassName = "",
+  subtitleClassName = "",
+  mainValueClassName = "",
+  mainLabelClassName = "",
 }: ActionCardProps) {
   return (
     <div
-      className={`flex items-center justify-between rounded-xl border border-cardBorder bg-white p-4 sm:p-5 shadow-sm transition-all hover:shadow-md ${onAction ? "cursor-pointer" : ""}`}
+      className={`flex items-center justify-between rounded-xl border border-cardBorder bg-white p-4 sm:p-5 shadow-sm transition-all hover:shadow-md ${onAction ? "cursor-pointer" : ""} ${className}`}
       onClick={onAction}
     >
-      <div className="flex items-center gap-3 sm:gap-4">
+      <div className="flex items-center gap-3 sm:gap-4 mr-2">
         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-cardBorder bg-transparent">
           {icon}
         </div>
-        <div className="flex flex-col">
-          <span className="font-cormorant text-[16px] sm:text-[20px] font-bold text-charcoal">
+        <div className="flex flex-col mr-2">
+          <span
+            className={`font-cormorant text-[16px] sm:text-[20px] font-bold text-charcoal ${titleClassName}`}
+          >
             {title}
           </span>
           {showSubtitle && subtitle && (
-            <span className="text-s font-normal text-[#6D7280] mt-0.5">{subtitle}</span>
+            <span className={`text-s font-normal text-[#6D7280] mt-0.5 ${subtitleClassName}`}>
+              {subtitle}
+            </span>
           )}
         </div>
       </div>
 
-      <div className="flex items-center gap-4 sm:gap-6">
+      <div className="flex items-center gap-3">
         {/* Main Value/Label */}
         {(mainValue !== undefined || mainLabel) && (
           <div className="flex flex-col items-center justify-center mr-2">
-            <span className="font-cormorant text-[18px] sm:text-[24px] font-medium italic text-charcoal leading-none">
+            <span
+              className={`font-cormorant text-[18px] sm:text-[24px] font-medium text-charcoal leading-none ${mainValueClassName}`}
+            >
               {mainValue}
             </span>
-            {mainLabel && <span className="text-xs font-normal text-grey mt-1">{mainLabel}</span>}
+            {mainLabel && (
+              <span className={`text-xs font-normal text-grey mt-1 ${mainLabelClassName}`}>
+                {mainLabel}
+              </span>
+            )}
           </div>
         )}
 

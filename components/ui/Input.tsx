@@ -31,7 +31,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
 
   return (
     <div className="space-y-1">
-      <label htmlFor={inputId} className="block text-s font-normal text-charcoal">
+      <label htmlFor={inputId} className="block text-[18px] font-medium text-[#171717]">
         {label}
       </label>
 

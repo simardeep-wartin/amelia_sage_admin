@@ -11,6 +11,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
+  --font-arial: Arial, sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {

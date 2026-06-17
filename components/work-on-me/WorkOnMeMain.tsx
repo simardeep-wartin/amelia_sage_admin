@@ -48,16 +48,16 @@ export default function WorkOnMeMain({
         {/* Header Section */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-col gap-1">
-            <h1 className="text-[22px] sm:text-[28px] font-bold text-charcoal tracking-tight">
+            <h1 className="text-[22px] sm:text-[24px] font-bold text-charcoal tracking-tight !font-arial">
               Work on Me Exercises
             </h1>
-            <p className="text-sm font-medium text-grey">
+            <p className="text-sm font-medium text-grey !font-arial">
               Dashboard / Content / Work on me exercises
             </p>
           </div>
           <Button
             variant="ghost"
-            className="text-sageGreen hover:bg-transparent hover:border cursor-pointer hover:text-sageGreen font-semibold px-0 sm:px-4"
+            className="text-sageGreen hover:bg-transparent hover:border cursor-pointer hover:text-sageGreen !font-bold px-0 sm:px-4 text-[16px]"
             onClick={() => router.push("/journal-management")}
           >
             <ArrowUpRightIcon className="h-4 w-4" /> Go to Drafts
@@ -96,7 +96,7 @@ export default function WorkOnMeMain({
             <Button
               onClick={() => setIsEmotionModalOpen(true)}
               variant="ghost"
-              className="text-sageGreen hover:bg-transparent hover:text-sageGreen px-0 font-medium sm:px-4 shrink-0 h-[28px]"
+              className="text-sageGreen hover:bg-transparent hover:text-sageGreen px-0 !font-bold sm:px-4 shrink-0 h-[28px]"
               leftIcon={<PlusIcon className="h-5 w-5" />}
             >
               Add New Emotion
@@ -130,9 +130,9 @@ export default function WorkOnMeMain({
                         unoptimized
                         src={feeling.image_url || "/auth/circle.svg"}
                         alt={feeling.title}
-                        width={24}
-                        height={24}
-                        className="h-6 w-6 object-contain"
+                        width={32}
+                        height={32}
+                        className="h-10 w-10 object-contain"
                       />
                     }
                     onAction={() =>
@@ -144,6 +144,8 @@ export default function WorkOnMeMain({
                       setPendingDelete({ id: feeling.id, title: feeling.title, type: "feeling" })
                     }
                     deleteActionIcon={<TrashIcon className="h-5 w-5" />}
+                    titleClassName="text-slate !font-sans !text-[16px] !font-semibold"
+                    mainValueClassName="text-slate font-semibold"
                   />
                 ))}
           </div>
@@ -156,7 +158,7 @@ export default function WorkOnMeMain({
             <Button
               onClick={() => setIsFocusModalOpen(true)}
               variant="ghost"
-              className="text-sageGreen hover:bg-transparent hover:text-sageGreen px-0 font-medium sm:px-4 shrink-0 h-[28px]"
+              className="text-sageGreen hover:bg-transparent hover:text-sageGreen px-0 !font-bold sm:px-4 shrink-0 h-[28px]"
               leftIcon={<PlusIcon className="h-5 w-5" />}
             >
               Add New Focus
@@ -190,9 +192,9 @@ export default function WorkOnMeMain({
                         unoptimized
                         src={focus.image_url || "/auth/circle.svg"}
                         alt={focus.title}
-                        width={24}
-                        height={24}
-                        className="h-6 w-6 object-contain"
+                        width={32}
+                        height={32}
+                        className="h-10 w-10 object-contain"
                       />
                     }
                     onAction={() =>
@@ -203,6 +205,7 @@ export default function WorkOnMeMain({
                       setPendingDelete({ id: focus.id, title: focus.title, type: "focus-area" })
                     }
                     deleteActionIcon={<TrashIcon className="h-5 w-5" />}
+                    mainValueClassName="text-slate font-semibold"
                   />
                 ))}
           </div>
