@@ -5,6 +5,7 @@ import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import PanelSkeleton from "@/components/loaders/panel-skeleton";
 import AccordionItem from "@/components/common/AccordionItem";
 import ActionModal from "@/components/common/ActionModal";
+import DeleteConfirmationModal from "@/components/common/DeleteConfirmationModal";
 import SidePanel from "@/components/ui/SidePanel";
 import Button from "../ui/Button";
 import {
@@ -32,6 +33,7 @@ interface CategoryManagementPanelProps {
   itemType?: string;
   showIntroScreenAction?: boolean;
   initialIntroScreen?: { greet?: string; sub_content?: string; description?: string } | null;
+  onExerciseCountChange?: (newCount: number) => void;
 }
 
 const isMongoId = (v: string) => /^[0-9a-f]{24}$/.test(v);
@@ -45,6 +47,7 @@ export default function CategoryManagementPanel({
   itemType = "item",
   showIntroScreenAction = true,
   initialIntroScreen,
+  onExerciseCountChange,
 }: CategoryManagementPanelProps) {
   const [items, setItems] = useState<FeelingExercise[]>([]);
   // Map from feelings list fields to FeelingIntroScreen shape
@@ -65,6 +68,7 @@ export default function CategoryManagementPanel({
   const [isAddItemModalOpen, setIsAddItemModalOpen] = useState(false);
   const [showIntroRequired, setShowIntroRequired] = useState(false);
   const [editingItem, setEditingItem] = useState<Record<string, unknown> | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<{ id: string; title: string } | null>(null);
 
   const handleOpenAddItem = () => {
     if (showIntroScreenAction && !introScreen) {
@@ -74,25 +78,32 @@ export default function CategoryManagementPanel({
     }
   };
 
-  const fetchExercises = (showFullLoader = false) => {
-    if (!categoryId || !isMongoId(categoryId)) return;
+  const fetchExercises = (showFullLoader = false): Promise<FeelingExercise[]> => {
+    if (!categoryId || !isMongoId(categoryId)) return Promise.resolve([]);
     if (showFullLoader) setLoading(true);
     else setExercisesLoading(true);
 
-    (categoryType === "focus-area"
-      ? getFocusAreaExercises(categoryId).then(
-          (res) =>
-            (res.data.exercises ?? []).map((ex) => ({
-              id: ex.id,
-              title: ex.title,
-              description: ex.description,
-              feeling_id: ex.focus_on_category_id,
-            })) as FeelingExercise[],
-        )
-      : getFeelingExercises(categoryId).then((res) => res.data.exercises ?? [])
+    return (
+      categoryType === "focus-area"
+        ? getFocusAreaExercises(categoryId).then(
+            (res) =>
+              (res.data.exercises ?? []).map((ex) => ({
+                id: ex.id,
+                title: ex.title,
+                description: ex.description,
+                feeling_id: ex.focus_on_category_id,
+              })) as FeelingExercise[],
+          )
+        : getFeelingExercises(categoryId).then((res) => res.data.exercises ?? [])
     )
-      .then(setItems)
-      .catch(() => setItems([]))
+      .then((exercises) => {
+        setItems(exercises);
+        return exercises;
+      })
+      .catch(() => {
+        setItems([]);
+        return [];
+      })
       .finally(() => {
         setLoading(false);
         setExercisesLoading(false);
@@ -159,7 +170,10 @@ export default function CategoryManagementPanel({
       creator
         .then(() => {
           setIsAddItemModalOpen(false);
-          fetchExercises();
+          return fetchExercises();
+        })
+        .then((exercises) => {
+          onExerciseCountChange?.(exercises.length);
         })
         .catch(console.error);
     }
@@ -194,12 +208,17 @@ export default function CategoryManagementPanel({
   const handleDeleteItem = (exerciseId: string) => {
     if (!categoryId || !isMongoId(categoryId)) return;
     const previous = items;
-    setItems((prev) => prev.filter((item) => item.id !== exerciseId));
+    const updated = previous.filter((item) => item.id !== exerciseId);
+    setItems(updated);
+    onExerciseCountChange?.(updated.length);
     const deleter =
       categoryType === "focus-area"
         ? deleteFocusAreaExercise(categoryId, exerciseId)
         : deleteFeelingExercise(categoryId, exerciseId);
-    deleter.catch(() => setItems(previous));
+    deleter.catch(() => {
+      setItems(previous);
+      onExerciseCountChange?.(previous.length);
+    });
   };
 
   const openCreateIntro = () => {
@@ -313,7 +332,7 @@ export default function CategoryManagementPanel({
                       });
                       setIsAddItemModalOpen(true);
                     }}
-                    onDelete={() => handleDeleteItem(item.id)}
+                    onDelete={() => setPendingDelete({ id: item.id, title: item.title })}
                   >
                     <div className="space-y-4 pt-2">
                       <div>
@@ -390,6 +409,17 @@ export default function CategoryManagementPanel({
         title={`Add New ${itemLabel}`}
         initialData={editingItem ?? undefined}
         onSave={handleAddItem}
+      />
+
+      <DeleteConfirmationModal
+        isOpen={!!pendingDelete}
+        onClose={() => setPendingDelete(null)}
+        onConfirm={() => {
+          if (!pendingDelete) return;
+          handleDeleteItem(pendingDelete.id);
+          setPendingDelete(null);
+        }}
+        itemName={pendingDelete?.title ?? ""}
       />
 
       {/* Intro screen required warning */}

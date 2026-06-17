@@ -81,7 +81,7 @@ export default function WellthPlansMain({
             <Button
               variant="ghost"
               className="text-sageGreen hover:bg-transparent hover:border cursor-pointer hover:text-sageGreen !font-bold px-0 sm:px-4 text-[16px]"
-              onClick={() => router.push("/journal-management")}
+              onClick={() => router.push("/exercises-draft-management")}
             >
               <ArrowUpRightIcon className="h-4 w-4" /> Go to Drafts
             </Button>

@@ -84,6 +84,22 @@ export function useWorkOnMe() {
     deleteFocusArea(id).catch(() => getFocusAreas().then((res) => setFocusAreas(res.data ?? [])));
   };
 
+  const handleCategoryExerciseCountChange = (
+    categoryId: string,
+    type: "feeling" | "focus-area",
+    count: number,
+  ) => {
+    if (type === "feeling") {
+      setFeelings((prev) =>
+        prev.map((f) => (f.id === categoryId ? { ...f, exercise_count: count } : f)),
+      );
+    } else {
+      setFocusAreas((prev) =>
+        prev.map((f) => (f.id === categoryId ? { ...f, exercise_count: count } : f)),
+      );
+    }
+  };
+
   const handleEditEmotion = (data: Record<string, unknown>) => {
     if (!editingFeeling) return;
     const payload = feelingPayloads.update(
@@ -125,6 +141,7 @@ export function useWorkOnMe() {
     handleEditEmotion,
     handleDeleteFeeling,
     handleDeleteFocusArea,
+    handleCategoryExerciseCountChange,
   };
 }
 

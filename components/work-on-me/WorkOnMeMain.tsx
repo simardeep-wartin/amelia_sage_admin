@@ -34,6 +34,7 @@ export default function WorkOnMeMain({
   handleEditEmotion,
   handleDeleteFeeling,
   handleDeleteFocusArea,
+  handleCategoryExerciseCountChange,
 }: Props) {
   const router = useRouter();
   const [pendingDelete, setPendingDelete] = useState<{
@@ -58,7 +59,7 @@ export default function WorkOnMeMain({
           <Button
             variant="ghost"
             className="text-sageGreen hover:bg-transparent hover:border cursor-pointer hover:text-sageGreen !font-bold px-0 sm:px-4 text-[16px]"
-            onClick={() => router.push("/journal-management")}
+            onClick={() => router.push("/exercises-draft-management")}
           >
             <ArrowUpRightIcon className="h-4 w-4" /> Go to Drafts
           </Button>
@@ -264,6 +265,10 @@ export default function WorkOnMeMain({
         categoryId={managedCategory?.id ?? ""}
         categoryType={managedCategory?.type ?? "feeling"}
         itemType="exercise"
+        onExerciseCountChange={(count) => {
+          if (!managedCategory) return;
+          handleCategoryExerciseCountChange(managedCategory.id, managedCategory.type, count);
+        }}
         initialIntroScreen={(() => {
           if (!managedCategory) return null;
           const item =

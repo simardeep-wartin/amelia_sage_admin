@@ -4,6 +4,7 @@ import { useState } from "react";
 import SidePanel from "@/components/ui/SidePanel";
 import AccordionItem from "@/components/common/AccordionItem";
 import Button from "@/components/ui/Button";
+import DeleteConfirmationModal from "@/components/common/DeleteConfirmationModal";
 import { WELLTH_PANEL_CONFIG } from "@/lib/wellth-plans.config";
 import PanelSkeleton from "@/components/loaders/panel-skeleton";
 import type { PanelItem } from "@/types";
@@ -42,6 +43,7 @@ export default function DynamicSidePanel({
 }: DynamicSidePanelProps) {
   const config = WELLTH_PANEL_CONFIG;
   const [showIntroRequired, setShowIntroRequired] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<{ id: string; title: string } | null>(null);
 
   const handleAddExercise = () => {
     if (!introScreen) {
@@ -165,7 +167,7 @@ export default function DynamicSidePanel({
             key={item.id}
             title={item.title}
             onEdit={() => onEditItem(item)}
-            onDelete={() => onDeleteItem(item.id)}
+            onDelete={() => setPendingDelete({ id: item.id, title: item.title })}
           >
             <div className="space-y-4 pt-2">
               <div>
@@ -200,6 +202,17 @@ export default function DynamicSidePanel({
       <SidePanel isOpen={isOpen} onClose={onClose} title={title} width="max-w-2xl">
         {loading ? <PanelSkeleton /> : items.length > 0 ? renderList() : renderEmptyState()}
       </SidePanel>
+
+      <DeleteConfirmationModal
+        isOpen={!!pendingDelete}
+        onClose={() => setPendingDelete(null)}
+        onConfirm={() => {
+          if (!pendingDelete) return;
+          onDeleteItem(pendingDelete.id);
+          setPendingDelete(null);
+        }}
+        itemName={pendingDelete?.title ?? ""}
+      />
 
       {showIntroRequired && (
         <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/40">

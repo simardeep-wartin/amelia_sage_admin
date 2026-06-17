@@ -140,34 +140,43 @@ export function useWellthPlans() {
 
   const handleSaveExercise = async (data: Record<string, unknown>): Promise<void> => {
     if (!selectedPlanId) return;
-    if (editingItem) {
-      const payload = exercisePayloads.edit(
-        s(data.title),
-        s(data.description),
-        data.is_draft === true,
-      );
-      setExercises(
-        exercises.map((item) => (item.id === editingItem.id ? { ...item, ...payload } : item)),
-      );
-      const res = await updateWealthPlanExercise(selectedPlanId, s(editingItem.id), payload);
-      setExercises(
-        exercises.map((item) => (item.id === editingItem.id ? { ...item, ...res.data } : item)),
-      );
-    } else {
-      const payload = exercisePayloads.create(
-        s(data.title),
-        s(data.description),
-        data.is_draft === true,
-      );
-      const res = await createWealthPlanExercise(selectedPlanId, payload);
-      setExercises([...exercises, res.data as unknown as PanelItem]);
-      setPlans(
-        plans.map((p) =>
-          p.id === selectedPlanId ? { ...p, exercise_count: exercises.length + 1 } : p,
-        ),
-      );
+    try {
+      if (editingItem) {
+        const payload = exercisePayloads.edit(
+          s(data.title),
+          s(data.description),
+          data.is_draft === true,
+        );
+        setExercises(
+          exercises.map((item) => (item.id === editingItem.id ? { ...item, ...payload } : item)),
+        );
+        const res = await updateWealthPlanExercise(selectedPlanId, s(editingItem.id), payload);
+        setExercises(
+          exercises.map((item) => (item.id === editingItem.id ? { ...item, ...res.data } : item)),
+        );
+      } else {
+        const payload = exercisePayloads.create(
+          s(data.title),
+          s(data.description),
+          data.is_draft === true,
+        );
+        await createWealthPlanExercise(selectedPlanId, payload);
+        setExercisesLoading(true);
+        const refreshed = await getWealthPlanExercises(selectedPlanId);
+        const refreshedExercises = refreshed.data.exercises as unknown as PanelItem[];
+        setExercises(refreshedExercises);
+        setPlans(
+          plans.map((p) =>
+            p.id === selectedPlanId ? { ...p, exercise_count: refreshedExercises.length } : p,
+          ),
+        );
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setExercisesLoading(false);
+      setEditingItem(null);
     }
-    setEditingItem(null);
   };
 
   const handleDeletePlan = (id: string) => {
@@ -177,11 +186,23 @@ export function useWellthPlans() {
 
   const handleDeleteExercise = (id: string) => {
     if (!selectedPlanId) return;
-    setExercises(exercises.filter((e) => e.id !== id));
-    deleteWealthPlanExercise(selectedPlanId, id).catch(() =>
-      getWealthPlanExercises(selectedPlanId).then((res) =>
-        setExercises(res.data.exercises as unknown as PanelItem[]),
+    const updatedExercises = exercises.filter((e) => e.id !== id);
+    setExercises(updatedExercises);
+    setPlans(
+      plans.map((p) =>
+        p.id === selectedPlanId ? { ...p, exercise_count: updatedExercises.length } : p,
       ),
+    );
+    deleteWealthPlanExercise(selectedPlanId, id).catch(() =>
+      getWealthPlanExercises(selectedPlanId).then((res) => {
+        const refreshed = res.data.exercises as unknown as PanelItem[];
+        setExercises(refreshed);
+        setPlans(
+          plans.map((p) =>
+            p.id === selectedPlanId ? { ...p, exercise_count: refreshed.length } : p,
+          ),
+        );
+      }),
     );
   };
 
