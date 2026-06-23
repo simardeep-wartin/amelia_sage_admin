@@ -40,14 +40,34 @@ export function buildDemographicsPdf(d: DemographicsReportData): void {
 
   // ── Header banner ──
   doc.setFillColor(...SAGE);
-  doc.rect(0, 0, pageWidth, 88, "F");
+  doc.rect(0, 0, pageWidth, 80, "F");
   doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(22);
-  doc.text("User Demographics Report", MARGIN, 46);
+  doc.text("User Demographics Report", MARGIN, 40);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(11);
-  doc.text(`Amelia Sage  •  Generated ${generatedAt.toLocaleString()}`, MARGIN, 68);
+  doc.text(`Amelia Sage  •  Generated ${generatedAt.toLocaleString()}`, MARGIN, 62);
+
+  // ── Report scope note (so the reader knows exactly what period the data covers) ──
+  doc.setTextColor(...MUTED);
+  doc.setFontSize(9);
+  doc.text(
+    "Report scope: All time · all users. Dashboard filters are NOT applied here — every section below reflects the complete dataset.",
+    MARGIN,
+    100,
+  );
+
+  // Small muted "scope tag" drawn to the right of a section title.
+  const scopeTag = (afterText: string, atY: number, tag = "All time") => {
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(13);
+    const w = doc.getTextWidth(afterText);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.setTextColor(...MUTED);
+    doc.text(`(${tag})`, MARGIN + w + 8, atY);
+  };
 
   // Adds a titled table that flows after the previous one (new page if needed).
   const section = (title: string, head: string[], body: Row[]) => {
@@ -61,6 +81,7 @@ export function buildDemographicsPdf(d: DemographicsReportData): void {
     doc.setFontSize(13);
     doc.setTextColor(...CHARCOAL);
     doc.text(title, MARGIN, titleY);
+    scopeTag(title, titleY);
     autoTable(doc, {
       startY: titleY + 8,
       head: [head],
@@ -80,9 +101,10 @@ export function buildDemographicsPdf(d: DemographicsReportData): void {
   doc.setFont("helvetica", "bold");
   doc.setFontSize(13);
   doc.setTextColor(...CHARCOAL);
-  doc.text("Summary", MARGIN, 116);
+  doc.text("Summary", MARGIN, 128);
+  scopeTag("Summary", 128);
   autoTable(doc, {
-    startY: 124,
+    startY: 136,
     head: [["Metric", "Value"]],
     body: [
       ["Total Users", String(ov.total_users)],
