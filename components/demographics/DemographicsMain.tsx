@@ -113,12 +113,21 @@ export default function DemographicsMain({
                 overview.data.average_age,
               ]
             : null;
+          // Green subtitle text per card, driven by live data:
+          // [0] Total Users → "+N this month", [1] New This Month → "X% growth", [2] Average Age → static
+          const liveSubtitles = overview
+            ? [
+                `+${overview.data.new_this_month} this month`,
+                `${overview.data.growth_percentage}% growth`,
+                metric.subtitle,
+              ]
+            : null;
           return (
             <MetricCard
               key={metric.title}
               title={metric.title}
               value={liveValues ? liveValues[i] : String(metric.value)}
-              subtitle={metric.subtitle}
+              subtitle={liveSubtitles ? liveSubtitles[i] : metric.subtitle}
               iconSrc={iconSrc}
             />
           );
