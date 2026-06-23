@@ -31,9 +31,15 @@ export function useAuth() {
     [setAuth],
   );
 
-  const signOut = useCallback(() => {
+  const signOut = useCallback(async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch {
+      // best effort — clear local state regardless
+    }
     clearAuth();
-    router.push("/signin");
+    router.refresh();
+    router.replace("/signin");
   }, [clearAuth, router]);
 
   return {

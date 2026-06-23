@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
-import { type ReactNode } from "react";
+import { type ReactNode, useState, useEffect } from "react";
 import VideoBackground from "@/components/auth/VideoBackground";
+import SignInLoader from "@/components/loaders/signin-loader";
 
 type SignInLayoutProps = {
   children: ReactNode;
@@ -8,10 +11,32 @@ type SignInLayoutProps = {
 };
 
 export default function SignInLayout({ children, animationPath }: SignInLayoutProps) {
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    // Mobile: left panel is hidden, no SVG to wait for
+    if (window.innerWidth < 1024) {
+      setReady(true);
+      return;
+    }
+
+    // Preload via JS Image object — fires reliably regardless of CSS display/visibility state
+    const img = new window.Image();
+    img.onload = () => setReady(true);
+    img.onerror = () => setReady(true);
+    img.src = animationPath;
+
+    // Safety fallback in case neither fires
+    const fallback = setTimeout(() => setReady(true), 5000);
+    return () => clearTimeout(fallback);
+  }, [animationPath]);
+
+  if (!ready) return <SignInLoader />;
+
   return (
     <main className="relative min-h-screen w-full bg-stone">
       <div className="flex min-h-screen flex-col lg:flex-row">
-        <section className="relative hidden lg:flex lg:min-h-screen lg:w-1/2 items-center justify-center overflow-hidden">
+        <section className="relative hidden lg:flex lg:h-screen lg:w-1/2 items-center justify-center overflow-hidden">
           <VideoBackground animationPath={animationPath} />
         </section>
 

@@ -3,8 +3,11 @@ import SignInForm from "@/components/auth/SignInForm";
 
 export default function SignInPage() {
   return (
-    <SignInLayout animationPath="/auth/animation.json">
-      <SignInForm />
-    </SignInLayout>
+    <>
+      <link rel="preload" as="image" href="/auth/animation.svg" />
+      <SignInLayout animationPath="/auth/animation.svg">
+        <SignInForm />
+      </SignInLayout>
+    </>
   );
 }

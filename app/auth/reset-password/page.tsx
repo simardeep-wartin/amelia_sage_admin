@@ -4,7 +4,7 @@ import ResetPasswordForm from "@/components/auth/ResetPasswordForm";
 
 export default function ResetPasswordPage() {
   return (
-    <SignInLayout animationPath="/auth/animation.json">
+    <SignInLayout animationPath="/auth/animation.svg">
       <Suspense>
         <ResetPasswordForm />
       </Suspense>

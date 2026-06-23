@@ -80,6 +80,7 @@ export default function SignInForm({ onSuccessRedirectTo = "/dashboard" }: SignI
               )}
             </button>
           }
+          maxLength={128}
           {...register("password")}
         />
 
@@ -95,7 +96,7 @@ export default function SignInForm({ onSuccessRedirectTo = "/dashboard" }: SignI
         {error ? <p className="text-sm text-red-500">{error}</p> : null}
 
         <div className="pt-3">
-          <Button type="submit" isLoading={isLoading}>
+          <Button type="submit" isLoading={isLoading} loadingText="Signing in...">
             Sign in
           </Button>
         </div>

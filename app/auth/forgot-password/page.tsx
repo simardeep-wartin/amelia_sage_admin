@@ -3,7 +3,7 @@ import ForgotPasswordForm from "@/components/auth/ForgotPasswordForm";
 
 export default function ForgotPasswordPage() {
   return (
-    <SignInLayout animationPath="/auth/animation.json">
+    <SignInLayout animationPath="/auth/animation.svg">
       <ForgotPasswordForm />
     </SignInLayout>
   );

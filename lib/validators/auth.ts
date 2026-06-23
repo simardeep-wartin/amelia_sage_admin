@@ -2,7 +2,10 @@ import { z } from "zod";
 
 export const signInSchema = z.object({
   email: z.string().email("Please enter a valid email."),
-  password: z.string().min(6, "Password must be at least 6 characters."),
+  password: z
+    .string()
+    .min(6, "Password must be at least 6 characters.")
+    .max(128, "Password must be 128 characters or fewer."),
 });
 
 export type SignInFormValues = z.infer<typeof signInSchema>;

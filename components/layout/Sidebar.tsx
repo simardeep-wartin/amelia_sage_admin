@@ -72,7 +72,9 @@ export default function Sidebar() {
                 className="object-contain"
               />
             </div>
-            <span className="font-cormorant text-xxl font-bold leading-none">Amelia Sage</span>
+            <span className="font-cormorant text-xxl font-bold leading-none text-white">
+              Amelia Sage
+            </span>
           </div>
           <button
             className="rounded p-1 text-paper md:hidden"
