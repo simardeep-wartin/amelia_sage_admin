@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 import Button from "@/components/ui/Button";
 import appData from "@/data/app-data.json";
@@ -13,7 +14,15 @@ import ProgressCard from "@/components/common/ProgressCard";
 import InsightGrid from "@/components/common/InsightGrid";
 import SummaryGrid from "@/components/common/SummaryGrid";
 import ChartSkeleton from "@/components/common/ChartSkeleton";
-import { buildTrendChartData } from "@/Services/api/demographics";
+import {
+  buildTrendChartData,
+  getOverview,
+  getGenderIdentity,
+  getCulturalIdentity,
+  getEthnicity,
+  getWellnessNeeds,
+} from "@/Services/api/demographics";
+import { buildDemographicsPdf } from "@/lib/buildDemographicsPdf";
 import type { DemographicsState, DemographicTab } from "@/hooks/useDemographics";
 
 const demographicsData = appData.demographicsPage;
@@ -82,6 +91,28 @@ export default function DemographicsMain({
   handleWellnessSupportFilter,
   handleWellnessJourneyFilter,
 }: Props) {
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExport = async () => {
+    setIsExporting(true);
+    try {
+      // Fetch the full, unfiltered dataset for every section so the report is
+      // complete regardless of which tab is currently open.
+      const [overview, gender, cultural, ethnicity, wellness] = await Promise.all([
+        getOverview(),
+        getGenderIdentity(),
+        getCulturalIdentity(),
+        getEthnicity(),
+        getWellnessNeeds(),
+      ]);
+      buildDemographicsPdf({ overview, gender, cultural, ethnicity, wellness });
+    } catch (err) {
+      console.error("Failed to export demographics report", err);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -95,6 +126,9 @@ export default function DemographicsMain({
           </p>
         </div>
         <Button
+          onClick={handleExport}
+          isLoading={isExporting}
+          loadingText="Exporting..."
           className="h-12 w-full rounded-[8px] bg-sageGreen px-6 font-sans text-[16px] font-semibold leading-[1.5] text-white hover:bg-[#7F9F7B] sm:w-auto sm:min-w-[184px]"
           leftIcon={<ArrowDownTrayIcon className="h-4 w-4" />}
         >
