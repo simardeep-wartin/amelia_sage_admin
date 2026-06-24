@@ -19,7 +19,7 @@ interface ProgressCardProps {
   filterOptions?: string[];
   filterVariant?: "default" | "icon";
   onFilter?: (filter: string) => void;
-  lastUpdated?: string;
+
   note?: string;
   loading?: boolean;
 }
@@ -31,7 +31,7 @@ export default function ProgressCard({
   filterOptions = ["All", "Today", "Week", "Month", "Year", "Custom"],
   filterVariant = "default",
   onFilter,
-  lastUpdated = "Real-time",
+
   note,
   loading = false,
 }: ProgressCardProps) {
@@ -96,14 +96,11 @@ export default function ProgressCard({
           ))}
         </div>
       )}
-      {!loading &&
-        (note ? (
-          <div className="mt-4 rounded-[8px] bg-[#f9f9f9] p-4">
-            <p className="font-inter text-[14px] leading-[1.3] text-[#6b6b6b]">{note}</p>
-          </div>
-        ) : (
-          <p className="mt-4 text-xs text-slate">Last updated: {lastUpdated}</p>
-        ))}
+      {!loading && note && (
+        <div className="mt-4 rounded-[8px] bg-[#f9f9f9] p-4">
+          <p className="font-inter text-[14px] leading-[1.3] text-[#6b6b6b]">{note}</p>
+        </div>
+      )}
     </Card>
   );
 }

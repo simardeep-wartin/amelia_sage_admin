@@ -17,7 +17,6 @@ interface PieItem {
 interface DistributionPieChartProps {
   title: string;
   data: PieItem[];
-  lastUpdated: string;
   innerRadius?: number;
   outerRadius?: number;
   startAngle?: number;
@@ -34,7 +33,7 @@ interface DistributionPieChartProps {
 export default function DistributionPieChart({
   title,
   data,
-  lastUpdated,
+
   innerRadius = 60,
   outerRadius = 85,
   startAngle = 0,
@@ -87,9 +86,6 @@ export default function DistributionPieChart({
                   </p>
                 </div>
               ))}
-            <p className="mt-3 font-arial text-[12px] text-[#6B6B6B]">
-              Last updated: {lastUpdated}
-            </p>
           </div>
         )
       }

@@ -21,12 +21,34 @@ interface HorizontalBarChartProps {
   dataKey: string;
   labelKey: string;
   highlights?: HighlightItem[];
-  lastUpdated: string;
+
   xTicks?: number[];
   xDomain?: [number, number];
   barColor?: string;
   onFilterChange?: (value: string, range?: { from: Date | null; to: Date | null }) => void;
   loading?: boolean;
+}
+
+// Defined outside component — Recharts remounts the tick on every render if defined inside
+function YAxisTick({ x, y, payload }: { x?: number; y?: number; payload?: { value: string } }) {
+  const label = payload?.value ?? "";
+  const display = label.length > 22 ? label.slice(0, 21) + "…" : label;
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <title>{label}</title>
+      <text
+        x={-6}
+        y={0}
+        dy={4}
+        textAnchor="end"
+        fill="#6B6B6B"
+        fontSize={11}
+        fontFamily="Inter, sans-serif"
+      >
+        {display}
+      </text>
+    </g>
+  );
 }
 
 export default function HorizontalBarChart({
@@ -36,7 +58,7 @@ export default function HorizontalBarChart({
   dataKey,
   labelKey,
   highlights = [],
-  lastUpdated,
+
   xTicks,
   xDomain,
   barColor = "#8B7EC8",
@@ -50,6 +72,9 @@ export default function HorizontalBarChart({
     onFilterChange?.(val, range);
   };
 
+  const chartHeight = Math.max(280, data.length * 36);
+  const barSize = data.length > 8 ? 26 : 32;
+
   return (
     <ChartCard
       title={title}
@@ -58,7 +83,7 @@ export default function HorizontalBarChart({
         loading ? null : (
           <div className="space-y-4">
             {highlights.length > 0 && (
-              <div className="grid grid-cols-1 gap-3 s:grid-cols-2">
+              <div className="grid grid-cols-2 gap-3">
                 {highlights.map((item) => (
                   <div
                     key={item.title}
@@ -66,7 +91,10 @@ export default function HorizontalBarChart({
                     style={{ backgroundColor: item.bgColor }}
                   >
                     <p className="text-[12px] text-[#6B6B6B]">{item.title}</p>
-                    <p className="mt-1 text-[18px] font-bold" style={{ color: item.textColor }}>
+                    <p
+                      className="mt-1 text-[18px] font-bold leading-[28px]"
+                      style={{ color: item.textColor }}
+                    >
                       {item.label}
                     </p>
                     <p className="text-[12px] text-[#6B6B6B]">{item.detail}</p>
@@ -74,14 +102,13 @@ export default function HorizontalBarChart({
                 ))}
               </div>
             )}
-            <p className="text-[12px] text-[#6B6B6B]">Last updated: {lastUpdated}</p>
           </div>
         )
       }
     >
-      {subtitle && <p className="text-[14px] text-slate">{subtitle}</p>}
+      {subtitle && <p className="text-[13px] leading-[1.4] text-[#6B6B6B]">{subtitle}</p>}
 
-      <div className="mt-4 h-[280px] w-full">
+      <div className="mt-4 w-full" style={{ height: chartHeight }}>
         {loading ? (
           <div className="flex h-full w-full items-end justify-around gap-2 px-4">
             {[60, 85, 45, 95, 55, 70, 40, 80].map((h, i) => (
@@ -99,25 +126,28 @@ export default function HorizontalBarChart({
             <BarChart
               layout="vertical"
               data={data}
-              margin={{ top: 6, right: 8, left: 2, bottom: 18 }}
-              barCategoryGap={14}
+              margin={{ top: 4, right: 12, left: 4, bottom: 16 }}
+              barCategoryGap="15%"
             >
-              <CartesianGrid strokeDasharray="4 4" stroke="#E5E7EB" horizontal vertical />
+              <CartesianGrid strokeDasharray="4 4" stroke="#E5E7EB" horizontal={false} vertical />
               <XAxis
                 type="number"
                 tick={{ fontSize: 12, fill: "#6B6B6B" }}
-                {...(xDomain && { domain: xDomain })}
-                {...(xTicks && { ticks: xTicks })}
+                axisLine={false}
+                tickLine={false}
+                {...(xDomain ? { domain: xDomain } : {})}
+                {...(xTicks ? { ticks: xTicks } : {})}
               />
               <YAxis
                 type="category"
                 dataKey={labelKey}
-                width={128}
-                tick={{ fontSize: 11, fill: "#6B6B6B" }}
+                width={152}
+                tick={<YAxisTick />}
                 axisLine={false}
                 tickLine={false}
               />
               <Tooltip
+                cursor={{ fill: "rgba(139,126,200,0.08)" }}
                 contentStyle={{
                   borderRadius: 10,
                   border: "1px solid #F3F4F6",
@@ -132,8 +162,8 @@ export default function HorizontalBarChart({
               <Bar
                 dataKey={dataKey}
                 fill={barColor}
-                radius={[3, 3, 3, 3]}
-                barSize={28}
+                radius={[0, 4, 4, 0]}
+                barSize={barSize}
                 isAnimationActive={false}
               />
             </BarChart>

@@ -144,7 +144,9 @@ export default function DemographicsMain({
             ? [
                 String(overview.data.total_users),
                 String(overview.data.new_this_month),
-                overview.data.average_age,
+                String(overview.data.average_age)
+                  .replace(/\s*year\s*/i, "")
+                  .trim(),
               ]
             : null;
           // Green subtitle text per card, driven by live data:
@@ -184,7 +186,6 @@ export default function DemographicsMain({
                 color: GENDER_COLORS[i % GENDER_COLORS.length],
                 chartValue: item.percentage,
               }))}
-              lastUpdated={demographicsData.genderDistribution.lastUpdated}
               innerRadius={58}
               outerRadius={100}
               startAngle={92}
@@ -194,6 +195,11 @@ export default function DemographicsMain({
             />
             <HorizontalBarChart
               title="Cultural Identity Distribution"
+              subtitle={
+                culturalIdentity
+                  ? `${culturalIdentity.distribution.length} distinct cultural identities represented • ${(overview?.data.total_users ?? 0).toLocaleString()} total users`
+                  : undefined
+              }
               loading={culturalIdentityLoading}
               data={(culturalIdentity?.distribution ?? []).map((item) => ({
                 group: item.identity,
@@ -211,26 +217,25 @@ export default function DemographicsMain({
                               title: "Largest Group",
                               label: culturalIdentity.largest_group.identity,
                               detail: `${culturalIdentity.largest_group.count.toLocaleString()} users (${culturalIdentity.largest_group.percentage}%)`,
-                              bgColor: "#EAF3E8",
-                              textColor: "#5A8C54",
+                              bgColor: "#faf5ff",
+                              textColor: "#8B7EC8",
                             },
                           ]
                         : []),
                       ...(culturalIdentity.least_group
                         ? [
                             {
-                              title: "Smallest Group",
+                              title: "Least Group",
                               label: culturalIdentity.least_group.identity,
                               detail: `${culturalIdentity.least_group.count.toLocaleString()} users (${culturalIdentity.least_group.percentage}%)`,
-                              bgColor: "#F5ECDA",
-                              textColor: "#C47D2E",
+                              bgColor: "#f0fdf4",
+                              textColor: "#9CAF88",
                             },
                           ]
                         : []),
                     ]
                   : []
               }
-              lastUpdated=""
               onFilterChange={handleCulturalIdentityFilter}
             />
           </div>
@@ -490,7 +495,6 @@ export default function DemographicsMain({
                 color: GENDER_COLORS[i % GENDER_COLORS.length],
                 chartValue: item.percentage,
               }))}
-              lastUpdated=""
               showList={false}
               onFilterChange={handleEthnicityDistributionFilter}
             />
