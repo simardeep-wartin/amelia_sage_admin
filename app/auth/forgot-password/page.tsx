@@ -3,8 +3,11 @@ import ForgotPasswordForm from "@/components/auth/ForgotPasswordForm";
 
 export default function ForgotPasswordPage() {
   return (
-    <SignInLayout animationPath="/auth/animation.svg">
-      <ForgotPasswordForm />
-    </SignInLayout>
+    <>
+      <link rel="preload" as="video" href="/auth/bg-animaton.mp4" />
+      <SignInLayout animationPath="/auth/bg-animaton.mp4">
+        <ForgotPasswordForm />
+      </SignInLayout>
+    </>
   );
 }

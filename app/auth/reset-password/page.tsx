@@ -4,10 +4,13 @@ import ResetPasswordForm from "@/components/auth/ResetPasswordForm";
 
 export default function ResetPasswordPage() {
   return (
-    <SignInLayout animationPath="/auth/animation.svg">
-      <Suspense>
-        <ResetPasswordForm />
-      </Suspense>
-    </SignInLayout>
+    <>
+      <link rel="preload" as="video" href="/auth/bg-animaton.mp4" />
+      <SignInLayout animationPath="/auth/bg-animaton.mp4">
+        <Suspense>
+          <ResetPasswordForm />
+        </Suspense>
+      </SignInLayout>
+    </>
   );
 }

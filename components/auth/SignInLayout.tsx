@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { type ReactNode, useState, useEffect } from "react";
+import { type ReactNode, useState, useEffect, useCallback } from "react";
 import VideoBackground from "@/components/auth/VideoBackground";
 import SignInLoader from "@/components/loaders/signin-loader";
 
@@ -12,11 +12,19 @@ type SignInLayoutProps = {
 
 export default function SignInLayout({ children, animationPath }: SignInLayoutProps) {
   const [ready, setReady] = useState(false);
+  const handleReady = useCallback(() => setReady(true), []);
 
   useEffect(() => {
     if (window.innerWidth < 1024) {
       setReady(true);
+      return;
     }
+
+    const handlePageShow = (e: PageTransitionEvent) => {
+      if (e.persisted) setReady(true);
+    };
+    window.addEventListener("pageshow", handlePageShow);
+    return () => window.removeEventListener("pageshow", handlePageShow);
   }, []);
 
   return (
@@ -24,15 +32,15 @@ export default function SignInLayout({ children, animationPath }: SignInLayoutPr
       {!ready && <SignInLoader />}
       <main className="relative min-h-screen w-full bg-stone">
         <div className="flex min-h-screen flex-col lg:flex-row">
-          <section className="relative hidden lg:flex lg:h-screen lg:w-1/2 items-center justify-center overflow-hidden">
+          <section className="relative hidden lg:flex lg:h-screen lg:w-[60%] items-center justify-center overflow-hidden">
             <VideoBackground
               animationPath={animationPath}
-              onLoad={() => setReady(true)}
-              onError={() => setReady(true)}
+              onLoad={handleReady}
+              onError={handleReady}
             />
           </section>
 
-          <section className="relative z-30 flex min-h-screen w-full lg:w-1/2 items-center justify-center bg-authBg px-4 py-10 sm:px-6 sm:py-14 overflow-y-auto">
+          <section className="relative z-30 flex min-h-screen w-full lg:w-[48%] items-center justify-center bg-authBg px-4 py-10 sm:px-6 sm:py-14 overflow-y-auto">
             <div className="relative z-10 w-full max-w-[465px] mx-auto">
               <div className="flex items-center justify-center gap-10">{children}</div>
             </div>
@@ -40,7 +48,7 @@ export default function SignInLayout({ children, animationPath }: SignInLayoutPr
         </div>
 
         {ready && (
-          <div className="pointer-events-none absolute left-1/2 top-1/2 z-[9999] hidden -translate-x-1/2 -translate-y-1/2 lg:block">
+          <div className="pointer-events-none absolute left-[52%] top-1/2 z-[9999] hidden -translate-x-1/2 -translate-y-1/2 lg:block">
             <div className="rounded-[31px] bg-white shadow-xl">
               <div className="h-[132px] w-[132px] overflow-hidden rounded-[31px]">
                 <Image
@@ -55,8 +63,6 @@ export default function SignInLayout({ children, animationPath }: SignInLayoutPr
             </div>
           </div>
         )}
-
-        <div className="pointer-events-none absolute inset-y-0 left-[58%] hidden w-[169px] -translate-x-full bg-gradient-to-r from-transparent to-softstone lg:block" />
       </main>
     </>
   );
