@@ -20,3 +20,22 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ id: 
     return NextResponse.json({ message }, { status: 500 });
   }
 }
+
+export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const token = (await cookies()).get("auth-token")?.value;
+  if (!token) return NextResponse.json({ message: "Unauthorized." }, { status: 401 });
+
+  const { id } = await params;
+  const body = await req.json();
+
+  try {
+    const raw = await apiClient.put(ENDPOINTS.workOnMe.focusArea(id), body, {
+      token,
+      apiKey: process.env.ADMIN_API_KEY,
+    });
+    return NextResponse.json(raw);
+  } catch (e) {
+    const message = e instanceof Error ? e.message : "Unexpected error.";
+    return NextResponse.json({ message }, { status: 500 });
+  }
+}

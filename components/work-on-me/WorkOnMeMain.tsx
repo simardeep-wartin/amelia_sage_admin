@@ -29,9 +29,12 @@ export default function WorkOnMeMain({
   setManagedCategory,
   editingFeeling,
   setEditingFeeling,
+  editingFocusArea,
+  setEditingFocusArea,
   handleAddEmotion,
   handleAddFocus,
   handleEditEmotion,
+  handleEditFocusArea,
   handleDeleteFeeling,
   handleDeleteFocusArea,
   handleCategoryExerciseCountChange,
@@ -202,6 +205,7 @@ export default function WorkOnMeMain({
                       setManagedCategory({ id: focus.id, title: focus.title, type: "focus-area" })
                     }
                     hideActionButton
+                    onSecondaryAction={() => setEditingFocusArea(focus)}
                     onDeleteAction={() =>
                       setPendingDelete({ id: focus.id, title: focus.title, type: "focus-area" })
                     }
@@ -256,6 +260,19 @@ export default function WorkOnMeMain({
             : undefined
         }
         onSave={handleEditEmotion}
+      />
+      <ActionModal
+        isOpen={!!editingFocusArea}
+        onClose={() => setEditingFocusArea(null)}
+        type="category"
+        title="Edit Focus Area"
+        nameLabel="Focus Area Name"
+        initialData={
+          editingFocusArea
+            ? { title: editingFocusArea.title, description: editingFocusArea.description }
+            : undefined
+        }
+        onSave={handleEditFocusArea}
       />
 
       <CategoryManagementPanel

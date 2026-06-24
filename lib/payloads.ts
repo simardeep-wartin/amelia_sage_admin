@@ -42,6 +42,12 @@ export const focusAreas = {
     image_url: imageUrl,
     sort_order: sortOrder,
   }),
+
+  update: (title: string, description: string, imageUrl: string) => ({
+    title,
+    description,
+    image_url: imageUrl,
+  }),
 };
 
 export const feelings = {

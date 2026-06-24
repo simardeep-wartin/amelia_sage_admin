@@ -15,4 +15,5 @@ export * from "./focusAreaExercises";
 export * from "./createFocusAreaExercise";
 export * from "./updateFocusAreaExercise";
 export * from "./deleteFocusAreaExercise";
+export * from "./updateFocusArea";
 export * from "./updateFocusAreaIntroScreen";

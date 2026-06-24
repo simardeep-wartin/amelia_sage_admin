@@ -38,6 +38,10 @@ interface CategoryManagementPanelProps {
 
 const isMongoId = (v: string) => /^[0-9a-f]{24}$/.test(v);
 
+const hasIntroContent = (
+  intro: { greet?: string; sub_content?: string; description?: string } | null | undefined,
+) => !!(intro?.greet || intro?.sub_content || intro?.description);
+
 export default function CategoryManagementPanel({
   isOpen,
   onClose,
@@ -52,11 +56,11 @@ export default function CategoryManagementPanel({
   const [items, setItems] = useState<FeelingExercise[]>([]);
   // Map from feelings list fields to FeelingIntroScreen shape
   const [introScreen, setIntroScreen] = useState<FeelingIntroScreen | null>(
-    initialIntroScreen
+    hasIntroContent(initialIntroScreen)
       ? {
-          subtitle: initialIntroScreen.greet ?? "",
-          sage_says: initialIntroScreen.sub_content ?? "",
-          description: initialIntroScreen.description ?? "",
+          subtitle: initialIntroScreen!.greet ?? "",
+          sage_says: initialIntroScreen!.sub_content ?? "",
+          description: initialIntroScreen!.description ?? "",
         }
       : null,
   );
@@ -115,12 +119,14 @@ export default function CategoryManagementPanel({
     fetchExercises(true);
 
     // Sync intro screen from the list data whenever the panel opens for a new category
-    if (initialIntroScreen) {
+    if (hasIntroContent(initialIntroScreen)) {
       setIntroScreen({
-        subtitle: initialIntroScreen.greet ?? "",
-        sage_says: initialIntroScreen.sub_content ?? "",
-        description: initialIntroScreen.description ?? "",
+        subtitle: initialIntroScreen!.greet ?? "",
+        sage_says: initialIntroScreen!.sub_content ?? "",
+        description: initialIntroScreen!.description ?? "",
       });
+    } else {
+      setIntroScreen(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, categoryId, categoryType]);
@@ -210,15 +216,18 @@ export default function CategoryManagementPanel({
     const previous = items;
     const updated = previous.filter((item) => item.id !== exerciseId);
     setItems(updated);
-    onExerciseCountChange?.(updated.length);
     const deleter =
       categoryType === "focus-area"
         ? deleteFocusAreaExercise(categoryId, exerciseId)
         : deleteFeelingExercise(categoryId, exerciseId);
-    deleter.catch(() => {
-      setItems(previous);
-      onExerciseCountChange?.(previous.length);
-    });
+    deleter
+      .then(() => {
+        onExerciseCountChange?.(updated.length);
+      })
+      .catch(() => {
+        setItems(previous);
+        onExerciseCountChange?.(previous.length);
+      });
   };
 
   const openCreateIntro = () => {
@@ -248,38 +257,37 @@ export default function CategoryManagementPanel({
         onClose={handleClose}
         title={`Manage ${categoryName} ${itemType}s`}
         width="max-w-2xl"
+        footer={
+          loading ? undefined : (
+            <div className="flex flex-col gap-3">
+              {showIntroScreenAction && !introScreen && (
+                <Button onClick={openCreateIntro} className="w-full" variant="outline">
+                  + Create Intro Screen
+                </Button>
+              )}
+              <Button onClick={handleOpenAddItem} className="w-full" variant="solid">
+                + Create New {itemLabel}
+              </Button>
+            </div>
+          )
+        }
       >
         {loading ? (
           <PanelSkeleton />
         ) : (
           <div className="space-y-6">
-            {/* Action buttons */}
-            <div className="flex justify-end items-center text-[13px] font-semibold text-sageGreen gap-4">
-              {showIntroScreenAction && (
-                <>
-                  <button
-                    onClick={introScreen ? openEditIntro : openCreateIntro}
-                    className="hover:text-[#7fa18c] p-2 rounded-md cursor-pointer hover:border hover:border-[#7fa18c]"
-                  >
-                    {introScreen ? (
-                      <span className="flex items-center gap-1.5">
-                        <PencilSquareIcon className="h-4 w-4" />
-                        Edit Intro Screen
-                      </span>
-                    ) : (
-                      "+ Create Intro Screen"
-                    )}
-                  </button>
-                  <span className="text-[#E5E5E5] font-normal">|</span>
-                </>
-              )}
-              <button
-                onClick={handleOpenAddItem}
-                className="hover:text-[#7fa18c] p-2 rounded-md cursor-pointer hover:border hover:border-[#7fa18c]"
-              >
-                + Create New {itemLabel}
-              </button>
-            </div>
+            {/* Intro Screen action (top) */}
+            {showIntroScreenAction && introScreen && (
+              <div className="flex justify-end items-center text-[13px] font-semibold text-sageGreen">
+                <button
+                  onClick={openEditIntro}
+                  className="hover:text-[#7fa18c] p-2 rounded-md cursor-pointer hover:border hover:border-[#7fa18c] flex items-center gap-1.5"
+                >
+                  <PencilSquareIcon className="h-4 w-4" />
+                  Edit Intro Screen
+                </button>
+              </div>
+            )}
 
             {/* Intro Screen accordion (shown when data exists) */}
             {introScreen && showIntroScreenAction && (
@@ -367,14 +375,6 @@ export default function CategoryManagementPanel({
                   <div className="w-10 h-16 bg-[#F9F7F2] rounded-sm" />
                   <div className="w-10 h-20 bg-[#F2F2F2] rounded-sm" />
                 </div>
-                {showIntroScreenAction && !introScreen && (
-                  <Button onClick={openCreateIntro} className="w-full" variant="outline">
-                    + Create Intro Screen
-                  </Button>
-                )}
-                <Button onClick={handleOpenAddItem} className="w-full" variant="solid">
-                  + Create New {itemLabel}
-                </Button>
               </div>
             )}
           </div>
