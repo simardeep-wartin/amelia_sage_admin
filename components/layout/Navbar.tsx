@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import {
   Bars3Icon,
   BellIcon,
@@ -20,7 +19,6 @@ export default function Navbar({ title }: NavbarProps) {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -35,7 +33,7 @@ export default function Navbar({ title }: NavbarProps) {
   const handleLogout = async () => {
     setIsLoggingOut(true);
     await logout().catch(() => {});
-    router.push("/signin");
+    window.location.replace("/signin");
   };
 
   return (
