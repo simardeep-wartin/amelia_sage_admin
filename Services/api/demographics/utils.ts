@@ -27,7 +27,7 @@ export function buildFilterQuery(params?: FilterParams): string {
   const q: Record<string, string> = { filter };
   if (filter === "custom" && params.range?.from && params.range?.to) {
     const fmt = (d: Date) =>
-      `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`;
+      `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
     q.start_date = fmt(params.range.from);
     q.end_date = fmt(params.range.to);
   }
