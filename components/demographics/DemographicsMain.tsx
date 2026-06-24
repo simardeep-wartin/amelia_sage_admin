@@ -533,7 +533,6 @@ export default function DemographicsMain({
               color: GENDER_COLORS[i % GENDER_COLORS.length],
               chartValue: item.percentage,
             }))}
-            lastUpdated=""
             showList={false}
             onFilterChange={handleWellnessSupportFilter}
           />
