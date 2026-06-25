@@ -4,7 +4,7 @@ import type { FeelingItem } from "./feelings";
 
 export type CreateFeelingPayload = {
   title: string;
-  sub_title: string;
+  description: string;
   image_url: string;
 };
 
