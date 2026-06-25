@@ -54,6 +54,19 @@ export function deleteJournalExercise(entry: ExerciseDraftEntry) {
   return Promise.reject(new Error(`Unknown sub_type: ${sub_type}`));
 }
 
+export function publishJournalExercise(entry: ExerciseDraftEntry) {
+  const { id, category_id, sub_type } = entry;
+  if (!category_id) return Promise.reject(new Error("Missing category_id"));
+  const payload = { is_draft: false };
+  if (sub_type === "feelings")
+    return clientApi.put(ENDPOINTS.journal.publishFeeling(category_id, id), payload);
+  if (sub_type === "focus")
+    return clientApi.put(ENDPOINTS.journal.publishFocusArea(category_id, id), payload);
+  if (sub_type === "wealth_plan")
+    return clientApi.put(ENDPOINTS.journal.publishWealthPlan(category_id, id), payload);
+  return Promise.reject(new Error(`Unknown sub_type: ${sub_type}`));
+}
+
 export function getJournalExercises(params: JournalExercisesParams) {
   const qs = new URLSearchParams();
   if (params.source) qs.set("source", params.source);

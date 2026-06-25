@@ -19,10 +19,17 @@ import type { JournalExercisesParams } from "@/Services/api/journal/exercises";
 const STATUS_OPTIONS = ["All Status", "Draft", "Published"];
 const MONTH_OPTIONS = ["This Month", "Last Month", "Last 3 Months", "All Time"];
 
-function SourceBadge({ source }: { source: ExerciseDraftEntry["source"] }) {
+const SUB_TYPE_LABEL: Record<string, string> = {
+  feelings: "Work on Me",
+  focus: "Work on Me",
+  wealth_plan: "Wealth Plan",
+};
+
+function SourceBadge({ entry }: { entry: ExerciseDraftEntry }) {
+  const label = (entry.sub_type && SUB_TYPE_LABEL[entry.sub_type]) ?? entry.source;
   return (
     <span className="inline-flex items-center rounded-[4px] bg-[#EFEEE9] border border-[rgba(195,200,189,0.15)] px-[9px] py-[4px] text-[12px] font-normal text-[#1B1C19] whitespace-nowrap">
-      {source}
+      {label}
     </span>
   );
 }
@@ -36,6 +43,7 @@ function tabToSource(tab: ExerciseDraftTab): JournalExercisesParams["source"] | 
 function buildColumns(
   onEdit: (entry: ExerciseDraftEntry) => void,
   onDelete: (entry: ExerciseDraftEntry) => Promise<void>,
+  onPublish: (entry: ExerciseDraftEntry) => Promise<void>,
 ): TableColumn<ExerciseDraftEntry>[] {
   return [
     {
@@ -55,7 +63,7 @@ function buildColumns(
     {
       key: "source",
       label: "Source",
-      render: (row) => <SourceBadge source={row.source} />,
+      render: (row) => <SourceBadge entry={row} />,
     },
     {
       key: "sort_order",
@@ -91,6 +99,8 @@ function buildColumns(
           trigger="horizontal"
           onEdit={() => onEdit(row)}
           onDelete={() => onDelete(row)}
+          onPublish={() => onPublish(row)}
+          publishLabel={row.title}
         />
       ),
     },
@@ -105,12 +115,20 @@ export default function ExerciseDraftMain() {
   const [currentPage, setCurrentPage] = useState(1);
   const [editingEntry, setEditingEntry] = useState<ExerciseDraftEntry | null>(null);
 
-  const { entries, total, loading, isInitialLoad, itemsPerPage, handleSaveEdit, handleDelete } =
-    useExerciseDraft({
-      source: tabToSource(activeTab),
-      search: searchQuery,
-      page: currentPage,
-    });
+  const {
+    entries,
+    total,
+    loading,
+    isInitialLoad,
+    itemsPerPage,
+    handleSaveEdit,
+    handleDelete,
+    handlePublish,
+  } = useExerciseDraft({
+    source: tabToSource(activeTab),
+    search: searchQuery,
+    page: currentPage,
+  });
 
   const totalPages = Math.max(1, Math.ceil(total / itemsPerPage));
 
@@ -124,7 +142,7 @@ export default function ExerciseDraftMain() {
     setCurrentPage(1);
   }, []);
 
-  const columns = buildColumns((entry) => setEditingEntry(entry), handleDelete);
+  const columns = buildColumns((entry) => setEditingEntry(entry), handleDelete, handlePublish);
 
   if (isInitialLoad) return <ExerciseDraftLoader />;
 

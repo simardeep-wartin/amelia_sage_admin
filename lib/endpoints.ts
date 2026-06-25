@@ -39,6 +39,12 @@ export const ENDPOINTS = {
   },
   journal: {
     exercises: "/exercise-draft-management/exercises",
+    publishFeeling: (categoryId: string, exerciseId: string) =>
+      `/exercise-draft-management/feelings/${categoryId}/exercises/${exerciseId}`,
+    publishFocusArea: (categoryId: string, exerciseId: string) =>
+      `/exercise-draft-management/focus-areas/${categoryId}/exercises/${exerciseId}`,
+    publishWealthPlan: (categoryId: string, exerciseId: string) =>
+      `/exercise-draft-management/wealth-plans/${categoryId}/exercises/${exerciseId}`,
   },
   demographics: {
     overview: "/demographics/overview",

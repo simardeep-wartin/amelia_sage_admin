@@ -5,6 +5,7 @@ import {
   getJournalExercises,
   updateJournalExercise,
   deleteJournalExercise,
+  publishJournalExercise,
   type JournalExercisesParams,
 } from "@/Services/api/journal/exercises";
 import type { ExerciseDraftEntry } from "@/types";
@@ -85,6 +86,21 @@ export function useExerciseDraft(params: UseExerciseDraftParams) {
     [params.source, params.search, params.page],
   );
 
+  const handlePublish = useCallback(
+    async (entry: ExerciseDraftEntry) => {
+      await publishJournalExercise(entry);
+      const res = await getJournalExercises({
+        source: params.source,
+        search: params.search,
+        page: params.page,
+        page_size: ITEMS_PER_PAGE,
+      });
+      setEntries(res.data.items);
+      setTotal(res.data.total);
+    },
+    [params.source, params.search, params.page],
+  );
+
   return {
     entries,
     total,
@@ -94,5 +110,6 @@ export function useExerciseDraft(params: UseExerciseDraftParams) {
     itemsPerPage: ITEMS_PER_PAGE,
     handleSaveEdit,
     handleDelete,
+    handlePublish,
   };
 }
