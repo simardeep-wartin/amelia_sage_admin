@@ -4,6 +4,7 @@ export interface TableColumn<T extends object> {
   key: keyof T | string;
   label: string;
   align?: "left" | "center" | "right";
+  width?: string;
   render?: (row: T) => ReactNode;
 }
 
@@ -22,7 +23,7 @@ export default function Table<T extends object>({
 }: TableProps<T>) {
   return (
     <div className="w-full overflow-x-auto">
-      <table className="w-full border-collapse text-sm">
+      <table className="w-full table-fixed border-collapse text-sm">
         <thead>
           <tr className="border-b border-[#F3F4F6]">
             {columns.map((col) => (
@@ -35,7 +36,7 @@ export default function Table<T extends object>({
                       ? "text-center"
                       : "text-left"
                 }`}
-                style={{ color: headerTextColor }}
+                style={{ color: headerTextColor, width: col.width }}
               >
                 {col.label}
               </th>

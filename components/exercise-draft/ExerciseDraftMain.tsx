@@ -67,7 +67,7 @@ function buildColumns(
     },
     {
       key: "sort_order",
-      label: "Day #",
+      label: "Exercise Number",
       render: (row) => (
         <span className="text-[14px] font-normal text-[#6B6B6B]">{row.sort_order ?? "—"}</span>
       ),
