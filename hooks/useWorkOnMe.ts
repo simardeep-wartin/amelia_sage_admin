@@ -122,7 +122,7 @@ export function useWorkOnMe() {
         setFeelings((prev) =>
           prev.map((feeling) =>
             feeling.id === editingFeeling.id
-              ? { ...feeling, title: payload.title, description: payload.sub_title }
+              ? { ...feeling, title: payload.title, description: payload.description }
               : feeling,
           ),
         );

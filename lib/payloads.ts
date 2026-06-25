@@ -37,9 +37,9 @@ export const introScreen = {
 };
 
 export const focusAreas = {
-  create: (title: string, subTitle: string, sortOrder: number, imageUrl = "") => ({
+  create: (title: string, description: string, sortOrder: number, imageUrl = "") => ({
     title,
-    sub_title: subTitle,
+    description,
     image_url: imageUrl,
     sort_order: sortOrder,
   }),
@@ -52,15 +52,15 @@ export const focusAreas = {
 };
 
 export const feelings = {
-  create: (title: string, subTitle: string, imageUrl = "") => ({
+  create: (title: string, description: string, imageUrl = "") => ({
     title,
-    sub_title: subTitle,
+    description,
     image_url: imageUrl,
   }),
 
-  update: (title: string, subTitle: string, imageUrl: string) => ({
+  update: (title: string, description: string, imageUrl: string) => ({
     title,
-    sub_title: subTitle,
+    description,
     image_url: imageUrl,
   }),
 };
