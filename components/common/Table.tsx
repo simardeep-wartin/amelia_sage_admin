@@ -22,8 +22,8 @@ export default function Table<T extends object>({
   emptyMessage = "No data available.",
 }: TableProps<T>) {
   return (
-    <div className="w-full overflow-x-auto">
-      <table className="w-full table-fixed border-collapse text-sm">
+    <div className="w-full overflow-x-auto scrollbar-thin">
+      <table className="min-w-full border-collapse text-sm">
         <thead>
           <tr className="border-b border-[#F3F4F6]">
             {columns.map((col) => (
@@ -56,7 +56,7 @@ export default function Table<T extends object>({
                 {columns.map((col) => (
                   <td
                     key={String(col.key)}
-                    className={`whitespace-nowrap px-4 py-3 text-[#2B2B2B] ${
+                    className={`whitespace-nowrap px-6 py-3 text-[#2B2B2B] ${
                       col.align === "right"
                         ? "text-right"
                         : col.align === "center"
