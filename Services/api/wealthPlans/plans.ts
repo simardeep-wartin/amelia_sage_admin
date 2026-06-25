@@ -35,6 +35,7 @@ export const createWealthPlan = (payload: CreateWealthPlanPayload) =>
 export type UpdateWealthPlanPayload = {
   title: string;
   sub_title: string;
+  image_url?: string;
 };
 
 export const updateWealthPlan = (id: string, payload: UpdateWealthPlanPayload) =>

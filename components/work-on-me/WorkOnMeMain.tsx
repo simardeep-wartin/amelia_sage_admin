@@ -256,7 +256,11 @@ export default function WorkOnMeMain({
         nameLabel="Emotion Name"
         initialData={
           editingFeeling
-            ? { title: editingFeeling.title, description: editingFeeling.description }
+            ? {
+                title: editingFeeling.title,
+                description: editingFeeling.description,
+                image_url: editingFeeling.image_url,
+              }
             : undefined
         }
         onSave={handleEditEmotion}
@@ -269,7 +273,11 @@ export default function WorkOnMeMain({
         nameLabel="Focus Area Name"
         initialData={
           editingFocusArea
-            ? { title: editingFocusArea.title, description: editingFocusArea.description }
+            ? {
+                title: editingFocusArea.title,
+                description: editingFocusArea.description,
+                image_url: editingFocusArea.image_url,
+              }
             : undefined
         }
         onSave={handleEditFocusArea}

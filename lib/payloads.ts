@@ -9,9 +9,10 @@ export const wealthPlans = {
     image_url: imageUrl,
   }),
 
-  update: (title: string, subTitle: string) => ({
+  update: (title: string, subTitle: string, imageUrl = "") => ({
     title,
     sub_title: subTitle,
+    image_url: imageUrl,
   }),
 };
 

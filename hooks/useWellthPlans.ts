@@ -131,7 +131,8 @@ export function useWellthPlans() {
 
   const handleSavePlan = (data: Record<string, unknown>) => {
     if (!editingPlanId) return;
-    const payload = wealthPlanPayloads.update(s(data.title), s(data.sub_title));
+    const imageUrl = (data.existing_image_url as string) || "";
+    const payload = wealthPlanPayloads.update(s(data.title), s(data.sub_title), imageUrl);
     updateWealthPlan(editingPlanId, payload).then((res) =>
       setPlans(plans.map((p) => (p.id === editingPlanId ? { ...p, ...res.data } : p))),
     );

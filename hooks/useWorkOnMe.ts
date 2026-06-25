@@ -111,10 +111,11 @@ export function useWorkOnMe() {
 
   const handleEditEmotion = (data: Record<string, unknown>) => {
     if (!editingFeeling) return;
+    const imageUrl = (data.existing_image_url as string) || editingFeeling.image_url;
     const payload = feelingPayloads.update(
       data.name as string,
       data.description as string,
-      editingFeeling.image_url,
+      imageUrl,
     );
     updateFeeling(editingFeeling.id, payload)
       .then(() => {
@@ -132,10 +133,11 @@ export function useWorkOnMe() {
 
   const handleEditFocusArea = (data: Record<string, unknown>) => {
     if (!editingFocusArea) return;
+    const imageUrl = (data.existing_image_url as string) || editingFocusArea.image_url;
     const payload = focusAreaPayloads.update(
       data.name as string,
       data.description as string,
-      editingFocusArea.image_url,
+      imageUrl,
     );
     updateFocusArea(editingFocusArea.id, payload)
       .then(() => {

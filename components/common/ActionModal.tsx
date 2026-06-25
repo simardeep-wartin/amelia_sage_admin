@@ -32,12 +32,14 @@ export default function ActionModal({
   const [field2, setField2] = useState("");
   const [field3, setField3] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [existingImageUrl, setExistingImageUrl] = useState<string>("");
 
   const resetForm = useCallback(() => {
     setField1("");
     setField2("");
     setField3("");
     setSelectedFile(null);
+    setExistingImageUrl("");
   }, []);
 
   React.useEffect(() => {
@@ -45,6 +47,7 @@ export default function ActionModal({
       if (type === "category" || type === "exercise") {
         setField1((initialData.title as string) || (initialData.name as string) || "");
         setField2((initialData.description as string) || "");
+        setExistingImageUrl((initialData.image_url as string) || "");
       } else if (type === "intro-screen") {
         setField1((initialData.subtitle as string) || "");
         setField2((initialData.sageSays as string) || "");
@@ -57,7 +60,13 @@ export default function ActionModal({
 
   const handleSave = (isDraft = false) => {
     if (type === "category") {
-      onSave({ name: field1, description: field2, icon: selectedFile, is_draft: isDraft });
+      onSave({
+        name: field1,
+        description: field2,
+        icon: selectedFile,
+        existing_image_url: existingImageUrl,
+        is_draft: isDraft,
+      });
     } else if (type === "exercise") {
       onSave({ title: field1, description: field2, is_draft: isDraft });
     } else if (type === "intro-screen") {
@@ -117,7 +126,8 @@ export default function ActionModal({
       ) : (
         <button
           onClick={() => handleSave(false)}
-          className="flex-1 h-10 sm:h-12 rounded-lg bg-[#8EB19D] text-sm sm:text-base font-semibold text-white transition-colors hover:bg-[#7fa18c]"
+          disabled={!isFormValid || (isEdit && !hasChanges)}
+          className="cursor-pointer flex-1 h-10 sm:h-12 rounded-lg bg-sageGreen text-sm sm:text-base font-semibold text-white transition-colors hover:bg-sageGreenHover disabled:bg-sageGreen/40 disabled:cursor-not-allowed"
         >
           {isEdit ? "Save Changes" : actionText}
         </button>
@@ -185,6 +195,7 @@ export default function ActionModal({
             accept="image/png, image/jpeg"
             selectedFile={selectedFile}
             onFileSelect={setSelectedFile}
+            existingUrl={existingImageUrl || undefined}
             placeholder="Upload Icon"
             hint="PNG, JPG up to 5MB (recommended: 40x40px)"
           />

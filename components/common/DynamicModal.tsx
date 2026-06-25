@@ -35,6 +35,7 @@ export default function DynamicModal({
     config.tabs ? config.tabs[0].label : "",
   );
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [existingImageUrl, setExistingImageUrl] = useState<string>("");
   const [saving, setSaving] = useState(false);
   const [savingDraft, setSavingDraft] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -43,6 +44,7 @@ export default function DynamicModal({
     if (isOpen) {
       setFormData(initialData || {});
       setSelectedFile(null);
+      setExistingImageUrl((initialData?.image_url as string) || "");
       if (config.tabs) {
         setActiveTabLabel(config.tabs[0].label);
       }
@@ -54,7 +56,12 @@ export default function DynamicModal({
   };
 
   const handleSave = async () => {
-    const data = { ...formData, icon: selectedFile, is_draft: false };
+    const data = {
+      ...formData,
+      icon: selectedFile,
+      existing_image_url: existingImageUrl,
+      is_draft: false,
+    };
     const result = onSave(data);
     if (result instanceof Promise) {
       setSaving(true);
@@ -145,7 +152,8 @@ export default function DynamicModal({
             </select>
           </div>
         );
-      case "upload":
+      case "upload": {
+        const preview = selectedFile ? URL.createObjectURL(selectedFile) : existingImageUrl;
         return (
           <div key={field.name} className="space-y-1">
             <label className="block text-[18px] font-medium text-[#171717]">{field.label}</label>
@@ -164,9 +172,19 @@ export default function DynamicModal({
                   }
                 }}
               />
-              <CloudArrowUpIcon className="h-8 w-8 text-[#9898A3] mb-3" strokeWidth={1} />
+              {preview ? (
+                <div className="h-14 w-14 rounded-xl bg-gray-200 flex items-center justify-center mb-3">
+                  <img src={preview} alt="icon preview" className="h-8 w-8 object-contain" />
+                </div>
+              ) : (
+                <CloudArrowUpIcon className="h-8 w-8 text-[#9898A3] mb-3" strokeWidth={1} />
+              )}
               <span className="text-sm font-medium text-[#5B4FDB] mb-1 px-4 text-center">
-                {selectedFile ? selectedFile.name : "Upload Icon"}
+                {selectedFile
+                  ? selectedFile.name
+                  : preview
+                    ? "Click to change icon"
+                    : "Upload Icon"}
               </span>
               <span className="text-xs text-[#A1A1AA] text-center px-4">
                 PNG, JPG up to 5MB (recommended: 40x40px)
@@ -174,6 +192,7 @@ export default function DynamicModal({
             </div>
           </div>
         );
+      }
       default:
         return null;
     }

@@ -68,6 +68,11 @@ export const WELLTH_MODAL_CONFIG: Record<string, ModalConfig> = {
         type: "textarea",
         validation: { required: true },
       },
+      {
+        name: "icon",
+        label: "Edit Icon",
+        type: "upload",
+      },
     ],
     actionText: "Save Changes",
   },

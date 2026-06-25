@@ -163,7 +163,11 @@ export default function WellthPlansMain({
                     deleteActionIcon={<TrashIcon className="h-5 w-5" />}
                     onSecondaryAction={() => {
                       setEditingPlanId(plan.id);
-                      openModal("editPlan", { title: plan.title, sub_title: plan.sub_title });
+                      openModal("editPlan", {
+                        title: plan.title,
+                        sub_title: plan.sub_title,
+                        image_url: plan.image_url,
+                      });
                     }}
                     secondaryActionIcon={<PencilSquareIcon className="h-5 w-5 text-slate-500" />}
                     secondaryActionClassName="border border-cardBorder bg-white hover:bg-softstone"
