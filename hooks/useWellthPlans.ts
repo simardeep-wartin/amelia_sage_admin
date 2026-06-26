@@ -71,7 +71,11 @@ export function useWellthPlans() {
     if (!selectedPlanId) return;
     const plan = plans.find((p) => p.id === selectedPlanId);
     setPlanIntroScreen(
-      plan?.intro_title || plan?.intro_description
+      plan?.greet ||
+        plan?.sub_content ||
+        plan?.description ||
+        plan?.intro_title ||
+        plan?.intro_description
         ? {
             greet: plan.greet ?? "",
             sub_content: plan.sub_content ?? "",
