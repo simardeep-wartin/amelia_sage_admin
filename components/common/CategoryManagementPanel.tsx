@@ -89,16 +89,19 @@ export default function CategoryManagementPanel({
 
     return (
       categoryType === "focus-area"
-        ? getFocusAreaExercises(categoryId).then(
-            (res) =>
-              (res.data.exercises ?? []).map((ex) => ({
-                id: ex.id,
-                title: ex.title,
-                description: ex.description,
-                feeling_id: ex.focus_on_category_id,
-              })) as FeelingExercise[],
-          )
-        : getFeelingExercises(categoryId).then((res) => res.data.exercises ?? [])
+        ? getFocusAreaExercises(categoryId).then((res) => {
+            if (res.data.intro_screen) setIntroScreen(res.data.intro_screen);
+            return (res.data.exercises ?? []).map((ex) => ({
+              id: ex.id,
+              title: ex.title,
+              description: ex.description,
+              feeling_id: ex.focus_on_category_id,
+            })) as FeelingExercise[];
+          })
+        : getFeelingExercises(categoryId).then((res) => {
+            if (res.data.intro_screen) setIntroScreen(res.data.intro_screen);
+            return res.data.exercises ?? [];
+          })
     )
       .then((exercises) => {
         setItems(exercises);
