@@ -16,6 +16,7 @@ import {
   type FocusAreaItem,
 } from "@/Services/api/workOnMe";
 import { feelings as feelingPayloads, focusAreas as focusAreaPayloads } from "@/lib/payloads";
+import { uploadImage } from "@/lib/uploadImage";
 
 export type ManagedCategory = {
   id: string;
@@ -46,8 +47,13 @@ export function useWorkOnMe() {
       .finally(() => setLoading(false));
   }, []);
 
-  const handleAddEmotion = (data: Record<string, unknown>) => {
-    const payload = feelingPayloads.create(data.name as string, data.description as string);
+  const handleAddEmotion = async (data: Record<string, unknown>) => {
+    const imageUrl = data.icon instanceof File ? await uploadImage(data.icon) : undefined;
+    const payload = feelingPayloads.create(
+      data.name as string,
+      data.description as string,
+      imageUrl,
+    );
     createFeeling(payload)
       .then(() => {
         setIsEmotionModalOpen(false);
@@ -59,11 +65,13 @@ export function useWorkOnMe() {
       .finally(() => setFeelingsLoading(false));
   };
 
-  const handleAddFocus = (data: Record<string, unknown>) => {
+  const handleAddFocus = async (data: Record<string, unknown>) => {
+    const imageUrl = data.icon instanceof File ? await uploadImage(data.icon) : undefined;
     const payload = focusAreaPayloads.create(
       data.name as string,
       data.description as string,
       focusAreas.length + 1,
+      imageUrl,
     );
     createFocusArea(payload)
       .then(() => {

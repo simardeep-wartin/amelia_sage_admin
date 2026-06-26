@@ -7,6 +7,7 @@ import {
   exercises as exercisePayloads,
   introScreen as introScreenPayloads,
 } from "@/lib/payloads";
+import { uploadImage } from "@/lib/uploadImage";
 import {
   getWealthPlansOverview,
   type WealthPlansOverviewData,
@@ -70,7 +71,11 @@ export function useWellthPlans() {
     if (!selectedPlanId) return;
     const plan = plans.find((p) => p.id === selectedPlanId);
     setPlanIntroScreen(
-      plan?.intro_title || plan?.intro_description
+      plan?.greet ||
+        plan?.sub_content ||
+        plan?.description ||
+        plan?.intro_title ||
+        plan?.intro_description
         ? {
             greet: plan.greet ?? "",
             sub_content: plan.sub_content ?? "",
@@ -84,11 +89,8 @@ export function useWellthPlans() {
   }, [selectedPlanId, plans]);
 
   const handleAddPlan = async (data: Record<string, unknown>) => {
-    const payload = wealthPlanPayloads.create(
-      s(data.name),
-      s(data.sub_title),
-      data.icon instanceof File ? URL.createObjectURL(data.icon) : undefined,
-    );
+    const imageUrl = data.icon instanceof File ? await uploadImage(data.icon) : undefined;
+    const payload = wealthPlanPayloads.create(s(data.name), s(data.sub_title), imageUrl);
     try {
       await createWealthPlan(payload);
       setPlansLoading(true);
@@ -101,7 +103,7 @@ export function useWellthPlans() {
     }
   };
 
-  const handleSaveIntro = (data: Record<string, unknown>) => {
+  const handleSaveIntro = async (data: Record<string, unknown>) => {
     if (!selectedPlanId) return;
     const d = data as Record<string, string>;
     const focusedIntentions = (d.subIntroFocusedIntension ?? "")
@@ -117,16 +119,18 @@ export function useWellthPlans() {
       d.subIntroDescription ?? "",
       focusedIntentions,
     );
-    updateIntroScreen(selectedPlanId, payload).then(() =>
-      setPlanIntroScreen({
-        greet: payload.subtitle,
-        sub_content: payload.sage_says,
-        description: payload.description,
-        intro_title: payload.intro_title ?? "",
-        intro_description: payload.intro_description ?? "",
-        focused_intentions: payload.focused_intentions ?? [],
-      }),
-    );
+    await updateIntroScreen(selectedPlanId, payload);
+    setPlanIntroScreen({
+      greet: payload.subtitle,
+      sub_content: payload.sage_says,
+      description: payload.description,
+      intro_title: payload.intro_title ?? "",
+      intro_description: payload.intro_description ?? "",
+      focused_intentions: payload.focused_intentions ?? [],
+    });
+    // Refresh the plans list so the saved intro is read back on reopen.
+    const res = await getWealthPlans();
+    setPlans(res.data);
   };
 
   const handleSavePlan = (data: Record<string, unknown>) => {

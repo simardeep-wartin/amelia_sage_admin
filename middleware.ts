@@ -36,8 +36,10 @@ export async function middleware(request: NextRequest) {
     const isAsset = /\.[^/]+$/.test(pathname);
     if (!isAsset) {
       const accessToken = request.cookies.get("auth-token")?.value;
-      const refreshToken = request.cookies.get("refresh-token")?.value;
-      if (accessToken || refreshToken) {
+      // Only bounce to /dashboard when a real access token exists. Redirecting on a
+      // stale refresh-token (that later fails to refresh) caused an infinite
+      // /signin <-> /dashboard loop (ERR_TOO_MANY_REDIRECTS).
+      if (accessToken) {
         const url = request.nextUrl.clone();
         url.pathname = "/dashboard";
         url.searchParams.delete("from");
