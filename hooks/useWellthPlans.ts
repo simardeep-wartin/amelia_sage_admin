@@ -99,7 +99,7 @@ export function useWellthPlans() {
     }
   };
 
-  const handleSaveIntro = (data: Record<string, unknown>) => {
+  const handleSaveIntro = async (data: Record<string, unknown>) => {
     if (!selectedPlanId) return;
     const d = data as Record<string, string>;
     const focusedIntentions = (d.subIntroFocusedIntension ?? "")
@@ -115,16 +115,18 @@ export function useWellthPlans() {
       d.subIntroDescription ?? "",
       focusedIntentions,
     );
-    updateIntroScreen(selectedPlanId, payload).then(() =>
-      setPlanIntroScreen({
-        greet: payload.subtitle,
-        sub_content: payload.sage_says,
-        description: payload.description,
-        intro_title: payload.intro_title ?? "",
-        intro_description: payload.intro_description ?? "",
-        focused_intentions: payload.focused_intentions ?? [],
-      }),
-    );
+    await updateIntroScreen(selectedPlanId, payload);
+    setPlanIntroScreen({
+      greet: payload.subtitle,
+      sub_content: payload.sage_says,
+      description: payload.description,
+      intro_title: payload.intro_title ?? "",
+      intro_description: payload.intro_description ?? "",
+      focused_intentions: payload.focused_intentions ?? [],
+    });
+    // Refresh the plans list so the saved intro is read back on reopen.
+    const res = await getWealthPlans();
+    setPlans(res.data);
   };
 
   const handleSavePlan = (data: Record<string, unknown>) => {
