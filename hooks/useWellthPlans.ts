@@ -7,6 +7,7 @@ import {
   exercises as exercisePayloads,
   introScreen as introScreenPayloads,
 } from "@/lib/payloads";
+import { uploadImage } from "@/lib/uploadImage";
 import {
   getWealthPlansOverview,
   type WealthPlansOverviewData,
@@ -84,11 +85,8 @@ export function useWellthPlans() {
   }, [selectedPlanId, plans]);
 
   const handleAddPlan = async (data: Record<string, unknown>) => {
-    const payload = wealthPlanPayloads.create(
-      s(data.name),
-      s(data.sub_title),
-      data.icon instanceof File ? URL.createObjectURL(data.icon) : undefined,
-    );
+    const imageUrl = data.icon instanceof File ? await uploadImage(data.icon) : undefined;
+    const payload = wealthPlanPayloads.create(s(data.name), s(data.sub_title), imageUrl);
     try {
       await createWealthPlan(payload);
       setPlansLoading(true);
