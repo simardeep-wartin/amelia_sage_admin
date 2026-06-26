@@ -200,7 +200,13 @@ export default function DynamicSidePanel({
   return (
     <>
       <SidePanel isOpen={isOpen} onClose={onClose} title={title} width="max-w-2xl">
-        {loading ? <PanelSkeleton /> : items.length > 0 ? renderList() : renderEmptyState()}
+        {loading ? (
+          <PanelSkeleton />
+        ) : items.length > 0 || introScreen ? (
+          renderList()
+        ) : (
+          renderEmptyState()
+        )}
       </SidePanel>
 
       <DeleteConfirmationModal
