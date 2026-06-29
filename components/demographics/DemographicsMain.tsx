@@ -307,6 +307,20 @@ export default function DemographicsMain({
           const groupColors = Object.fromEntries(
             genders.map((gender, i) => [gender, GENDER_COLORS[i % GENDER_COLORS.length]]),
           );
+          // Dynamic key insight: largest age segment + its strongest gender group
+          const ageTotals = ageDistribution.map((item) => ({
+            age: item.age_range,
+            total: Object.values(item.by_gender).reduce((s, n) => s + n, 0),
+            topGender: Object.entries(item.by_gender).sort((a, b) => b[1] - a[1])[0]?.[0],
+          }));
+          const grandTotal = ageTotals.reduce((s, a) => s + a.total, 0);
+          const topAge = [...ageTotals].sort((a, b) => b.total - a.total)[0];
+          const ageInsight =
+            topAge && grandTotal > 0
+              ? `Key Insight: The ${topAge.age} age range represents the largest segment (${Math.round(
+                  (topAge.total / grandTotal) * 100,
+                )}%) across all gender identities, with a particularly strong representation among ${topAge.topGender} users.`
+              : "Key Insight: Not enough data yet.";
           return (
             <>
               <DistributionBarChart
@@ -316,7 +330,7 @@ export default function DemographicsMain({
                 series={ageSeries}
                 filterOptions={["All", "Today", "Week", "Month", "Year", "Custom"]}
                 onFilterChange={handleAgeDistributionFilter}
-                note="Key Insight: The 25-34 age range represents the largest segment (38%) across all gender identities, with a particularly strong representation among women users."
+                note={ageInsight}
               />
               <ProgressCard
                 title="Core Conversion by Gender"
