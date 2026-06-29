@@ -463,17 +463,20 @@ export default function DemographicsMain({
       )}
       {activeTab === "Ethnicity" && !tabLoading && ethnicity && (
         <>
-          <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
             {[
-              { title: "Total Users", value: String(ethnicity.total_users) },
               {
                 title: "Majority Group",
                 value: ethnicity.majority_group?.label ?? "—",
                 subtitle: ethnicity.majority_group
-                  ? `${ethnicity.majority_group.percentage}%`
+                  ? `${ethnicity.majority_group.percentage}% of total users`
                   : undefined,
               },
-              { title: "Undisclosed", value: `${ethnicity.undisclosed_percentage}%` },
+              {
+                title: "Undisclosed Users",
+                value: `${ethnicity.undisclosed_percentage}%`,
+                subtitle: 'Combination of "Self-describe" and "Not to say"',
+              },
             ].map((item) => (
               <div
                 key={item.title}
