@@ -102,7 +102,7 @@ export default function TrendLineChart({
               {series.map((seriesItem) => (
                 <Line
                   key={seriesItem.key}
-                  type="monotone"
+                  type="linear"
                   dataKey={seriesItem.key}
                   stroke={seriesItem.color}
                   strokeWidth={1.75}

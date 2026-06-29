@@ -7,7 +7,20 @@ export type GrowthTrendResponse = {
   data: { group_by: string; trend: TrendGroup[] };
 };
 
-const COLORS = ["#9CAF88", "#D4A574", "#7B4CE2", "#6B6B6B", "#E87C6B", "#5B9BD5"];
+// At least as many distinct colors as the max number of groups (cultural identity has 8),
+// so no two lines share a color (which made the legend/tooltip ambiguous).
+const COLORS = [
+  "#9CAF88",
+  "#D4A574",
+  "#7B4CE2",
+  "#6B6B6B",
+  "#E87C6B",
+  "#5B9BD5",
+  "#2E7D32",
+  "#C2185B",
+  "#00897B",
+  "#F9A825",
+];
 
 function fmtMonth(ym: string) {
   const [y, m] = ym.split("-");
