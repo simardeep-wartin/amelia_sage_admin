@@ -507,7 +507,7 @@ export default function DemographicsMain({
                 color: GENDER_COLORS[i % GENDER_COLORS.length],
                 chartValue: item.percentage,
               }))}
-              showList={false}
+              showList
               onFilterChange={handleEthnicityDistributionFilter}
             />
             <ProgressCard
