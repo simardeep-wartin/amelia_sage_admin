@@ -545,26 +545,26 @@ export default function DemographicsMain({
               color: GENDER_COLORS[i % GENDER_COLORS.length],
               chartValue: item.percentage,
             }))}
-            showList={false}
+            showList
             onFilterChange={handleWellnessSupportFilter}
           />
           <SummaryGrid
             title="Wellness Journey Progress"
             loading={wellnessJourneyLoading}
-            subtitle={`${wellnessNeeds.wellness_support_needs.total_users_tracked} users tracked`}
+            subtitle="How users progress through their wellness goals"
             onFilter={handleWellnessJourneyFilter}
             items={[
               {
                 label: "Active Progress",
                 value: wellnessNeeds.wellness_journey_progress.active_progress.percentage,
-                detail: `${wellnessNeeds.wellness_journey_progress.active_progress.users_count} users`,
+                detail: "Users making weekly progress on their wellness goals",
                 color: "#9CAF88",
                 suffix: "%",
               },
               {
                 label: "Goal Achievement",
                 value: wellnessNeeds.wellness_journey_progress.goal_achievement.percentage,
-                detail: `${wellnessNeeds.wellness_journey_progress.goal_achievement.users_count} users`,
+                detail: "Users who completed at least one wellness goal",
                 color: "#7B4CE2",
                 suffix: "%",
               },
