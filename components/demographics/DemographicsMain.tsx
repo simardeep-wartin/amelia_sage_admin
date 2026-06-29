@@ -47,7 +47,13 @@ const ICON_MAP = {
 type IconKey = keyof typeof ICON_MAP;
 
 const GENDER_COLORS = ["#9CAF88", "#D4A574", "#7B4CE2", "#6B6B6B", "#E87C6B", "#5B9BD5"];
-const GROUP_BY_OPTIONS = ["all", "gender_identity", "cultural_identity", "ethnicity"];
+const GROUP_BY_OPTIONS = ["All", "Gender Identity", "Cultural Identity", "Ethnicity"];
+const GROUP_BY_LABEL_TO_KEY: Record<string, string> = {
+  All: "all",
+  "Gender Identity": "gender_identity",
+  "Cultural Identity": "cultural_identity",
+  Ethnicity: "ethnicity",
+};
 const FILTER_OPTIONS = ["All", "Today", "Week", "Month", "Year", "Custom"];
 
 type Props = Omit<DemographicsState, "loading">;
@@ -251,7 +257,12 @@ export default function DemographicsMain({
                   { label: "Group By", options: GROUP_BY_OPTIONS },
                   { label: "Filter", options: FILTER_OPTIONS },
                 ]}
-                onFilterChange={handleGrowthTrendFilter}
+                onFilterChange={([groupByLabel, filter]) =>
+                  handleGrowthTrendFilter([
+                    GROUP_BY_LABEL_TO_KEY[groupByLabel] ?? groupByLabel,
+                    filter,
+                  ])
+                }
               />
             );
           })()}
