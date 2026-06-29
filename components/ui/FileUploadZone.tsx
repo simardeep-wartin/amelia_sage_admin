@@ -29,7 +29,7 @@ export default function FileUploadZone({
 
   return (
     <div className={`space-y-1 ${className}`}>
-      <label className="block text-s font-medium text-charcoal">{label}</label>
+      <label className="block text-[18px] font-medium text-charcoal">{label}</label>
       <div
         onClick={() => inputRef.current?.click()}
         className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-[#E5E5E5] bg-[#FDFDFD] py-8 transition-colors hover:bg-gray-50 cursor-pointer"

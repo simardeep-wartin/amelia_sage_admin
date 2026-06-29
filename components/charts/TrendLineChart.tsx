@@ -44,7 +44,7 @@ export default function TrendLineChart({
   );
 
   const actions = (
-    <div className="flex flex-wrap gap-3">
+    <div className="flex flex-col md:flex-row gap-3">
       {filters.map((filter, i) => (
         <FilterDropdown
           key={filter.label}
@@ -61,13 +61,7 @@ export default function TrendLineChart({
   );
 
   return (
-    <ChartCard title={title} actions={actions}>
-      {subtitle && (
-        <p className="mt-[10px] font-sans text-[14px] font-normal leading-[1.3] text-[#6B6B6B]">
-          {subtitle}
-        </p>
-      )}
-
+    <ChartCard title={title} actions={actions} subtitle={subtitle}>
       <div className="mt-4 h-[300px] w-full">
         {loading ? (
           <div className="flex h-full w-full items-end justify-around gap-2 px-4">
@@ -98,6 +92,7 @@ export default function TrendLineChart({
                   boxShadow: "0 4px 10px rgba(0,0,0,0.08)",
                   fontSize: "13px",
                 }}
+                labelStyle={{ color: "#111827", fontWeight: 600 }}
               />
               {series.map((seriesItem) => (
                 <Line

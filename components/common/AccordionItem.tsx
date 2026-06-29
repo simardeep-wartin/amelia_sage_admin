@@ -13,10 +13,17 @@ interface AccordionItemProps {
   children: React.ReactNode;
   onEdit?: () => void;
   onDelete?: () => void;
+  defaultOpen?: boolean;
 }
 
-export default function AccordionItem({ title, children, onEdit, onDelete }: AccordionItemProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
+export default function AccordionItem({
+  title,
+  children,
+  onEdit,
+  onDelete,
+  defaultOpen = false,
+}: AccordionItemProps) {
+  const [isExpanded, setIsExpanded] = useState(defaultOpen);
 
   return (
     <div className="rounded-[24px] bg-[#FAF9F6] border border-[#F0EFEA] overflow-hidden transition-all">

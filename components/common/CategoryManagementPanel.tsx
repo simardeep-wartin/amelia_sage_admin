@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import PanelSkeleton from "@/components/loaders/panel-skeleton";
 import AccordionItem from "@/components/common/AccordionItem";
 import ActionModal from "@/components/common/ActionModal";
@@ -279,23 +278,10 @@ export default function CategoryManagementPanel({
           <PanelSkeleton />
         ) : (
           <div className="space-y-6">
-            {/* Intro Screen action (top) */}
-            {showIntroScreenAction && introScreen && (
-              <div className="flex justify-end items-center text-[13px] font-semibold text-sageGreen">
-                <button
-                  onClick={openEditIntro}
-                  className="hover:text-[#7fa18c] p-2 rounded-md cursor-pointer hover:border hover:border-[#7fa18c] flex items-center gap-1.5"
-                >
-                  <PencilSquareIcon className="h-4 w-4" />
-                  Edit Intro Screen
-                </button>
-              </div>
-            )}
-
             {/* Intro Screen accordion (shown when data exists) */}
             {introScreen && showIntroScreenAction && (
-              <AccordionItem title="Intro Screen" onEdit={openEditIntro}>
-                <div className="space-y-4 pt-2">
+              <AccordionItem title="Intro Screen" onEdit={openEditIntro} defaultOpen>
+                <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-s tracking-wider text-sageGreen font-medium mb-1">
                       Subtitle
@@ -308,12 +294,12 @@ export default function CategoryManagementPanel({
                     </p>
                     <p className="text-s text-slate font-normal">{introScreen.sage_says}</p>
                   </div>
-                  <div>
-                    <p className="text-s tracking-wider text-sageGreen font-medium mb-1">
-                      Description
-                    </p>
-                    <p className="text-s text-slate font-normal">{introScreen.description}</p>
-                  </div>
+                </div>
+                <div>
+                  <p className="text-s tracking-wider text-sageGreen font-medium mb-1">
+                    Description
+                  </p>
+                  <p className="text-s text-slate font-normal">{introScreen.description}</p>
                 </div>
               </AccordionItem>
             )}

@@ -3,11 +3,15 @@
 import { useState } from "react";
 import SidePanel from "@/components/ui/SidePanel";
 import AccordionItem from "@/components/common/AccordionItem";
+import Tabs from "@/components/common/Tabs";
 import Button from "@/components/ui/Button";
 import DeleteConfirmationModal from "@/components/common/DeleteConfirmationModal";
 import { WELLTH_PANEL_CONFIG } from "@/lib/wellth-plans.config";
 import PanelSkeleton from "@/components/loaders/panel-skeleton";
 import type { PanelItem } from "@/types";
+
+const INTRO_TABS = ["Intro Screens", "Sub-intro Screen"] as const;
+type IntroTab = (typeof INTRO_TABS)[number];
 
 export type { PanelItem };
 
@@ -44,6 +48,7 @@ export default function DynamicSidePanel({
   const config = WELLTH_PANEL_CONFIG;
   const [showIntroRequired, setShowIntroRequired] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<{ id: string; title: string } | null>(null);
+  const [introTab, setIntroTab] = useState<IntroTab>("Intro Screens");
 
   const handleAddExercise = () => {
     if (!introScreen) {
@@ -92,13 +97,17 @@ export default function DynamicSidePanel({
   const renderList = () => (
     <div className="space-y-6">
       <div className="flex justify-end items-center text-[13px] font-semibold text-sageGreen gap-4 mb-2">
-        <button
-          onClick={() => onAction("addIntro")}
-          className="hover:text-[#7fa18c] p-2 rounded-md cursor-pointer hover:border hover:border-[#7fa18c]"
-        >
-          {introScreen ? "Edit Intro Screen" : "+ Create Intro Screen"}
-        </button>
-        <span className="text-[#E5E5E5] font-normal">|</span>
+        {!introScreen && (
+          <>
+            <button
+              onClick={() => onAction("addIntro")}
+              className="hover:text-[#7fa18c] p-2 rounded-md cursor-pointer hover:border hover:border-[#7fa18c]"
+            >
+              + Create Intro Screen
+            </button>
+            <span className="text-[#E5E5E5] font-normal">|</span>
+          </>
+        )}
         <button
           onClick={handleAddExercise}
           className="hover:text-[#7fa18c] p-2 rounded-md cursor-pointer hover:border hover:border-[#7fa18c]"
@@ -109,55 +118,69 @@ export default function DynamicSidePanel({
 
       {/* Intro Screen accordion */}
       {introScreen && (
-        <AccordionItem title="Intro Screen" onEdit={() => onAction("addIntro")}>
-          <div className="space-y-4 pt-2">
-            {/* Intro Screen tab fields */}
-            <div>
-              <p className="text-s tracking-wider text-sageGreen font-medium mb-1">Subtitle</p>
-              <p className="text-s text-slate font-normal">{introScreen.greet || "—"}</p>
-            </div>
-            <div>
-              <p className="text-s tracking-wider text-sageGreen font-medium mb-1">Sage Says</p>
-              <p className="text-s text-slate font-normal">{introScreen.sub_content}</p>
-            </div>
-            <div>
-              <p className="text-s tracking-wider text-sageGreen font-medium mb-1">Description</p>
-              <p className="text-s text-slate font-normal">{introScreen.description}</p>
-            </div>
+        <AccordionItem title="Intro Screen" onEdit={() => onAction("addIntro")} defaultOpen>
+          {/* Tab switcher */}
+          <Tabs
+            items={INTRO_TABS}
+            activeTab={introTab}
+            onTabChange={setIntroTab}
+            className="-mx-5 mb-4"
+          />
 
-            {/* Sub-intro Screen tab fields */}
-            {introScreen.intro_title && (
+          {/* Tab: Intro Screens */}
+          {introTab === "Intro Screens" && (
+            <>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-s tracking-wider text-sageGreen font-medium mb-1">Subtitle</p>
+                  <p className="text-s text-slate font-normal">{introScreen.greet || "—"}</p>
+                </div>
+                <div>
+                  <p className="text-s tracking-wider text-sageGreen font-medium mb-1">Sage Says</p>
+                  <p className="text-s text-slate font-normal">{introScreen.sub_content || "—"}</p>
+                </div>
+              </div>
+              <div>
+                <p className="text-s tracking-wider text-sageGreen font-medium mb-1">Description</p>
+                <p className="text-s text-slate font-normal">{introScreen.description || "—"}</p>
+              </div>
+            </>
+          )}
+
+          {/* Tab: Sub-intro Screen */}
+          {introTab === "Sub-intro Screen" && (
+            <div className="space-y-4">
               <div>
                 <p className="text-s tracking-wider text-sageGreen font-medium mb-1">
                   Sub-intro Title
                 </p>
-                <p className="text-s text-slate font-normal">{introScreen.intro_title}</p>
+                <p className="text-s text-slate font-normal">{introScreen.intro_title || "—"}</p>
               </div>
-            )}
-            {introScreen.intro_description && (
               <div>
                 <p className="text-s tracking-wider text-sageGreen font-medium mb-1">
                   Sub-intro Description
                 </p>
-                <p className="text-s text-slate font-normal">{introScreen.intro_description}</p>
-              </div>
-            )}
-            {introScreen.focused_intentions?.length > 0 && (
-              <div>
-                <p className="text-s tracking-wider text-sageGreen font-medium mb-2">
-                  Focused Intentions
+                <p className="text-s text-slate font-normal">
+                  {introScreen.intro_description || "—"}
                 </p>
-                <ul className="space-y-1">
-                  {introScreen.focused_intentions.map((item, i) => (
-                    <li key={i} className="flex items-start gap-2 text-s text-slate font-normal">
-                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sageGreen" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
               </div>
-            )}
-          </div>
+              {introScreen.focused_intentions?.length > 0 && (
+                <div>
+                  <p className="text-s tracking-wider text-sageGreen font-medium mb-2">
+                    Focused Intentions
+                  </p>
+                  <ul className="space-y-1">
+                    {introScreen.focused_intentions.map((item, i) => (
+                      <li key={i} className="flex items-start gap-2 text-s text-slate font-normal">
+                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sageGreen" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
         </AccordionItem>
       )}
 

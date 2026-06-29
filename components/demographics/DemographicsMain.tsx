@@ -248,6 +248,7 @@ export default function DemographicsMain({
             return (
               <TrendLineChart
                 title="Demographics Growth Trend"
+                subtitle="User growth by top wellness needs over time"
                 loading={growthTrendLoading}
                 data={trendData}
                 series={trendSeries}
