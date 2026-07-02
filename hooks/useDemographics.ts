@@ -45,6 +45,9 @@ export function useDemographics() {
     null,
   );
   const [ageDistribution, setAgeDistribution] = useState<AgeItem[]>([]);
+  // Separate state for the "Feature Usage by Gender" grid so it filters
+  // independently of the "Age Distribution by Gender" chart (both hit the same endpoint).
+  const [featureUsage, setFeatureUsage] = useState<AgeItem[]>([]);
   const [coreConversion, setCoreConversion] = useState<CoreConversionItem[]>([]);
   const [culturalCoreConversion, setCulturalCoreConversion] = useState<CulturalCoreItem[]>([]);
   const [culturalAgeDistribution, setCulturalAgeDistribution] = useState<CulturalAgeItem[]>([]);
@@ -78,6 +81,7 @@ export function useDemographics() {
     Promise.all([getAgeDistribution(), getCoreConversion()])
       .then(([ad, cc]) => {
         setAgeDistribution(ad.data);
+        setFeatureUsage(ad.data);
         setCoreConversion(cc.data);
       })
       .finally(() => setTabLoading(false));
@@ -159,20 +163,20 @@ export function useDemographics() {
   const handleInsightGridFilter = (val: string, range?: FilterRange) => {
     setInsightGridLoading(true);
     getAgeDistribution({ filter: val, range })
-      .then((res) => setAgeDistribution(res.data))
+      .then((res) => setFeatureUsage(res.data))
       .finally(() => setInsightGridLoading(false));
   };
 
-  const handleCoreConversionFilter = (filter: string) => {
+  const handleCoreConversionFilter = (filter: string, range?: FilterRange) => {
     setCoreConversionLoading(true);
-    getCoreConversion({ filter })
+    getCoreConversion({ filter, range })
       .then((res) => setCoreConversion(res.data))
       .finally(() => setCoreConversionLoading(false));
   };
 
-  const handleCulturalCoreConversionFilter = (filter: string) => {
+  const handleCulturalCoreConversionFilter = (filter: string, range?: FilterRange) => {
     setCulturalCoreConversionLoading(true);
-    getCulturalCoreConversion({ filter })
+    getCulturalCoreConversion({ filter, range })
       .then((res) => setCulturalCoreConversion(res.data))
       .finally(() => setCulturalCoreConversionLoading(false));
   };
@@ -222,6 +226,7 @@ export function useDemographics() {
     trendGroups,
     culturalIdentity,
     ageDistribution,
+    featureUsage,
     coreConversion,
     culturalCoreConversion,
     culturalAgeDistribution,

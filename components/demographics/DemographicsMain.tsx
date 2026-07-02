@@ -52,7 +52,6 @@ const GROUP_BY_LABEL_TO_KEY: Record<string, string> = {
   "Gender Identity": "gender_identity",
   "Cultural Identity": "cultural_identity",
 };
-const FILTER_OPTIONS = ["All", "Today", "Week", "Month", "Year", "Custom"];
 
 type Props = Omit<DemographicsState, "loading">;
 
@@ -65,6 +64,7 @@ export default function DemographicsMain({
   trendGroups,
   culturalIdentity,
   ageDistribution,
+  featureUsage,
   coreConversion,
   culturalCoreConversion,
   culturalAgeDistribution,
@@ -254,7 +254,8 @@ export default function DemographicsMain({
                 series={trendSeries}
                 filters={[
                   { label: "Group By", options: GROUP_BY_OPTIONS },
-                  { label: "Filter", options: FILTER_OPTIONS },
+                  // No "Custom" here — the trend's dropdown can't collect a date range.
+                  { label: "Filter", options: ["All", "Today", "Week", "Month", "Year"] },
                 ]}
                 onFilterChange={([groupByLabel, filter]) =>
                   handleGrowthTrendFilter([
@@ -291,8 +292,12 @@ export default function DemographicsMain({
             label: gender,
             color: GENDER_COLORS[i % GENDER_COLORS.length],
           }));
-          const insightGroups = genders.map((gender) => {
-            const rows = ageDistribution
+          // Feature Usage grid uses its OWN state + gender set, independent of Age Distribution.
+          const insightGenders = Array.from(
+            new Set(featureUsage.flatMap((item) => Object.keys(item.by_gender))),
+          );
+          const insightGroups = insightGenders.map((gender) => {
+            const rows = featureUsage
               .filter((item) => gender in item.by_gender)
               .map((item) => ({ label: item.age_range, count: item.by_gender[gender] }));
             const total = rows.reduce((sum, row) => sum + row.count, 0);
@@ -305,7 +310,7 @@ export default function DemographicsMain({
             };
           });
           const groupColors = Object.fromEntries(
-            genders.map((gender, i) => [gender, GENDER_COLORS[i % GENDER_COLORS.length]]),
+            insightGenders.map((gender, i) => [gender, GENDER_COLORS[i % GENDER_COLORS.length]]),
           );
           // Dynamic key insight: largest age segment + its strongest gender group
           const ageTotals = ageDistribution.map((item) => ({
@@ -342,7 +347,14 @@ export default function DemographicsMain({
                   value: item.conversion_rate,
                   detail: `${item.core_users.toLocaleString()} of ${item.total_users.toLocaleString()} users`,
                 }))}
-                note="Women show the highest Core conversion rate at 33.4%, suggesting strong product-market fit with this segment."
+                note={(() => {
+                  const top = [...coreConversion].sort(
+                    (a, b) => b.conversion_rate - a.conversion_rate,
+                  )[0];
+                  return top
+                    ? `${top.gender} show the highest Core conversion rate at ${top.conversion_rate}%, suggesting strong product-market fit with this segment.`
+                    : "Not enough data yet.";
+                })()}
               />
               <InsightGrid
                 title="Feature Usage by Gender Identity"

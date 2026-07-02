@@ -18,7 +18,7 @@ interface ProgressCardProps {
   items: ProgressItem[];
   filterOptions?: string[];
   filterVariant?: "default" | "icon";
-  onFilter?: (filter: string) => void;
+  onFilter?: (filter: string, range?: { from: Date | null; to: Date | null }) => void;
 
   note?: string;
   loading?: boolean;
@@ -43,9 +43,9 @@ export default function ProgressCard({
     return items;
   })();
 
-  const handleFilter = (val: string) => {
+  const handleFilter = (val: string, range?: { from: Date | null; to: Date | null }) => {
     setFilter(val);
-    onFilter?.(val);
+    onFilter?.(val, range);
   };
 
   return (
