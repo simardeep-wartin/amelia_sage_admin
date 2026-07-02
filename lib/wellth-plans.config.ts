@@ -41,7 +41,6 @@ export const WELLTH_MODAL_CONFIG: Record<string, ModalConfig> = {
         label: "Add Sub Title",
         placeholder: "Enter Sub Title",
         type: "textarea",
-        validation: { required: true },
       },
       {
         name: "icon",
@@ -66,7 +65,6 @@ export const WELLTH_MODAL_CONFIG: Record<string, ModalConfig> = {
         label: "Sub Title",
         placeholder: "Enter subtitle",
         type: "textarea",
-        validation: { required: true },
       },
       {
         name: "icon",
@@ -91,7 +89,6 @@ export const WELLTH_MODAL_CONFIG: Record<string, ModalConfig> = {
         label: "Add Description",
         placeholder: "Add Description Here",
         type: "textarea",
-        validation: { required: true },
       },
     ],
     actionText: "+ Publish Exercise",
@@ -121,7 +118,6 @@ export const WELLTH_MODAL_CONFIG: Record<string, ModalConfig> = {
             label: "Add Description",
             placeholder: "Add Description Here",
             type: "textarea",
-            validation: { required: true },
           },
         ],
       },
@@ -140,7 +136,6 @@ export const WELLTH_MODAL_CONFIG: Record<string, ModalConfig> = {
             label: "Add Description",
             placeholder: "Add Description Here",
             type: "textarea",
-            validation: { required: true },
           },
           {
             name: "subIntroFocusedIntension",

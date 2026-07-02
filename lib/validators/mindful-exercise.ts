@@ -8,9 +8,9 @@ export const categorySchema = z.object({
 
 export const exerciseSchema = z.object({
   title: z.string().min(1, "Title is required"),
-  subtitle: z.string().min(1, "Subtitle is required"),
-  duration: z.string().min(1, "Duration is required"),
-  description: z.string().min(1, "Description is required"),
+  subtitle: z.string().optional(),
+  duration: z.string().optional(),
+  description: z.string().optional(),
   videoFile: z.any().optional(),
   audioFile: z.any().optional(),
   status: z.enum(["active", "draft", "inactive"]).default("active"),

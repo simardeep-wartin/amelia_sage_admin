@@ -76,7 +76,7 @@ export default function ActionModal({
     onClose();
   };
 
-  const isFormValid = field1.trim() !== "" && field2.trim() !== "";
+  const isFormValid = field1.trim() !== "";
   const isEdit = !!initialData;
   const modalTitle = isEdit ? title.replace("Add New", "Edit").replace("Create", "Edit") : title;
 
