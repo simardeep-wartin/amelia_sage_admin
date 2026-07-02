@@ -252,6 +252,8 @@ export default function CategoryManagementPanel({
       }
     : undefined;
 
+  const hasContent = !!introScreen || items.length > 0;
+
   return (
     <>
       <SidePanel
@@ -260,7 +262,7 @@ export default function CategoryManagementPanel({
         title={`Manage ${categoryName} ${itemType}s`}
         width="max-w-2xl"
         footer={
-          loading ? undefined : (
+          loading || hasContent ? undefined : (
             <div className="flex flex-col gap-3">
               {showIntroScreenAction && !introScreen && (
                 <Button onClick={openCreateIntro} className="w-full" variant="outline">
@@ -278,6 +280,28 @@ export default function CategoryManagementPanel({
           <PanelSkeleton />
         ) : (
           <div className="space-y-6">
+            {hasContent && (
+              <div className="flex justify-end items-center text-[13px] font-semibold text-sageGreen gap-4 mb-2">
+                {showIntroScreenAction && !introScreen && (
+                  <>
+                    <button
+                      onClick={openCreateIntro}
+                      className="hover:text-[#7fa18c] p-2 rounded-md cursor-pointer hover:border hover:border-[#7fa18c]"
+                    >
+                      + Create Intro Screen
+                    </button>
+                    <span className="text-[#E5E5E5] font-normal">|</span>
+                  </>
+                )}
+                <button
+                  onClick={handleOpenAddItem}
+                  className="hover:text-[#7fa18c] p-2 rounded-md cursor-pointer hover:border hover:border-[#7fa18c]"
+                >
+                  + Create New {itemLabel}
+                </button>
+              </div>
+            )}
+
             {/* Intro Screen accordion (shown when data exists) */}
             {introScreen && showIntroScreenAction && (
               <AccordionItem title="Intro Screen" onEdit={openEditIntro} defaultOpen>

@@ -152,8 +152,6 @@ export const WELLTH_MODAL_CONFIG: Record<string, ModalConfig> = {
       },
     ],
     actionText: "+ Add Intro Screen",
-    showDraftAction: true,
-    showDraftOnEdit: true,
   },
 };
 

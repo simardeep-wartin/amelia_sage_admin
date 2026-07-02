@@ -104,7 +104,7 @@ export default function ActionModal({
       >
         Cancel
       </button>
-      {type === "exercise" || type === "intro-screen" ? (
+      {type === "exercise" ? (
         <>
           <button
             onClick={() => handleSave(true)}
@@ -118,11 +118,17 @@ export default function ActionModal({
             disabled={!isFormValid || !hasChanges}
             className={`w-full sm:flex-1 h-12 rounded-lg bg-sageGreen text-base font-semibold text-white transition-colors hover:bg-[#7fa18c] disabled:bg-[#C1D2A4] disabled:cursor-not-allowed disabled:bg-sageGreen/40 ${isEdit ? "sm:flex-[2]" : ""}`}
           >
-            {isEdit
-              ? "Save Changes"
-              : actionText || (type === "exercise" ? "+ Publish Exercise" : "+ Add Intro Screen")}
+            {isEdit ? "Save Changes" : actionText || "+ Publish Exercise"}
           </button>
         </>
+      ) : type === "intro-screen" ? (
+        <button
+          onClick={() => handleSave(false)}
+          disabled={!isFormValid || (isEdit && !hasChanges)}
+          className="cursor-pointer flex-1 h-10 sm:h-12 rounded-lg bg-sageGreen text-sm sm:text-base font-semibold text-white transition-colors hover:bg-sageGreenHover disabled:bg-sageGreen/40 disabled:cursor-not-allowed"
+        >
+          {isEdit ? "Save Changes" : actionText || "+ Add Intro Screen"}
+        </button>
       ) : (
         <button
           onClick={() => handleSave(false)}
