@@ -51,8 +51,11 @@ export function useDemographics() {
   const [coreConversion, setCoreConversion] = useState<CoreConversionItem[]>([]);
   const [culturalCoreConversion, setCulturalCoreConversion] = useState<CulturalCoreItem[]>([]);
   const [culturalAgeDistribution, setCulturalAgeDistribution] = useState<CulturalAgeItem[]>([]);
-  const [ethnicity, setEthnicity] = useState<EthnicityData["data"] | null>(null);
-  const [wellnessNeeds, setWellnessNeeds] = useState<WellnessNeedsData["data"] | null>(null);
+  const [ethnicity, setEthnicity] = useState<EthnicityData["data"] | null>(null); // summary cards (Majority/Undisclosed)
+  const [ethnicityDist, setEthnicityDist] = useState<EthnicityData["data"] | null>(null); // distribution donut
+  const [ethnicityResp, setEthnicityResp] = useState<EthnicityData["data"] | null>(null); // response breakdown
+  const [wellnessSupport, setWellnessSupport] = useState<WellnessNeedsData["data"] | null>(null);
+  const [wellnessJourney, setWellnessJourney] = useState<WellnessNeedsData["data"] | null>(null);
 
   useEffect(() => {
     if (activeTab !== "Overview") return;
@@ -107,7 +110,11 @@ export function useDemographics() {
     if (activeTab !== "Ethnicity") return;
     setTabLoading(true);
     getEthnicity({ filter: "all" })
-      .then((res) => setEthnicity(res.data))
+      .then((res) => {
+        setEthnicity(res.data);
+        setEthnicityDist(res.data);
+        setEthnicityResp(res.data);
+      })
       .finally(() => setTabLoading(false));
   }, [activeTab]);
 
@@ -115,7 +122,10 @@ export function useDemographics() {
     if (activeTab !== "Wellness Needs") return;
     setTabLoading(true);
     getWellnessNeeds({ filter: "all" })
-      .then((res) => setWellnessNeeds(res.data))
+      .then((res) => {
+        setWellnessSupport(res.data);
+        setWellnessJourney(res.data);
+      })
       .finally(() => setTabLoading(false));
   }, [activeTab]);
 
@@ -191,28 +201,28 @@ export function useDemographics() {
   const handleEthnicityDistributionFilter = (val: string, range?: FilterRange) => {
     setEthnicityDistributionLoading(true);
     getEthnicity({ filter: val, range })
-      .then((res) => setEthnicity(res.data))
+      .then((res) => setEthnicityDist(res.data))
       .finally(() => setEthnicityDistributionLoading(false));
   };
 
   const handleEthnicityResponseFilter = (val: string, range?: FilterRange) => {
     setEthnicityResponseLoading(true);
     getEthnicity({ filter: val, range })
-      .then((res) => setEthnicity(res.data))
+      .then((res) => setEthnicityResp(res.data))
       .finally(() => setEthnicityResponseLoading(false));
   };
 
   const handleWellnessSupportFilter = (val: string, range?: FilterRange) => {
     setWellnessSupportLoading(true);
     getWellnessNeeds({ filter: val, range })
-      .then((res) => setWellnessNeeds(res.data))
+      .then((res) => setWellnessSupport(res.data))
       .finally(() => setWellnessSupportLoading(false));
   };
 
   const handleWellnessJourneyFilter = (val: string, range?: FilterRange) => {
     setWellnessJourneyLoading(true);
     getWellnessNeeds({ filter: val, range })
-      .then((res) => setWellnessNeeds(res.data))
+      .then((res) => setWellnessJourney(res.data))
       .finally(() => setWellnessJourneyLoading(false));
   };
 
@@ -231,7 +241,10 @@ export function useDemographics() {
     culturalCoreConversion,
     culturalAgeDistribution,
     ethnicity,
-    wellnessNeeds,
+    ethnicityDist,
+    ethnicityResp,
+    wellnessSupport,
+    wellnessJourney,
     genderLoading,
     culturalIdentityLoading,
     growthTrendLoading,
