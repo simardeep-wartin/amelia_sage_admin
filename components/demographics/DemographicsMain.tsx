@@ -69,7 +69,10 @@ export default function DemographicsMain({
   culturalCoreConversion,
   culturalAgeDistribution,
   ethnicity,
-  wellnessNeeds,
+  ethnicityDist,
+  ethnicityResp,
+  wellnessSupport,
+  wellnessJourney,
   genderLoading,
   culturalIdentityLoading,
   growthTrendLoading,
@@ -453,12 +456,26 @@ export default function DemographicsMain({
                         color: GENDER_COLORS[i % GENDER_COLORS.length],
                       }))
                     : (cd.groupedBar.series as { key: string; label: string; color: string }[]);
+                // Dynamic key insight: largest age segment + its top cultural group
+                const cTotals = culturalAgeDistribution.map((item) => ({
+                  age: item.age_range,
+                  total: Object.values(item.by_identity).reduce((s, n) => s + n, 0),
+                  top: Object.entries(item.by_identity).sort((a, b) => b[1] - a[1])[0]?.[0],
+                }));
+                const cGrand = cTotals.reduce((s, a) => s + a.total, 0);
+                const cTop = [...cTotals].sort((a, b) => b.total - a.total)[0];
+                const cInsight =
+                  cTop && cGrand > 0
+                    ? `Key Insight: The ${cTop.age} age range is the largest segment (${Math.round(
+                        (cTop.total / cGrand) * 100,
+                      )}%) across cultural identities, led by ${cTop.top} users.`
+                    : (cd.groupedBar.note as string);
                 return (
                   <DistributionBarChart
                     title={cd.groupedBar.title}
                     loading={culturalAgeDistributionLoading}
                     subtitle={cd.groupedBar.subtitle}
-                    note={cd.groupedBar.note}
+                    note={cInsight}
                     data={culturalAgeDistribution.length > 0 ? chartData : cd.groupedBar.categories}
                     series={series}
                     filterOptions={["All", "Today", "Week", "Month", "Year", "Custom"]}
@@ -527,7 +544,7 @@ export default function DemographicsMain({
               loading={ethnicityDistributionLoading}
               cardClassName="h-full"
               fillHeight
-              data={ethnicity.distribution.map((item, i) => ({
+              data={(ethnicityDist ?? ethnicity).distribution.map((item, i) => ({
                 label: item.display_label,
                 value: item.count,
                 percentage: `${item.percentage}%`,
@@ -543,7 +560,7 @@ export default function DemographicsMain({
               filterOptions={["All", "Today", "Week", "Month", "Year", "Custom"]}
               filterVariant="icon"
               onFilter={handleEthnicityResponseFilter}
-              items={ethnicity.response_breakdown.map((item) => ({
+              items={(ethnicityResp ?? ethnicity).response_breakdown.map((item) => ({
                 label: item.label,
                 value: item.percentage,
                 detail: `${item.count} users`,
@@ -560,12 +577,12 @@ export default function DemographicsMain({
           <ChartSkeleton height="h-[300px]" />
         </div>
       )}
-      {activeTab === "Wellness Needs" && !tabLoading && wellnessNeeds && (
+      {activeTab === "Wellness Needs" && !tabLoading && (wellnessSupport || wellnessJourney) && (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <DistributionPieChart
             title="Wellness Support Needs"
             loading={wellnessSupportLoading}
-            data={wellnessNeeds.wellness_support_needs.distribution.map((item, i) => ({
+            data={(wellnessSupport?.wellness_support_needs.distribution ?? []).map((item, i) => ({
               label: item.area,
               value: item.count,
               percentage: `${item.percentage}%`,
@@ -583,14 +600,14 @@ export default function DemographicsMain({
             items={[
               {
                 label: "Active Progress",
-                value: wellnessNeeds.wellness_journey_progress.active_progress.percentage,
+                value: wellnessJourney?.wellness_journey_progress.active_progress.percentage ?? 0,
                 detail: "Users making weekly progress on their wellness goals",
                 color: "#9CAF88",
                 suffix: "%",
               },
               {
                 label: "Goal Achievement",
-                value: wellnessNeeds.wellness_journey_progress.goal_achievement.percentage,
+                value: wellnessJourney?.wellness_journey_progress.goal_achievement.percentage ?? 0,
                 detail: "Users who completed at least one wellness goal",
                 color: "#7B4CE2",
                 suffix: "%",
