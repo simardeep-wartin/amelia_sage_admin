@@ -10,6 +10,7 @@ import MetricCard from "@/components/common/MetricCard";
 import DynamicModal from "@/components/common/DynamicModal";
 import DynamicSidePanel from "@/components/common/DynamicSidePanel";
 import DeleteConfirmationModal from "@/components/common/DeleteConfirmationModal";
+import StatusModal from "@/components/common/StatusModal";
 import {
   ArrowUpRightIcon,
   PencilSquareIcon,
@@ -28,6 +29,7 @@ export default function WellthPlansMain({
   exercises,
   exercisesLoading,
   planIntroScreen,
+  statusModalProps,
   selectedPlanId,
   setSelectedPlanId,
   isAddPlanModalOpen,
@@ -51,6 +53,7 @@ export default function WellthPlansMain({
   const [pendingDeletePlan, setPendingDeletePlan] = useState<{ id: string; title: string } | null>(
     null,
   );
+  const [isDeletingPlan, setIsDeletingPlan] = useState(false);
 
   const onSaveMap: Record<string, (data: Record<string, unknown>) => void> = {
     editPlan: handleSavePlan,
@@ -215,12 +218,18 @@ export default function WellthPlansMain({
       <DeleteConfirmationModal
         isOpen={!!pendingDeletePlan}
         onClose={() => setPendingDeletePlan(null)}
-        onConfirm={() => {
-          if (pendingDeletePlan) handleDeletePlan(pendingDeletePlan.id);
+        isDeleting={isDeletingPlan}
+        onConfirm={async () => {
+          if (!pendingDeletePlan) return;
+          setIsDeletingPlan(true);
+          await handleDeletePlan(pendingDeletePlan.id);
+          setIsDeletingPlan(false);
           setPendingDeletePlan(null);
         }}
         itemName={pendingDeletePlan?.title ?? ""}
       />
+
+      <StatusModal {...statusModalProps} />
 
       <DynamicSidePanel
         isOpen={!!selectedPlanId}

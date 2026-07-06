@@ -10,6 +10,7 @@ import MetricCard from "@/components/common/MetricCard";
 import ActionModal from "@/components/common/ActionModal";
 import CategoryManagementPanel from "@/components/common/CategoryManagementPanel";
 import DeleteConfirmationModal from "@/components/common/DeleteConfirmationModal";
+import StatusModal from "@/components/common/StatusModal";
 import { ArrowUpRightIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import type { WorkOnMeState } from "@/hooks/useWorkOnMe";
 
@@ -21,6 +22,7 @@ export default function WorkOnMeMain({
   overview,
   feelings,
   focusAreas,
+  statusModalProps,
   isEmotionModalOpen,
   setIsEmotionModalOpen,
   isFocusModalOpen,
@@ -45,6 +47,7 @@ export default function WorkOnMeMain({
     title: string;
     type: "feeling" | "focus-area";
   } | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   return (
     <>
@@ -220,14 +223,19 @@ export default function WorkOnMeMain({
       <DeleteConfirmationModal
         isOpen={!!pendingDelete}
         onClose={() => setPendingDelete(null)}
-        onConfirm={() => {
+        isDeleting={isDeleting}
+        onConfirm={async () => {
           if (!pendingDelete) return;
-          if (pendingDelete.type === "feeling") handleDeleteFeeling(pendingDelete.id);
-          else handleDeleteFocusArea(pendingDelete.id);
+          setIsDeleting(true);
+          if (pendingDelete.type === "feeling") await handleDeleteFeeling(pendingDelete.id);
+          else await handleDeleteFocusArea(pendingDelete.id);
+          setIsDeleting(false);
           setPendingDelete(null);
         }}
         itemName={pendingDelete?.title ?? ""}
       />
+
+      <StatusModal {...statusModalProps} />
 
       <ActionModal
         isOpen={isEmotionModalOpen}

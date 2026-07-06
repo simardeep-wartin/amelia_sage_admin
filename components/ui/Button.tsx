@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { cn } from "@/lib/utils";
 
 export type ButtonVariant = "solid" | "outline" | "ghost";
@@ -73,7 +74,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         type={props.type ?? "button"}
         {...props}
       >
-        {leftIcon}
+        {isLoading ? <ArrowPathIcon className="h-[1em] w-[1em] animate-spin shrink-0" /> : leftIcon}
         {isLoading ? loadingText : children}
       </button>
     );

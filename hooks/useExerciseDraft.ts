@@ -9,6 +9,7 @@ import {
   type JournalExercisesParams,
 } from "@/Services/api/journal/exercises";
 import type { ExerciseDraftEntry } from "@/types";
+import { useStatusModal, errorMessage } from "@/hooks/useStatusModal";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -24,6 +25,7 @@ export function useExerciseDraft(params: UseExerciseDraftParams) {
   const [loading, setLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { statusModalProps, showSuccess, showFailure } = useStatusModal();
 
   useEffect(() => {
     let cancelled = false;
@@ -55,50 +57,66 @@ export function useExerciseDraft(params: UseExerciseDraftParams) {
 
   const handleSaveEdit = useCallback(
     async (entry: ExerciseDraftEntry, data: Record<string, unknown>) => {
-      await updateJournalExercise(entry, {
-        title: data.title as string,
-        description: (data.description as string) ?? "",
-      });
-      const res = await getJournalExercises({
-        source: params.source,
-        search: params.search,
-        page: params.page,
-        page_size: ITEMS_PER_PAGE,
-      });
-      setEntries(res.data.items);
-      setTotal(res.data.total);
+      const title = (data.title as string) || entry.title;
+      try {
+        await updateJournalExercise(entry, {
+          title: data.title as string,
+          description: (data.description as string) ?? "",
+        });
+        const res = await getJournalExercises({
+          source: params.source,
+          search: params.search,
+          page: params.page,
+          page_size: ITEMS_PER_PAGE,
+        });
+        setEntries(res.data.items);
+        setTotal(res.data.total);
+        showSuccess("edit", "Draft Exercise", title);
+      } catch (e) {
+        showFailure("edit", "Draft Exercise", title, errorMessage(e));
+      }
     },
-    [params.source, params.search, params.page],
+    [params.source, params.search, params.page, showSuccess, showFailure],
   );
 
   const handleDelete = useCallback(
     async (entry: ExerciseDraftEntry) => {
-      await deleteJournalExercise(entry);
-      const res = await getJournalExercises({
-        source: params.source,
-        search: params.search,
-        page: params.page,
-        page_size: ITEMS_PER_PAGE,
-      });
-      setEntries(res.data.items);
-      setTotal(res.data.total);
+      try {
+        await deleteJournalExercise(entry);
+        const res = await getJournalExercises({
+          source: params.source,
+          search: params.search,
+          page: params.page,
+          page_size: ITEMS_PER_PAGE,
+        });
+        setEntries(res.data.items);
+        setTotal(res.data.total);
+        showSuccess("delete", "Draft Exercise", entry.title);
+      } catch (e) {
+        showFailure("delete", "Draft Exercise", entry.title, errorMessage(e));
+      }
     },
-    [params.source, params.search, params.page],
+    [params.source, params.search, params.page, showSuccess, showFailure],
   );
 
   const handlePublish = useCallback(
     async (entry: ExerciseDraftEntry) => {
-      await publishJournalExercise(entry);
-      const res = await getJournalExercises({
-        source: params.source,
-        search: params.search,
-        page: params.page,
-        page_size: ITEMS_PER_PAGE,
-      });
-      setEntries(res.data.items);
-      setTotal(res.data.total);
+      try {
+        await publishJournalExercise(entry);
+        const res = await getJournalExercises({
+          source: params.source,
+          search: params.search,
+          page: params.page,
+          page_size: ITEMS_PER_PAGE,
+        });
+        setEntries(res.data.items);
+        setTotal(res.data.total);
+        showSuccess("publish", "Draft Exercise", entry.title);
+      } catch (e) {
+        showFailure("publish", "Draft Exercise", entry.title, errorMessage(e));
+      }
     },
-    [params.source, params.search, params.page],
+    [params.source, params.search, params.page, showSuccess, showFailure],
   );
 
   return {
@@ -107,6 +125,7 @@ export function useExerciseDraft(params: UseExerciseDraftParams) {
     loading,
     isInitialLoad,
     error,
+    statusModalProps,
     itemsPerPage: ITEMS_PER_PAGE,
     handleSaveEdit,
     handleDelete,

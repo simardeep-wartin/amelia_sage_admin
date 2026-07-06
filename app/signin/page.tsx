@@ -4,8 +4,8 @@ import SignInForm from "@/components/auth/SignInForm";
 export default function SignInPage() {
   return (
     <>
-      <link rel="preload" as="video" href="/auth/bg-animaton.mp4" />
-      <SignInLayout animationPath="/auth/bg-animaton.mp4">
+      <link rel="preload" as="fetch" href="/auth/Amelia_Sage.json" crossOrigin="anonymous" />
+      <SignInLayout animationPath="/auth/Amelia_Sage.json">
         <SignInForm />
       </SignInLayout>
     </>

@@ -10,6 +10,7 @@ interface DeleteConfirmationModalProps {
   onClose: () => void;
   onConfirm: () => void;
   itemName: string;
+  isDeleting?: boolean;
 }
 
 export default function DeleteConfirmationModal({
@@ -17,9 +18,10 @@ export default function DeleteConfirmationModal({
   onClose,
   onConfirm,
   itemName,
+  isDeleting = false,
 }: DeleteConfirmationModalProps) {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} maxWidth="max-w-xl pb-6">
+    <Modal isOpen={isOpen} onClose={isDeleting ? () => {} : onClose} maxWidth="max-w-xl pb-6">
       <div className="flex flex-col items-center text-center space-y-4">
         <div className="h-16 w-16 bg-red-50 text-destructive flex items-center justify-center rounded-full">
           <TrashIcon className="h-8 w-8" />
@@ -37,12 +39,16 @@ export default function DeleteConfirmationModal({
         <Button
           variant="outline"
           onClick={onClose}
+          disabled={isDeleting}
           className="flex-1 py-3 h-auto rounded-[12px] border-[#E5E5E5] text-charcoal font-semibold"
         >
           Cancel
         </Button>
         <Button
           onClick={onConfirm}
+          isLoading={isDeleting}
+          loadingText="Deleting..."
+          disabled={isDeleting}
           className="flex-1 py-3 h-auto rounded-[12px] bg-destructive hover:bg-red-700 text-white font-semibold shadow-sm"
         >
           Delete

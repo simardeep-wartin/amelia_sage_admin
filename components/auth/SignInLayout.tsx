@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { type ReactNode, useState, useEffect, useCallback } from "react";
-import VideoBackground from "@/components/auth/VideoBackground";
+import LottieBackground from "@/components/auth/LottieBackground";
 import SignInLoader from "@/components/loaders/signin-loader";
 
 type SignInLayoutProps = {
@@ -33,11 +33,12 @@ export default function SignInLayout({ children, animationPath }: SignInLayoutPr
       <main className="relative min-h-screen w-full bg-stone">
         <div className="flex min-h-screen flex-col lg:flex-row">
           <section className="relative hidden lg:flex lg:h-screen lg:w-[60%] items-center justify-center overflow-hidden">
-            <VideoBackground
+            <LottieBackground
               animationPath={animationPath}
               onLoad={handleReady}
               onError={handleReady}
             />
+            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-r from-transparent to-authBg" />
           </section>
 
           <section className="relative z-30 flex min-h-screen w-full lg:w-[48%] items-center justify-center bg-authBg px-4 py-10 sm:px-6 sm:py-14 overflow-y-auto">

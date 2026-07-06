@@ -17,6 +17,7 @@ import {
 } from "@/Services/api/workOnMe";
 import { feelings as feelingPayloads, focusAreas as focusAreaPayloads } from "@/lib/payloads";
 import { uploadImage } from "@/lib/uploadImage";
+import { useStatusModal, errorMessage } from "@/hooks/useStatusModal";
 
 export type ManagedCategory = {
   id: string;
@@ -36,6 +37,7 @@ export function useWorkOnMe() {
   const [managedCategory, setManagedCategory] = useState<ManagedCategory>(null);
   const [editingFeeling, setEditingFeeling] = useState<FeelingItem | null>(null);
   const [editingFocusArea, setEditingFocusArea] = useState<FocusAreaItem | null>(null);
+  const { statusModalProps, showSuccess, showFailure } = useStatusModal();
 
   useEffect(() => {
     Promise.all([getWorkOnMeOverview(), getFeelings(), getFocusAreas()])
@@ -54,14 +56,16 @@ export function useWorkOnMe() {
       data.description as string,
       imageUrl,
     );
-    createFeeling(payload)
+    return createFeeling(payload)
       .then(() => {
-        setIsEmotionModalOpen(false);
         setFeelingsLoading(true);
         return getFeelings();
       })
-      .then((res) => setFeelings(res.data ?? []))
-      .catch(console.error)
+      .then((res) => {
+        setFeelings(res.data ?? []);
+        showSuccess("add", "Emotion", payload.title);
+      })
+      .catch((e) => showFailure("add", "Emotion", payload.title, errorMessage(e)))
       .finally(() => setFeelingsLoading(false));
   };
 
@@ -73,29 +77,47 @@ export function useWorkOnMe() {
       focusAreas.length + 1,
       imageUrl,
     );
-    createFocusArea(payload)
+    return createFocusArea(payload)
       .then(() => {
-        setIsFocusModalOpen(false);
         setFocusAreasLoading(true);
         return getFocusAreas();
       })
-      .then((res) => setFocusAreas(res.data ?? []))
-      .catch(console.error)
+      .then((res) => {
+        setFocusAreas(res.data ?? []);
+        showSuccess("add", "Focus Area", payload.title);
+      })
+      .catch((e) => showFailure("add", "Focus Area", payload.title, errorMessage(e)))
       .finally(() => setFocusAreasLoading(false));
   };
 
   const handleDeleteFeeling = (id: string) => {
+    const previous = feelings;
+    const title = previous.find((f) => f.id === id)?.title;
     setFeelings((prev) => prev.filter((f) => f.id !== id));
-    deleteFeeling(id)
-      .then(() => getWorkOnMeOverview().then((res) => setOverview(res.data)))
-      .catch(console.error);
+    return deleteFeeling(id)
+      .then(() => {
+        showSuccess("delete", "Emotion", title);
+        return getWorkOnMeOverview().then((res) => setOverview(res.data));
+      })
+      .catch((e) => {
+        setFeelings(previous);
+        showFailure("delete", "Emotion", title, errorMessage(e));
+      });
   };
 
   const handleDeleteFocusArea = (id: string) => {
+    const previous = focusAreas;
+    const title = previous.find((f) => f.id === id)?.title;
     setFocusAreas((prev) => prev.filter((f) => f.id !== id));
-    deleteFocusArea(id)
-      .then(() => getWorkOnMeOverview().then((res) => setOverview(res.data)))
-      .catch(console.error);
+    return deleteFocusArea(id)
+      .then(() => {
+        showSuccess("delete", "Focus Area", title);
+        return getWorkOnMeOverview().then((res) => setOverview(res.data));
+      })
+      .catch((e) => {
+        setFocusAreas(previous);
+        showFailure("delete", "Focus Area", title, errorMessage(e));
+      });
   };
 
   const handleCategoryExerciseCountChange = (
@@ -125,7 +147,7 @@ export function useWorkOnMe() {
       data.description as string,
       imageUrl,
     );
-    updateFeeling(editingFeeling.id, payload)
+    return updateFeeling(editingFeeling.id, payload)
       .then(() => {
         setFeelings((prev) =>
           prev.map((feeling) =>
@@ -134,9 +156,9 @@ export function useWorkOnMe() {
               : feeling,
           ),
         );
+        showSuccess("edit", "Emotion", payload.title);
       })
-      .catch(console.error)
-      .finally(() => setEditingFeeling(null));
+      .catch((e) => showFailure("edit", "Emotion", payload.title, errorMessage(e)));
   };
 
   const handleEditFocusArea = (data: Record<string, unknown>) => {
@@ -147,7 +169,7 @@ export function useWorkOnMe() {
       data.description as string,
       imageUrl,
     );
-    updateFocusArea(editingFocusArea.id, payload)
+    return updateFocusArea(editingFocusArea.id, payload)
       .then(() => {
         setFocusAreas((prev) =>
           prev.map((area) =>
@@ -156,9 +178,9 @@ export function useWorkOnMe() {
               : area,
           ),
         );
+        showSuccess("edit", "Focus Area", payload.title);
       })
-      .catch(console.error)
-      .finally(() => setEditingFocusArea(null));
+      .catch((e) => showFailure("edit", "Focus Area", payload.title, errorMessage(e)));
   };
 
   return {
@@ -168,6 +190,7 @@ export function useWorkOnMe() {
     overview,
     feelings,
     focusAreas,
+    statusModalProps,
     isEmotionModalOpen,
     setIsEmotionModalOpen,
     isFocusModalOpen,

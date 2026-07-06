@@ -1,18 +1,23 @@
 "use client";
 
 import React, { useState, useCallback } from "react";
+import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import Modal from "@/components/ui/Modal";
 import Input from "@/components/ui/Input";
 import FileUploadZone from "@/components/ui/FileUploadZone";
 
 export type ModalType = "category" | "exercise" | "intro-screen";
 
+function Spinner() {
+  return <ArrowPathIcon className="h-[1em] w-[1em] animate-spin shrink-0" />;
+}
+
 interface ActionModalProps {
   isOpen: boolean;
   onClose: () => void;
   type: ModalType;
   title: string;
-  onSave: (data: Record<string, unknown>) => void;
+  onSave: (data: Record<string, unknown>) => void | Promise<unknown>;
   actionText?: string;
   nameLabel?: string;
   initialData?: Record<string, unknown>;
@@ -33,6 +38,7 @@ export default function ActionModal({
   const [field3, setField3] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [existingImageUrl, setExistingImageUrl] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState<false | "draft" | "publish">(false);
 
   const resetForm = useCallback(() => {
     setField1("");
@@ -58,19 +64,27 @@ export default function ActionModal({
     }
   }, [initialData, isOpen, type, resetForm]);
 
-  const handleSave = (isDraft = false) => {
+  const handleSave = async (isDraft = false) => {
+    let data: Record<string, unknown>;
     if (type === "category") {
-      onSave({
+      data = {
         name: field1,
         description: field2,
         icon: selectedFile,
         existing_image_url: existingImageUrl,
         is_draft: isDraft,
-      });
+      };
     } else if (type === "exercise") {
-      onSave({ title: field1, description: field2, is_draft: isDraft });
-    } else if (type === "intro-screen") {
-      onSave({ subtitle: field1, sageSays: field2, description: field3, is_draft: isDraft });
+      data = { title: field1, description: field2, is_draft: isDraft };
+    } else {
+      data = { subtitle: field1, sageSays: field2, description: field3, is_draft: isDraft };
+    }
+
+    setIsSubmitting(isDraft ? "draft" : "publish");
+    try {
+      await onSave(data);
+    } finally {
+      setIsSubmitting(false);
     }
     resetForm();
     onClose();
@@ -100,7 +114,8 @@ export default function ActionModal({
     <>
       <button
         onClick={onClose}
-        className="flex-1 h-10 sm:h-12 rounded-lg border border-[#E5E5E5] text-sm sm:text-base font-semibold text-slate transition-colors cursor-pointer"
+        disabled={!!isSubmitting}
+        className="flex-1 h-10 sm:h-12 rounded-lg border border-[#E5E5E5] text-sm sm:text-base font-semibold text-slate transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Cancel
       </button>
@@ -108,34 +123,48 @@ export default function ActionModal({
         <>
           <button
             onClick={() => handleSave(true)}
-            disabled={!isFormValid || !hasChanges}
-            className="w-full sm:flex-1 h-12 rounded-lg border border-sageGreen text-base font-semibold text-sageGreen transition-colors hover:bg-green-50 disabled:border-sageGreen/40 disabled:text-[#C1D2A4] disabled:cursor-not-allowed disabled:hover:bg-white"
+            disabled={!isFormValid || !hasChanges || !!isSubmitting}
+            className="w-full sm:flex-1 h-12 rounded-lg border border-sageGreen text-base font-semibold text-sageGreen transition-colors hover:bg-green-50 disabled:border-sageGreen/40 disabled:text-[#C1D2A4] disabled:cursor-not-allowed disabled:hover:bg-white flex items-center justify-center gap-2"
           >
-            Save as Draft
+            {isSubmitting === "draft" && <Spinner />}
+            {isSubmitting === "draft" ? "Saving..." : "Save as Draft"}
           </button>
           <button
             onClick={() => handleSave(false)}
-            disabled={!isFormValid || !hasChanges}
-            className={`w-full sm:flex-1 h-12 rounded-lg bg-sageGreen text-base font-semibold text-white transition-colors hover:bg-[#7fa18c] disabled:bg-[#C1D2A4] disabled:cursor-not-allowed disabled:bg-sageGreen/40 ${isEdit ? "sm:flex-[2]" : ""}`}
+            disabled={!isFormValid || !hasChanges || !!isSubmitting}
+            className={`w-full sm:flex-1 h-12 rounded-lg bg-sageGreen text-base font-semibold text-white transition-colors hover:bg-[#7fa18c] disabled:bg-[#C1D2A4] disabled:cursor-not-allowed disabled:bg-sageGreen/40 flex items-center justify-center gap-2 ${isEdit ? "sm:flex-[2]" : ""}`}
           >
-            {isEdit ? "Save Changes" : actionText || "+ Publish Exercise"}
+            {isSubmitting === "publish" && <Spinner />}
+            {isSubmitting === "publish"
+              ? isEdit
+                ? "Saving..."
+                : "Publishing..."
+              : isEdit
+                ? "Save Changes"
+                : actionText || "+ Publish Exercise"}
           </button>
         </>
       ) : type === "intro-screen" ? (
         <button
           onClick={() => handleSave(false)}
-          disabled={!isFormValid || (isEdit && !hasChanges)}
-          className="cursor-pointer flex-1 h-10 sm:h-12 rounded-lg bg-sageGreen text-sm sm:text-base font-semibold text-white transition-colors hover:bg-sageGreenHover disabled:bg-sageGreen/40 disabled:cursor-not-allowed"
+          disabled={!isFormValid || (isEdit && !hasChanges) || !!isSubmitting}
+          className="cursor-pointer flex-1 h-10 sm:h-12 rounded-lg bg-sageGreen text-sm sm:text-base font-semibold text-white transition-colors hover:bg-sageGreenHover disabled:bg-sageGreen/40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {isEdit ? "Save Changes" : actionText || "+ Add Intro Screen"}
+          {isSubmitting && <Spinner />}
+          {isSubmitting
+            ? "Saving..."
+            : isEdit
+              ? "Save Changes"
+              : actionText || "+ Add Intro Screen"}
         </button>
       ) : (
         <button
           onClick={() => handleSave(false)}
-          disabled={!isFormValid || (isEdit && !hasChanges)}
-          className="cursor-pointer flex-1 h-10 sm:h-12 rounded-lg bg-sageGreen text-sm sm:text-base font-semibold text-white transition-colors hover:bg-sageGreenHover disabled:bg-sageGreen/40 disabled:cursor-not-allowed"
+          disabled={!isFormValid || (isEdit && !hasChanges) || !!isSubmitting}
+          className="cursor-pointer flex-1 h-10 sm:h-12 rounded-lg bg-sageGreen text-sm sm:text-base font-semibold text-white transition-colors hover:bg-sageGreenHover disabled:bg-sageGreen/40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {isEdit ? "Save Changes" : actionText}
+          {isSubmitting && <Spinner />}
+          {isSubmitting ? "Saving..." : isEdit ? "Save Changes" : actionText}
         </button>
       )}
     </>
@@ -144,7 +173,7 @@ export default function ActionModal({
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={isSubmitting ? () => {} : onClose}
       title={modalTitle}
       footer={footer}
       zIndex={type !== "category" ? "z-[60]" : "z-50"}

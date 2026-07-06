@@ -7,6 +7,7 @@ import Pagination from "@/components/common/Pagination";
 import Badge from "@/components/common/Badge";
 import ActionsDropdownMenu from "@/components/ui/ActionsDropdownMenu";
 import DynamicModal from "@/components/common/DynamicModal";
+import StatusModal from "@/components/common/StatusModal";
 import ListFilters from "@/components/common/ListFilters";
 import FilterDropdown from "@/components/ui/FilterDropdown";
 import { useExerciseDraft } from "@/hooks/useExerciseDraft";
@@ -121,6 +122,7 @@ export default function ExerciseDraftMain() {
     loading,
     isInitialLoad,
     itemsPerPage,
+    statusModalProps,
     handleSaveEdit,
     handleDelete,
     handlePublish,
@@ -218,6 +220,8 @@ export default function ExerciseDraftMain() {
           }}
         />
       )}
+
+      <StatusModal {...statusModalProps} />
     </div>
   );
 }

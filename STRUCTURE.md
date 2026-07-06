@@ -107,7 +107,7 @@ amelia_sage_admin/
 │   │   ├── ResetPasswordForm.tsx
 │   │   ├── SignInForm.tsx
 │   │   ├── SignInLayout.tsx
-│   │   └── VideoBackground.tsx
+│   │   └── LottieBackground.tsx
 │   │
 │   ├── charts/                           # Recharts wrappers — never use Recharts directly in pages
 │   │   ├── Chart.tsx

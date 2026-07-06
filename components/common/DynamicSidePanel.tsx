@@ -31,7 +31,7 @@ interface DynamicSidePanelProps {
   loading?: boolean;
   onAction: (action: string) => void;
   onEditItem: (item: PanelItem) => void;
-  onDeleteItem: (id: string) => void;
+  onDeleteItem: (id: string) => Promise<unknown> | void;
 }
 
 export default function DynamicSidePanel({
@@ -48,6 +48,7 @@ export default function DynamicSidePanel({
   const config = WELLTH_PANEL_CONFIG;
   const [showIntroRequired, setShowIntroRequired] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<{ id: string; title: string } | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [introTab, setIntroTab] = useState<IntroTab>("Intro Screens");
 
   const handleAddExercise = () => {
@@ -235,9 +236,12 @@ export default function DynamicSidePanel({
       <DeleteConfirmationModal
         isOpen={!!pendingDelete}
         onClose={() => setPendingDelete(null)}
-        onConfirm={() => {
+        isDeleting={isDeleting}
+        onConfirm={async () => {
           if (!pendingDelete) return;
-          onDeleteItem(pendingDelete.id);
+          setIsDeleting(true);
+          await onDeleteItem(pendingDelete.id);
+          setIsDeleting(false);
           setPendingDelete(null);
         }}
         itemName={pendingDelete?.title ?? ""}

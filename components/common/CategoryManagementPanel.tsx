@@ -5,8 +5,10 @@ import PanelSkeleton from "@/components/loaders/panel-skeleton";
 import AccordionItem from "@/components/common/AccordionItem";
 import ActionModal from "@/components/common/ActionModal";
 import DeleteConfirmationModal from "@/components/common/DeleteConfirmationModal";
+import StatusModal from "@/components/common/StatusModal";
 import SidePanel from "@/components/ui/SidePanel";
 import Button from "../ui/Button";
+import { useStatusModal, errorMessage } from "@/hooks/useStatusModal";
 import {
   getFeelingExercises,
   getFocusAreaExercises,
@@ -72,6 +74,9 @@ export default function CategoryManagementPanel({
   const [showIntroRequired, setShowIntroRequired] = useState(false);
   const [editingItem, setEditingItem] = useState<Record<string, unknown> | null>(null);
   const [pendingDelete, setPendingDelete] = useState<{ id: string; title: string } | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const { statusModalProps, showSuccess, showFailure } = useStatusModal();
+  const itemLabel = itemType.charAt(0).toUpperCase() + itemType.slice(1);
 
   const handleOpenAddItem = () => {
     if (showIntroScreenAction && !introScreen) {
@@ -153,15 +158,14 @@ export default function CategoryManagementPanel({
           ? updateFocusAreaExercise(categoryId, exerciseId, payload)
           : updateFeelingExercise(categoryId, exerciseId, payload);
 
-      updater
+      return updater
         .then(() => {
           setItems((prev) =>
             prev.map((item) => (item.id === exerciseId ? { ...item, title, description } : item)),
           );
-          setEditingItem(null);
-          setIsAddItemModalOpen(false);
+          showSuccess("edit", itemLabel, title);
         })
-        .catch(console.error);
+        .catch((e) => showFailure("edit", itemLabel, title, errorMessage(e)));
     } else {
       if (!categoryId || !isMongoId(categoryId)) return;
       const payload = exercisePayloads.create(title, description, isDraft);
@@ -175,15 +179,13 @@ export default function CategoryManagementPanel({
             }))
           : createFeelingExercise(categoryId, payload).then((res) => res.data);
 
-      creator
-        .then(() => {
-          setIsAddItemModalOpen(false);
-          return fetchExercises();
-        })
+      return creator
+        .then(() => fetchExercises())
         .then((exercises) => {
           onExerciseCountChange?.(exercises.length);
+          showSuccess(isDraft ? "draft" : "add", itemLabel, title);
         })
-        .catch(console.error);
+        .catch((e) => showFailure(isDraft ? "draft" : "add", itemLabel, title, errorMessage(e)));
     }
   };
 
@@ -200,35 +202,40 @@ export default function CategoryManagementPanel({
         ? updateFocusAreaIntroScreen(categoryId, payload)
         : updateFeelingIntroScreen(categoryId, payload);
 
-    updater
+    const wasEditing = isEditingIntro;
+    return updater
       .then(() => {
         setIntroScreen({
           subtitle: payload.subtitle,
           sage_says: payload.sage_says,
           description: payload.description,
         });
-        setIsIntroModalOpen(false);
-        setIsEditingIntro(false);
+        showSuccess(wasEditing ? "edit" : "add", "Intro Screen", payload.subtitle);
       })
-      .catch(console.error);
+      .catch((e) =>
+        showFailure(wasEditing ? "edit" : "add", "Intro Screen", payload.subtitle, errorMessage(e)),
+      );
   };
 
   const handleDeleteItem = (exerciseId: string) => {
-    if (!categoryId || !isMongoId(categoryId)) return;
+    if (!categoryId || !isMongoId(categoryId)) return Promise.resolve();
     const previous = items;
+    const title = previous.find((item) => item.id === exerciseId)?.title;
     const updated = previous.filter((item) => item.id !== exerciseId);
     setItems(updated);
     const deleter =
       categoryType === "focus-area"
         ? deleteFocusAreaExercise(categoryId, exerciseId)
         : deleteFeelingExercise(categoryId, exerciseId);
-    deleter
+    return deleter
       .then(() => {
         onExerciseCountChange?.(updated.length);
+        showSuccess("delete", itemLabel, title);
       })
-      .catch(() => {
+      .catch((e) => {
         setItems(previous);
         onExerciseCountChange?.(previous.length);
+        showFailure("delete", itemLabel, title, errorMessage(e));
       });
   };
 
@@ -241,8 +248,6 @@ export default function CategoryManagementPanel({
     setIsEditingIntro(true);
     setIsIntroModalOpen(true);
   };
-
-  const itemLabel = itemType.charAt(0).toUpperCase() + itemType.slice(1);
 
   const introInitialData = introScreen
     ? {
@@ -427,13 +432,18 @@ export default function CategoryManagementPanel({
       <DeleteConfirmationModal
         isOpen={!!pendingDelete}
         onClose={() => setPendingDelete(null)}
-        onConfirm={() => {
+        isDeleting={isDeleting}
+        onConfirm={async () => {
           if (!pendingDelete) return;
-          handleDeleteItem(pendingDelete.id);
+          setIsDeleting(true);
+          await handleDeleteItem(pendingDelete.id);
+          setIsDeleting(false);
           setPendingDelete(null);
         }}
         itemName={pendingDelete?.title ?? ""}
       />
+
+      <StatusModal {...statusModalProps} />
 
       {/* Intro screen required warning */}
       {showIntroRequired && (
