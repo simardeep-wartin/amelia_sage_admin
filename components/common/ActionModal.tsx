@@ -127,7 +127,7 @@ export default function ActionModal({
             className="w-full sm:flex-1 h-12 rounded-lg border border-sageGreen text-base font-semibold text-sageGreen transition-colors hover:bg-green-50 disabled:border-sageGreen/40 disabled:text-[#C1D2A4] disabled:cursor-not-allowed disabled:hover:bg-white flex items-center justify-center gap-2"
           >
             {isSubmitting === "draft" && <Spinner />}
-            {isSubmitting === "draft" ? "Saving..." : "Save as Draft"}
+            Save as Draft
           </button>
           <button
             onClick={() => handleSave(false)}
@@ -135,13 +135,7 @@ export default function ActionModal({
             className={`w-full sm:flex-1 h-12 rounded-lg bg-sageGreen text-base font-semibold text-white transition-colors hover:bg-[#7fa18c] disabled:bg-[#C1D2A4] disabled:cursor-not-allowed disabled:bg-sageGreen/40 flex items-center justify-center gap-2 ${isEdit ? "sm:flex-[2]" : ""}`}
           >
             {isSubmitting === "publish" && <Spinner />}
-            {isSubmitting === "publish"
-              ? isEdit
-                ? "Saving..."
-                : "Publishing..."
-              : isEdit
-                ? "Save Changes"
-                : actionText || "+ Publish Exercise"}
+            {isEdit ? "Save Changes" : actionText || "+ Publish Exercise"}
           </button>
         </>
       ) : type === "intro-screen" ? (
@@ -151,11 +145,7 @@ export default function ActionModal({
           className="cursor-pointer flex-1 h-10 sm:h-12 rounded-lg bg-sageGreen text-sm sm:text-base font-semibold text-white transition-colors hover:bg-sageGreenHover disabled:bg-sageGreen/40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {isSubmitting && <Spinner />}
-          {isSubmitting
-            ? "Saving..."
-            : isEdit
-              ? "Save Changes"
-              : actionText || "+ Add Intro Screen"}
+          {isEdit ? "Save Changes" : actionText || "+ Add Intro Screen"}
         </button>
       ) : (
         <button
@@ -164,7 +154,7 @@ export default function ActionModal({
           className="cursor-pointer flex-1 h-10 sm:h-12 rounded-lg bg-sageGreen text-sm sm:text-base font-semibold text-white transition-colors hover:bg-sageGreenHover disabled:bg-sageGreen/40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {isSubmitting && <Spinner />}
-          {isSubmitting ? "Saving..." : isEdit ? "Save Changes" : actionText}
+          {isEdit ? "Save Changes" : actionText}
         </button>
       )}
     </>
