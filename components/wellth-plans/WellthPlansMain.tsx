@@ -110,15 +110,31 @@ export default function WellthPlansMain({
           <MetricCard
             title="Total Participants"
             value={wealthOverview != null ? String(wealthOverview.total_participants) : "—"}
-            subtitle="+23% this month"
-            subtitleColor="#4BB05D"
+            subtitle={
+              wealthOverview != null
+                ? `${wealthOverview.participants_growth_pct >= 0 ? "+" : ""}${wealthOverview.participants_growth_pct}% this month`
+                : "—"
+            }
+            subtitleColor={
+              wealthOverview != null && wealthOverview.participants_growth_pct < 0
+                ? "#DC2626"
+                : "#4BB05D"
+            }
             iconSrc="/auth/multipleUser.svg"
           />
           <MetricCard
             title="Average Completion"
             value={wealthOverview != null ? `${wealthOverview.average_completion}%` : "—"}
-            subtitle="+5% this week"
-            subtitleColor="#4BB05D"
+            subtitle={
+              wealthOverview != null
+                ? `${wealthOverview.completion_delta_pct >= 0 ? "+" : ""}${wealthOverview.completion_delta_pct}% this week`
+                : "—"
+            }
+            subtitleColor={
+              wealthOverview != null && wealthOverview.completion_delta_pct < 0
+                ? "#DC2626"
+                : "#4BB05D"
+            }
             iconSrc="/auth/growth.svg"
           />
           <MetricCard

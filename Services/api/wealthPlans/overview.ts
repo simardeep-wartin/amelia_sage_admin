@@ -6,6 +6,8 @@ export type WealthPlansOverviewData = {
   total_participants: number;
   average_completion: number;
   new_this_month: number;
+  participants_growth_pct: number;
+  completion_delta_pct: number;
 };
 
 export const getWealthPlansOverview = () =>
