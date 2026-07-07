@@ -36,6 +36,11 @@ export const ENDPOINTS = {
     overview: "/dashboard/stats/overview",
     wealthPlan: "/dashboard/stats/wealth-plan",
     planTypes: "/dashboard/stats/plan-types",
+    activeUsers: "/dashboard/stats/active-users",
+  },
+  sageAi: {
+    prompt: "/sage-ai/prompt",
+    resetPrompt: "/sage-ai/prompt/reset",
   },
   journal: {
     exercises: "/exercise-draft-management/exercises",

@@ -3,125 +3,71 @@
 import { useState, useEffect } from "react";
 import { XMarkIcon, SpeakerWaveIcon } from "@heroicons/react/24/outline";
 import SageAiLoader from "@/components/loaders/sage-ai-loader";
-
-const PROMPT_SECTIONS = [
-  {
-    title: "TONE & PERSONALITY",
-    bullets: [
-      "Use a calm, supportive, and respectful tone.",
-      "Sound approachable and human, not robotic.",
-      "Avoid harsh, judgmental, or dismissive language.",
-    ],
-  },
-  {
-    title: "EMOTIONAL RESPONSE STYLE",
-    bullets: [
-      "Acknowledge emotions before giving suggestions.",
-      "Validate feelings without reinforcing negative beliefs.",
-      "Use reassuring language that promotes emotional safety.",
-    ],
-    extra: [
-      "Example:",
-      "“I understand this feels overwhelming right now, and it’s okay to feel this way.”",
-    ],
-  },
-  {
-    title: "GUIDANCE APPROACH",
-    bullets: [
-      "Offer general coping suggestions, not instructions.",
-      "Encourage reflection rather than giving direct commands.",
-      "Use optional language such as:",
-    ],
-    extra: ["“You might try...”", "“It may help to...”", "“Some people find it useful to...”"],
-  },
-  {
-    title: "LANGUAGE PREFERENCES",
-    bullets: [
-      "Keep responses clear and easy to understand.",
-      "Avoid medical, legal, or technical jargon.",
-      "Prefer short paragraphs and simple sentences.",
-    ],
-  },
-  {
-    title: "ENCOURAGEMENT STYLE",
-    bullets: [
-      "Promote self-compassion and patience.",
-      "Remind users that progress can take time.",
-      "Avoid unrealistic positivity or guarantees.",
-    ],
-  },
-  {
-    title: "RESTRICTIONS (DO NOT MODIFY)",
-    bullets: [
-      "Do not give medical, legal, or diagnostic advice.",
-      "Do not replace professional mental health care.",
-      "Do not encourage harmful behaviors.",
-    ],
-  },
-];
-
-function PromptContent() {
-  return (
-    <div className="space-y-4 text-[#171717] font-inter">
-      {PROMPT_SECTIONS.map((section) => (
-        <div key={section.title} className="space-y-[3px]">
-          <p className="text-[14px] font-medium leading-[1.3]">{section.title}</p>
-          {section.bullets.map((bullet) => (
-            <p key={bullet} className="text-[12px] font-normal leading-[1.3]">
-              • {bullet}
-            </p>
-          ))}
-          {section.extra?.map((line) => (
-            <p key={line} className="text-[12px] font-normal leading-[1.3]">
-              {line}
-            </p>
-          ))}
-        </div>
-      ))}
-    </div>
-  );
-}
+import { getSagePrompt, updateSagePrompt, resetSagePrompt } from "@/Services/api/sageAi";
 
 export default function SageAiMain() {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState("");
+  const [prompt, setPrompt] = useState("");
+  const [hasDefault, setHasDefault] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1500);
-    return () => clearTimeout(timer);
+    getSagePrompt()
+      .then((res) => {
+        setPrompt(res.data.prompt);
+        setHasDefault(Boolean(res.data.has_default));
+      })
+      .catch((e) => setError(e instanceof Error ? e.message : "Failed to load prompt"))
+      .finally(() => setLoading(false));
   }, []);
 
   const handleOpenModal = () => {
+    setError("");
     setIsEditing(false);
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
+    setError("");
     setIsEditing(false);
     setIsModalOpen(false);
   };
 
   const handleEdit = () => {
-    setEditText(
-      PROMPT_SECTIONS.map(
-        (section) =>
-          `${section.title}\n${section.bullets.map((bullet) => `• ${bullet}`).join("\n")}${
-            section.extra ? "\n" + section.extra.join("\n") : ""
-          }`,
-      ).join("\n\n"),
-    );
+    setEditText(prompt);
+    setError("");
     setIsEditing(true);
   };
 
   const handleSave = () => {
-    setIsEditing(false);
-    setIsModalOpen(false);
+    setSaving(true);
+    setError("");
+    updateSagePrompt(editText)
+      .then((res) => {
+        setPrompt(res.data.prompt);
+        setHasDefault(true);
+        setIsEditing(false);
+      })
+      .catch((e) => setError(e instanceof Error ? e.message : "Failed to save prompt"))
+      .finally(() => setSaving(false));
   };
 
   const handleReset = () => {
-    setIsEditing(false);
+    if (isEditing) {
+      setEditText(prompt);
+      setIsEditing(false);
+      return;
+    }
+    setSaving(true);
+    setError("");
+    resetSagePrompt()
+      .then((res) => setPrompt(res.data.prompt))
+      .catch((e) => setError(e instanceof Error ? e.message : "Failed to reset prompt"))
+      .finally(() => setSaving(false));
   };
 
   if (loading) return <SageAiLoader />;
@@ -206,9 +152,12 @@ export default function SageAiMain() {
                   className="border-[0.5px] border-[#a3a3a3] rounded-[8px] px-4 py-[17px] overflow-y-auto h-[260px] sm:h-[420px] lg:h-[520px]"
                   style={{ backdropFilter: "blur(15px)" }}
                 >
-                  <PromptContent />
+                  <p className="whitespace-pre-wrap text-[13px] leading-[1.3] text-[#171717] font-inter">
+                    {prompt}
+                  </p>
                 </div>
               )}
+              {error && <p className="text-[12px] text-red-600 font-inter">{error}</p>}
             </div>
 
             {/* Footer — 3 equal buttons */}
@@ -217,7 +166,8 @@ export default function SageAiMain() {
               <div className="flex-1 flex items-center justify-center">
                 <button
                   onClick={handleReset}
-                  className="text-[16px] font-bold text-sageGreen hover:opacity-70 transition-opacity cursor-pointer"
+                  disabled={saving || (!isEditing && !hasDefault)}
+                  className="text-[16px] font-bold text-sageGreen hover:opacity-70 transition-opacity cursor-pointer disabled:opacity-40 disabled:cursor-default"
                 >
                   Reset to default
                 </button>
@@ -227,7 +177,7 @@ export default function SageAiMain() {
               <div className="flex-1">
                 <button
                   onClick={handleEdit}
-                  disabled={isEditing}
+                  disabled={isEditing || saving}
                   className="w-full h-[48px] border border-sageGreen rounded-[8px] text-sageGreen text-[16px] font-bold hover:bg-sageGreen/5 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-default"
                 >
                   Edit
@@ -238,9 +188,10 @@ export default function SageAiMain() {
               <div className="flex-1">
                 <button
                   onClick={handleSave}
-                  className="w-full h-[48px] bg-sageGreen rounded-[8px] text-white text-[16px] font-bold hover:bg-sageGreen/90 transition-colors cursor-pointer"
+                  disabled={!isEditing || saving}
+                  className="w-full h-[48px] bg-sageGreen rounded-[8px] text-white text-[16px] font-bold hover:bg-sageGreen/90 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-default"
                 >
-                  Save
+                  {saving ? "Saving..." : "Save"}
                 </button>
               </div>
             </div>
