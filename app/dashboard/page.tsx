@@ -12,6 +12,8 @@ import {
   type WealthPlanItem,
   getPlanTypes,
   type PlanTypesData,
+  getActiveUsers,
+  type ActiveUsersData,
 } from "@/Services/api/dashboard";
 
 export default function DashboardPage() {
@@ -22,17 +24,20 @@ export default function DashboardPage() {
   const [wealthPlan, setWealthPlan] = useState<WealthPlanItem[]>([]);
   const [planTypes, setPlanTypes] = useState<PlanTypesData | undefined>(undefined);
   const [overviewData, setOverviewData] = useState<DashboardOverviewData | undefined>(undefined);
+  const [activeUsers, setActiveUsers] = useState<ActiveUsersData | undefined>(undefined);
 
   useEffect(() => {
     Promise.all([
       getWealthPlan({ filter: "all" }),
       getPlanTypes({ filter: "all" }),
       getDashboardOverview(),
+      getActiveUsers(),
     ])
-      .then(([wp, pt, ov]) => {
+      .then(([wp, pt, ov, au]) => {
         setWealthPlan(wp.data);
         setPlanTypes(pt.data);
         setOverviewData(ov.data);
+        setActiveUsers(au.data);
       })
       .finally(() => setLoading(false));
   }, []);
@@ -65,6 +70,7 @@ export default function DashboardPage() {
           onDistributionFilterChange={handleDistributionFilterChange}
           planTypes={planTypes}
           overviewData={overviewData}
+          activeUsers={activeUsers}
         />
         <DashboardRightPanel
           overviewData={overviewData}

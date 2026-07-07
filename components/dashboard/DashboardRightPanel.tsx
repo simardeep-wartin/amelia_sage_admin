@@ -73,7 +73,7 @@ export default function DashboardRightPanel({
           <div className="text-center">
             <p className="font-cormorant text-xl sm:text-xxl font-bold text-customBlack">
               {overviewData != null
-                ? overviewData.sage.voice_interactions
+                ? overviewData.sage.voice_interactions + overviewData.sage.total_threads
                 : dashboardData.sageAi.totalInteractions}
             </p>
             <p className="text-xs font-medium text-slate text-inter">Total Interactions</p>
@@ -103,7 +103,9 @@ export default function DashboardRightPanel({
               value={
                 <span className="inline-flex items-center gap-1">
                   <img src="/auth/star.svg" alt="" className="h-4 w-4" />
-                  {dashboardData.sageAi.satisfaction}
+                  {overviewData != null && overviewData.sage.satisfaction != null
+                    ? `${overviewData.sage.satisfaction}/5`
+                    : dashboardData.sageAi.satisfaction}
                 </span>
               }
               valueClassName="font-medium text-customBlack font-arial"
@@ -130,7 +132,11 @@ export default function DashboardRightPanel({
               <span className="text-sm text-[#6b6b6b]">Total tutorials active:</span>
               <div className="inline-flex items-center gap-2">
                 <span className="h-[11px] w-[11px] rounded-full bg-[#d4a574]" />
-                <span className="text-xs text-charcoal">{dashboardData.calmStillnessSummary}</span>
+                <span className="text-xs text-charcoal">
+                  {overviewData != null
+                    ? `${overviewData.content.calm_total_tutorials} Tutorials`
+                    : dashboardData.calmStillnessSummary}
+                </span>
               </div>
             </div>
           </div>
@@ -162,7 +168,11 @@ export default function DashboardRightPanel({
               <span className="text-sm text-[#6b6b6b]">Total exercises active:</span>
               <div className="inline-flex items-center gap-2">
                 <span className="h-[11px] w-[11px] rounded-full bg-[#d4a574]" />
-                <span className="text-xs text-charcoal">{dashboardData.mindfulSummary}</span>
+                <span className="text-xs text-charcoal">
+                  {overviewData != null
+                    ? `${overviewData.content.mindful_total_exercises} Exercises`
+                    : dashboardData.mindfulSummary}
+                </span>
               </div>
             </div>
           </div>

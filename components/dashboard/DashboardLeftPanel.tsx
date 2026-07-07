@@ -15,7 +15,11 @@ import Card from "@/components/common/Card";
 import FilterDropdown from "@/components/ui/FilterDropdown";
 import Chart from "@/components/charts/Chart";
 import appData from "@/data/app-data.json";
-import type { PlanTypesData, DashboardOverviewData } from "@/Services/api/dashboard";
+import type {
+  PlanTypesData,
+  DashboardOverviewData,
+  ActiveUsersData,
+} from "@/Services/api/dashboard";
 
 const dashboardData = appData.dashboard;
 
@@ -50,6 +54,7 @@ type DashboardLeftPanelProps = {
   onDistributionFilterChange: (v: string, range?: { from: Date | null; to: Date | null }) => void;
   planTypes?: PlanTypesData;
   overviewData?: DashboardOverviewData;
+  activeUsers?: ActiveUsersData;
 };
 
 export default function DashboardLeftPanel({
@@ -59,7 +64,12 @@ export default function DashboardLeftPanel({
   onDistributionFilterChange,
   planTypes,
   overviewData,
+  activeUsers,
 }: DashboardLeftPanelProps) {
+  const conversionRate =
+    planTypes != null && planTypes.premium + planTypes.free > 0
+      ? `${((planTypes.premium / (planTypes.premium + planTypes.free)) * 100).toFixed(1)}%`
+      : null;
   return (
     <div className="space-y-4">
       <Card
@@ -72,7 +82,9 @@ export default function DashboardLeftPanel({
           <div className="flex justify-between items-center h-[60px]">
             <div>
               <p className="font-arial text-xxl font-bold text-charcoal">
-                {dashboardData.activeUsers.value}
+                {activeUsers != null
+                  ? activeUsers.total_users.toLocaleString()
+                  : dashboardData.activeUsers.value}
               </p>
               <p className="text-s text-grey font-arial font-normal">
                 {dashboardData.activeUsers.subtitle}
@@ -80,12 +92,14 @@ export default function DashboardLeftPanel({
             </div>
             <div>
               <span className="inline-flex rounded-full bg-trendBg px-3 py-1 text-s text-trendGreen font-arial">
-                {dashboardData.activeUsers.trend}
+                {activeUsers != null
+                  ? `${activeUsers.trend_pct >= 0 ? "+" : ""}${activeUsers.trend_pct}% from last week`
+                  : dashboardData.activeUsers.trend}
               </span>
             </div>
           </div>
         </div>
-        <Chart data={dashboardData.activeUsersChart} />
+        <Chart data={activeUsers != null ? activeUsers.chart : dashboardData.activeUsersChart} />
       </Card>
       <Card
         title="Core vs Free Distribution"
@@ -118,7 +132,7 @@ export default function DashboardLeftPanel({
           <div className="flex items-center justify-between">
             <p className="text-sm text-[#6b6b6b]">Conversion rate:</p>
             <p className="font-cormorant text-l font-semibold text-customBlack">
-              {dashboardData.coreVsFree.conversionRate}
+              {conversionRate ?? dashboardData.coreVsFree.conversionRate}
             </p>
           </div>
         </div>
@@ -141,7 +155,7 @@ export default function DashboardLeftPanel({
               <div className="text-center">
                 <p className="font-cormorant text-xxl font-bold text-customBlack">
                   {overviewData != null
-                    ? overviewData.journals.users_with_at_least_one
+                    ? overviewData.exercises.users_with_at_least_one
                     : dashboardData.journalInsights.insightsGenerated}
                 </p>
                 <p className="text-xs font-medium text-grey font-inter">Insights generated</p>
@@ -154,7 +168,8 @@ export default function DashboardLeftPanel({
               <div className="inline-flex items-center gap-2">
                 <span className="h-[11px] w-[11px] rounded-full bg-[#d4a574]" />
                 <span className="text-sm text-charcoal font-arial">
-                  {dashboardData.journalInsights.mostActiveTopic}
+                  {overviewData?.most_completed_feeling_category?.category ??
+                    dashboardData.journalInsights.mostActiveTopic}
                 </span>
               </div>
             </div>
