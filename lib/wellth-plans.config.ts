@@ -108,12 +108,6 @@ export const WELLTH_MODAL_CONFIG: Record<string, ModalConfig> = {
             validation: { required: true },
           },
           {
-            name: "sageSays",
-            label: "Sage Says",
-            placeholder: "Enter Sage Says",
-            type: "text",
-          },
-          {
             name: "description",
             label: "Add Description",
             placeholder: "Add Description Here",

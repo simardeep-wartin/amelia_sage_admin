@@ -131,15 +131,9 @@ export default function DynamicSidePanel({
           {/* Tab: Intro Screens */}
           {introTab === "Intro Screens" && (
             <>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-s tracking-wider text-sageGreen font-medium mb-1">Subtitle</p>
-                  <p className="text-s text-slate font-normal">{introScreen.greet || "—"}</p>
-                </div>
-                <div>
-                  <p className="text-s tracking-wider text-sageGreen font-medium mb-1">Sage Says</p>
-                  <p className="text-s text-slate font-normal">{introScreen.sub_content || "—"}</p>
-                </div>
+              <div>
+                <p className="text-s tracking-wider text-sageGreen font-medium mb-1">Subtitle</p>
+                <p className="text-s text-slate font-normal">{introScreen.greet || "—"}</p>
               </div>
               <div>
                 <p className="text-s tracking-wider text-sageGreen font-medium mb-1">Description</p>
