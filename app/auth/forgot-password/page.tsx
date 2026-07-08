@@ -5,7 +5,7 @@ export default function ForgotPasswordPage() {
   return (
     <>
       <link rel="preload" as="fetch" href="/auth/Amelia_Sage.json" crossOrigin="anonymous" />
-      <SignInLayout animationPath="/auth/Amelia_Sage.json">
+      <SignInLayout animationPath="/auth/Amelia_Sage.json" loaderVariant="forgot-password">
         <ForgotPasswordForm />
       </SignInLayout>
     </>

@@ -3,14 +3,19 @@
 import Image from "next/image";
 import { type ReactNode, useState, useEffect, useCallback } from "react";
 import LottieBackground from "@/components/auth/LottieBackground";
-import SignInLoader from "@/components/loaders/signin-loader";
+import SignInLoader, { type SignInLoaderVariant } from "@/components/loaders/signin-loader";
 
 type SignInLayoutProps = {
   children: ReactNode;
   animationPath: string;
+  loaderVariant?: SignInLoaderVariant;
 };
 
-export default function SignInLayout({ children, animationPath }: SignInLayoutProps) {
+export default function SignInLayout({
+  children,
+  animationPath,
+  loaderVariant = "signin",
+}: SignInLayoutProps) {
   const [ready, setReady] = useState(false);
   const handleReady = useCallback(() => setReady(true), []);
 
@@ -29,7 +34,7 @@ export default function SignInLayout({ children, animationPath }: SignInLayoutPr
 
   return (
     <>
-      {!ready && <SignInLoader />}
+      {!ready && <SignInLoader variant={loaderVariant} />}
       <main className="relative min-h-screen w-full bg-stone">
         <div className="flex min-h-screen flex-col lg:flex-row">
           <section className="relative hidden lg:flex lg:h-screen lg:w-[60%] items-center justify-center overflow-hidden">
