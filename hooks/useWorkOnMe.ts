@@ -59,10 +59,11 @@ export function useWorkOnMe() {
     return createFeeling(payload)
       .then(() => {
         setFeelingsLoading(true);
-        return getFeelings();
+        return Promise.all([getFeelings(), getWorkOnMeOverview()]);
       })
-      .then((res) => {
+      .then(([res, overviewRes]) => {
         setFeelings(res.data ?? []);
+        setOverview(overviewRes.data);
         showSuccess("add", "Emotion", payload.title);
       })
       .catch((e) => showFailure("add", "Emotion", payload.title, errorMessage(e)))
@@ -80,10 +81,11 @@ export function useWorkOnMe() {
     return createFocusArea(payload)
       .then(() => {
         setFocusAreasLoading(true);
-        return getFocusAreas();
+        return Promise.all([getFocusAreas(), getWorkOnMeOverview()]);
       })
-      .then((res) => {
+      .then(([res, overviewRes]) => {
         setFocusAreas(res.data ?? []);
+        setOverview(overviewRes.data);
         showSuccess("add", "Focus Area", payload.title);
       })
       .catch((e) => showFailure("add", "Focus Area", payload.title, errorMessage(e)))

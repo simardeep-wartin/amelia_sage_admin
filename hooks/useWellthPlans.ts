@@ -96,8 +96,9 @@ export function useWellthPlans() {
     try {
       await createWealthPlan(payload);
       setPlansLoading(true);
-      const res = await getWealthPlans();
+      const [res, overviewRes] = await Promise.all([getWealthPlans(), getWealthPlansOverview()]);
       setPlans(res.data);
+      setWealthOverview(overviewRes.data);
       showSuccess("add", "Wellth Plan", payload.title);
     } catch (e) {
       showFailure("add", "Wellth Plan", payload.title, errorMessage(e));
@@ -202,7 +203,10 @@ export function useWellthPlans() {
     const title = previous.find((p) => p.id === id)?.title;
     setPlans(plans.filter((p) => p.id !== id));
     return deleteWealthPlan(id)
-      .then(() => showSuccess("delete", "Wellth Plan", title))
+      .then(() => {
+        showSuccess("delete", "Wellth Plan", title);
+        return getWealthPlansOverview().then((res) => setWealthOverview(res.data));
+      })
       .catch((e) => {
         setPlans(previous);
         showFailure("delete", "Wellth Plan", title, errorMessage(e));
